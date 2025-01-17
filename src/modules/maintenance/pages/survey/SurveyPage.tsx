@@ -1,10 +1,10 @@
-import SurveyRow from "@modules/maintenance/components/survey/SurveyRow";
+import Survey from "@modules/maintenance/components/survey/Survey";
 import { Grid2 } from "@mui/material";
 
 const SurveyPage = () => {
   return (
     <Grid2 container direction={"row"} spacing={2}>
-      <SurveyRow />
+      <Survey />
     </Grid2>
   );
 };

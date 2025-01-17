@@ -4,7 +4,7 @@ import SurveyPage from "../pages/survey/SurveyPage";
 
 const MaintenanceRoutes = () => (
   <Routes>
-    <Route path="/maintenance" element={<SurveyPage />} />
+    <Route path="/" element={<SurveyPage />} />
   </Routes>
 );
 
