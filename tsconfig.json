@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", // Target ESNext để hỗ trợ các tính năng mới nhất
+    "module": "ESNext", // Sử dụng module ESNext
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // Bao gồm các thư viện cần thiết
+    "allowJs": true, // Cho phép sử dụng file .js
+    "skipLibCheck": true, // Bỏ qua kiểm tra type của thư viện
+    "esModuleInterop": true, // Hỗ trợ import ES module
+    "allowSyntheticDefaultImports": true, // Cho phép import mặc định
+    "strict": true, // Kích hoạt chế độ kiểm tra nghiêm ngặt
+    "forceConsistentCasingInFileNames": true, // Cấm dùng tên file không đồng nhất (chữ hoa/thường)
+    "moduleResolution": "Node", // Sử dụng Node.js module resolution
+    "resolveJsonModule": true, // Cho phép import file JSON
+    "isolatedModules": true, // Hỗ trợ từng module riêng biệt
+    "noEmit": true, // Không xuất file sau khi build
+    "jsx": "react-jsx", // Cấu hình JSX cho React 18+
+    "baseUrl": "./", // Định nghĩa base URL cho alias
+    "paths": {
+      "@components/*": ["src/components/*"], // Alias cho thư mục components
+      "@pages/*": ["src/pages/*"], // Alias cho thư mục pages
+      "@utils/*": ["src/utils/*"], // Alias cho thư mục utils
+      "@assets/*": ["src/assets/*"], // Alias cho thư mục assets
+      "@modules/*": ["src/modules/*"] // Alias cho thư mục assets
+    }
+  },
+  "include": ["src"], // Bao gồm thư mục src
+  "exclude": ["node_modules", "dist"] // Loại trừ node_modules và dist
+}
