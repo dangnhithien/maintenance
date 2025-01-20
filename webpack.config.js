@@ -1,31 +1,54 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
+require("dotenv").config();
 
 module.exports = {
-  entry: "./src/index.tsx", // Điểm vào chính
+  entry: "./src/index.tsx", // Entry chính
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    clean: true, // Xóa thư mục 'dist' trước mỗi lần build
+    clean: true, // Xóa thư mục 'dist' trước khi build
+    publicPath: "/", // Đường dẫn công khai
   },
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/, // Xử lý file JS/TS/JSX/TSX
+        test: /\.(js|jsx|ts|tsx)$/, // Xử lý JS/TS/JSX/TSX
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
+        use: "babel-loader",
       },
       {
-        test: /\.css$/, // Xử lý file CSS
+        test: /\.module\.scss$/, // Xử lý SCSS với CSS Modules
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true, // Bật CSS Modules
+              sourceMap: true,
+            },
+          },
+          "sass-loader", // Biên dịch SCSS
+        ],
+      },
+      {
+        test: /\.scss$/, // Xử lý SCSS toàn cục
+        exclude: /\.module\.scss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.css$/, // Xử lý CSS
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf|otf)$/i, // Xử lý file tĩnh
+        type: "asset/resource",
       },
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"], // Để import không cần đuôi file
-
+    extensions: [".js", ".jsx", ".ts", ".tsx"], // Cho phép import không cần phần mở rộng
     alias: {
       "@components": path.resolve(__dirname, "src/components"),
       "@pages": path.resolve(__dirname, "src/pages"),
@@ -38,13 +61,25 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./public/index.html", // Template HTML
     }),
+    new webpack.DefinePlugin({
+      "process.env.BASE_URL": JSON.stringify(
+        process.env.BASE_URL || "http://localhost:3001"
+      ),
+    }),
   ],
-
   devServer: {
-    static: "./dist",
-    port: 3000,
-    open: true, // Tự mở trình duyệt khi chạy
-    historyApiFallback: true,
+    static: {
+      directory: path.resolve(__dirname, "dist"), // Thư mục tĩnh
+      publicPath: "/", // Đường dẫn công khai
+    },
+    port: 3000, // Port cho server
+    open: true, // Tự động mở trình duyệt
+    historyApiFallback: true, // Điều hướng về index.html với đường dẫn không tồn tại
+    compress: true, // Bật gzip
+    client: {
+      overlay: true, // Hiển thị lỗi trên giao diện
+    },
   },
-  mode: "development", // Hoặc 'production'
+  mode: "development", // Chế độ 'development' hoặc 'production'
+  devtool: "source-map", // Hỗ trợ debug
 };

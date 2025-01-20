@@ -1,7 +1,8 @@
+import SurveyList from "@modules/maintenance/components/survey/SurveyList"
 
 const SuverListPage = () => {
   return (
-    <div>SuverListPage</div>
+    <div><SurveyList/></div>
   )
 }
 

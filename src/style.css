@@ -6,5 +6,6 @@
   box-sizing: border-box;}
 body {
   background-color: #ebf1fa;
+  overflow-x: hidden;
 }
   

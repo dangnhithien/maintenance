@@ -1,0 +1,27 @@
+.titleHeader {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.tableContainer {
+    max-height: calc(100vh - (275px));
+}
+
+.inputSearch {
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
+.buttonSearch {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.divSearch {
+    width: 500px;
+}
+
+.headerTable {
+    background-color: #ebf1fa;
+    font-weight: 600 !important;
+}

@@ -23,6 +23,6 @@
       "@modules/*": ["src/modules/*"] // Alias cho thư mục assets
     }
   },
-  "include": ["src"], // Bao gồm thư mục src
+  "include": ["src/**/*"],// Bao gồm thư mục src
   "exclude": ["node_modules", "dist"] // Loại trừ node_modules và dist
 }
