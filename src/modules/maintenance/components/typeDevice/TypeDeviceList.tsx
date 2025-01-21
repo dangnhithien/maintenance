@@ -2,7 +2,7 @@ import StyledDataGrid from "@components/StyledDataGrid";
 import { GetTypeDeviceDto } from "@modules/maintenance/datas/typeDevice/GetTypeDeviceDto";
 import useTypeDevices from "@modules/maintenance/hooks/useTypeDevice";
 import { Add, Download, Upload } from "@mui/icons-material";
-import { Button, Grid2, Paper } from "@mui/material";
+import { Button, Grid2, Paper, Stack } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -50,21 +50,23 @@ const TypeDeviceList = () => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          <Button
-            variant="contained"
-            color="success"
-            component={Link} // Kết hợp Button với Link từ react-router-dom
-            to="/type-device/create" // Đường dẫn liên kết
-            size="small"
-          >
-            <Add />
-          </Button>
-          <Button variant="contained" color="success" size="small">
-            <Upload />
-          </Button>
-          <Button variant="contained" color="success" size="small">
-            <Download />
-          </Button>
+          <Stack direction={"row"} spacing={2}>
+            <Button
+              variant="contained"
+              color="success"
+              component={Link} // Kết hợp Button với Link từ react-router-dom
+              to="/type-device/create" // Đường dẫn liên kết
+              size="small"
+            >
+              <Add />
+            </Button>
+            <Button variant="contained" color="success" size="small">
+              <Upload />
+            </Button>
+            <Button variant="contained" color="success" size="small">
+              <Download />
+            </Button>
+          </Stack>
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>

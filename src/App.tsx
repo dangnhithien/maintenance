@@ -1,6 +1,7 @@
 // App.tsx
 
 import TheLayout from "@components/Layout";
+import { NoistackProvider } from "@modules/maintenance/components/common/Notistack";
 import { createTheme, ThemeProvider } from "@mui/material";
 import AllRoutes from "./routes/AllRoutes";
 
@@ -37,19 +38,23 @@ const mdTheme = createTheme({
       boxShadow: "none",
     },
   },
- 
+  palette: {
+    primary: {
+      main: "#10428E", // Màu primary mà bạn muốn áp dụng
+    },
+  },
 });
 
-function App()  {
-  return(
-    
-  <ThemeProvider theme={mdTheme}>
-
-  <TheLayout>
-    <AllRoutes />
-    </TheLayout>
-  </ThemeProvider>
-  )
-};
+function App() {
+  return (
+    <ThemeProvider theme={mdTheme}>
+      <NoistackProvider>
+        <TheLayout>
+          <AllRoutes />
+        </TheLayout>
+      </NoistackProvider>
+    </ThemeProvider>
+  );
+}
 
 export default App;

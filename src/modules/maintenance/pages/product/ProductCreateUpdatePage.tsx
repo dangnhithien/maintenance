@@ -1,17 +1,17 @@
-import DeviceCreateUpdate from "@modules/maintenance/components/device/DeviceCreateUpdate";
+import ProductCreateUpdate from "@modules/maintenance/components/product/ProductCreateUpdate";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 
-const DeviceCreateUpdatePage = () => {
+const ProductCreateUpdatePage = () => {
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/device">
+    <Link key="1" underline="none" component={RouterLink} to="/product">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
         Danh sách thiết bị
       </span>
     </Link>,
-    <Link key="2" underline="none" component={RouterLink} to="/device/create">
+    <Link key="2" underline="none" component={RouterLink} to="/product/create">
       <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
         Tạo mới
       </span>
@@ -33,9 +33,9 @@ const DeviceCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <DeviceCreateUpdate />
+      <ProductCreateUpdate />
     </div>
   );
 };
 
-export default DeviceCreateUpdatePage;
+export default ProductCreateUpdatePage;

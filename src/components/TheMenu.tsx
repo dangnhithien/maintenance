@@ -35,17 +35,17 @@ const Navbar: React.FC = () => {
         {/* Menu Items */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Button color="inherit" sx={{ textTransform: "none" }}>
-            Quản lý danh mục
+            Loại thiết bị
           </Button>
           <Button color="inherit" sx={{ textTransform: "none" }}>
-            Thông tin khách hàng
+            Thiết bị
           </Button>
           <Button
             color="inherit"
             sx={{ textTransform: "none" }}
             onClick={handleMenuOpen}
           >
-            Quản lý hệ thống
+            Phiếu khảo sát
           </Button>
           <Menu
             anchorEl={anchorEl}
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
             <MenuItem onClick={handleMenuClose}>Option 2</MenuItem>
           </Menu>
           <Button color="inherit" sx={{ textTransform: "none" }}>
-            Sản xuất và vận hành
+            Lịch sử
           </Button>
           <Button color="inherit" sx={{ textTransform: "none" }}>
             Báo cáo

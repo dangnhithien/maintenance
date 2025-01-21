@@ -8,4 +8,5 @@ export interface DeviceDto {
   deviceGroup: string;
   description: string;
   typeDevice: TypeDeviceDto;
+  isDeleted: boolean;
 }

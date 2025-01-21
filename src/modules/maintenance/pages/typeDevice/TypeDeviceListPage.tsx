@@ -1,19 +1,14 @@
-import DeviceCreateUpdate from "@modules/maintenance/components/device/DeviceCreateUpdate";
+import DeviceList from "@modules/maintenance/components/device/DeviceList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 
-const DeviceCreateUpdatePage = () => {
+const TypeDeviceListPage = () => {
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/device">
+    <Link key="1" underline="none" component={RouterLink} to="/type-device">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách thiết bị
-      </span>
-    </Link>,
-    <Link key="2" underline="none" component={RouterLink} to="/device/create">
-      <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        Tạo mới
+        Danh sách loại thiết bị
       </span>
     </Link>,
   ];
@@ -21,8 +16,8 @@ const DeviceCreateUpdatePage = () => {
   return (
     <div>
       <Helmet>
-        <title>Create Device</title>
-        <meta name="description" content="Create a new device" />
+        <title>Danh sách loại thiết bị</title>
+        <meta name="description" content="Danh sách các thiết bị" />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -33,9 +28,9 @@ const DeviceCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <DeviceCreateUpdate />
+      <DeviceList />
     </div>
   );
 };
 
-export default DeviceCreateUpdatePage;
+export default TypeDeviceListPage;

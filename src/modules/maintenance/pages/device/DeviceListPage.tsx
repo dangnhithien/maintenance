@@ -7,18 +7,17 @@ import { Link as RouterLink } from "react-router-dom";
 const DeviceListPage = () => {
   const breadcrumbs = [
     <Link key="1" underline="none" component={RouterLink} to="/device">
-      <span
-        key="1"
-        style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}
-      >
+      <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
         Danh sách thiết bị
       </span>
     </Link>,
   ];
+
   return (
     <div>
       <Helmet>
-        <title>Danh sách </title>
+        <title>Danh sách thiết bị</title>
+        <meta name="description" content="Danh sách các thiết bị" />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}

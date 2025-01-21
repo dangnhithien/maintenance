@@ -1,4 +1,5 @@
 import { ApiResponse } from "../datas/comon/ApiResponse";
+import { CreateDeviceDto } from "../datas/device/CreateDeviceDto";
 import { DeviceDto } from "../datas/device/DeviceDto";
 import { GetDeviceDto } from "../datas/device/GetDeviceDto";
 import axiosInstance from "./axiosInstance";
@@ -13,6 +14,9 @@ class DeviceApi {
     return await axiosInstance.get(BASE_URL, {
       params,
     });
+  };
+  post = async (params?: CreateDeviceDto): Promise<ApiResponse<DeviceDto>> => {
+    return await axiosInstance.post(BASE_URL, params);
   };
 }
 
