@@ -1,22 +1,22 @@
-import TypeDeviceCreateUpdate from "@modules/maintenance/components/typeDevice/TypeDeviceCreateUpdate";
+import TypeErrorCreateUpdate from "@modules/maintenance/components/typeError/TypeErrorCreateUpdate";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
-const TypeDeviceCreateUpdatePage = () => {
+const TypeErrorCreateUpdatePage = () => {
   const { id } = useParams();
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/type-device">
+    <Link key="1" underline="none" component={RouterLink} to="/type-error">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách loại thiết bị
+        Danh sách loại lỗi
       </span>
     </Link>,
     <Link
       key="2"
       underline="none"
       component={RouterLink}
-      to="/type-device/create"
+      to="/type-error/create"
     >
       <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
         Tạo mới
@@ -27,8 +27,8 @@ const TypeDeviceCreateUpdatePage = () => {
   return (
     <div>
       <Helmet>
-        <title>Create Device</title>
-        <meta name="description" content="Create a new device" />
+        <title>Danh sách loại lỗi</title>
+        <meta name="description" content="Tạo mới loại lỗi" />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -39,9 +39,9 @@ const TypeDeviceCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <TypeDeviceCreateUpdate id={id} />
+      <TypeErrorCreateUpdate id={id} />
     </div>
   );
 };
 
-export default TypeDeviceCreateUpdatePage;
+export default TypeErrorCreateUpdatePage;

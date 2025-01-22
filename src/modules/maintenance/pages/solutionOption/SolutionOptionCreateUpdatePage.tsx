@@ -1,23 +1,23 @@
-import TypeDeviceCreateUpdate from "@modules/maintenance/components/typeDevice/TypeDeviceCreateUpdate";
+import SolutionOptionCreateUpdate from "@modules/maintenance/components/soluitionOption/SolutionOptionCreateUpdate";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
-const TypeDeviceCreateUpdatePage = () => {
+const page = {
+  title: "Tạo mới giải pháp",
+  url: "/solution-option",
+  subUrl: "/solution-option/create",
+};
+const SolutionOptionCreateUpdatePage = () => {
   const { id } = useParams();
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/type-device">
+    <Link key="1" underline="none" component={RouterLink} to={page.url}>
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách loại thiết bị
+        Danh sách giải pháp
       </span>
     </Link>,
-    <Link
-      key="2"
-      underline="none"
-      component={RouterLink}
-      to="/type-device/create"
-    >
+    <Link key="2" underline="none" component={RouterLink} to={page.subUrl}>
       <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
         Tạo mới
       </span>
@@ -27,8 +27,8 @@ const TypeDeviceCreateUpdatePage = () => {
   return (
     <div>
       <Helmet>
-        <title>Create Device</title>
-        <meta name="description" content="Create a new device" />
+        <title> {page.title}</title>
+        <meta name="description" content={page.title} />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -39,9 +39,9 @@ const TypeDeviceCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <TypeDeviceCreateUpdate id={id} />
+      <SolutionOptionCreateUpdate id={id} />
     </div>
   );
 };
 
-export default TypeDeviceCreateUpdatePage;
+export default SolutionOptionCreateUpdatePage;

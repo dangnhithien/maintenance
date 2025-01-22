@@ -1,4 +1,4 @@
-export interface TypeDeviceDto {
+export interface TypeErrorDto {
   id: string;
   name: string;
   code: string;

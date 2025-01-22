@@ -6,7 +6,7 @@ require("dotenv").config();
 module.exports = {
   entry: "./src/index.tsx", // Entry chính
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "build"),
     filename: "bundle.js",
     clean: true, // Xóa thư mục 'dist' trước khi build
     publicPath: "/", // Đường dẫn công khai

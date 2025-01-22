@@ -2,9 +2,10 @@ import ProductCreateUpdate from "@modules/maintenance/components/product/Product
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
 const ProductCreateUpdatePage = () => {
+  const { id } = useParams();
   const breadcrumbs = [
     <Link key="1" underline="none" component={RouterLink} to="/product">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
@@ -33,7 +34,7 @@ const ProductCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <ProductCreateUpdate />
+      <ProductCreateUpdate id={id} />
     </div>
   );
 };

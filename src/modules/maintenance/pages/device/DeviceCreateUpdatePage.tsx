@@ -2,9 +2,10 @@ import DeviceCreateUpdate from "@modules/maintenance/components/device/DeviceCre
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
 const DeviceCreateUpdatePage = () => {
+  const { id } = useParams();
   const breadcrumbs = [
     <Link key="1" underline="none" component={RouterLink} to="/device">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
@@ -33,7 +34,7 @@ const DeviceCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <DeviceCreateUpdate />
+      <DeviceCreateUpdate id={id} />
     </div>
   );
 };

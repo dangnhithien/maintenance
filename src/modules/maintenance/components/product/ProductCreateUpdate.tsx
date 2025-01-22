@@ -1,6 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import productApi from "@modules/maintenance/apis/productApi";
-import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
+import {
+  unwrapError,
+  unwrapObjectReponse,
+} from "@modules/maintenance/datas/comon/ApiResponse";
 import { CreateProductDto } from "@modules/maintenance/datas/product/CreateProductDto";
 import {
   Button,
@@ -10,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
@@ -54,16 +57,41 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
 
   // Fetch dữ liệu từ id
 
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      productApi
+        .getById(id)
+        .then(unwrapObjectReponse)
+        .then((res) => {
+          reset(res as CreateProductDto); // Reset form với dữ liệu từ API
+        })
+        .catch((err) => {
+          const { message } = unwrapError(err);
+          notify(message, "error");
+        })
+        .finally(() => setLoading(false));
+    }
+  }, []);
+
   const onSubmit = async (data: CreateProductDto) => {
-    await productApi
-      .post(data)
-      .then((res) => {
+    setLoading(true);
+    try {
+      if (id) {
+        // Logic cập nhật (update)
+        const res = await productApi.update(id, data);
         notify(res.message, "success");
-      })
-      .catch((err) => {
-        const { message } = unwrapError(err);
-        notify(message, "error");
-      });
+      } else {
+        // Logic tạo mới (create)
+        const res = await productApi.post(data);
+        notify(res.message, "success");
+      }
+    } catch (err) {
+      const { message } = unwrapError(err);
+      notify(message, "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {

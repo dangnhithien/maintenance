@@ -1,29 +1,29 @@
 import { useCallback, useState } from "react";
-import typeDeviceApi from "../apis/typeDeviceApi";
-import { GetTypeDeviceDto } from "../datas/typeDevice/GetTypeDeviceDto";
-import { TypeDeviceDto } from "../datas/typeDevice/TypeDeviceDto";
+import typeErrorApi from "../apis/typeErrorApi";
+import { GetTypeErrorDto } from "../datas/typeError/GetTypeErrorDto";
+import { TypeErrorDto } from "../datas/typeError/TypeErrorDto";
 
 interface Result {
-  typeDevices: TypeDeviceDto[];
+  typeErrors: TypeErrorDto[];
   totalCount: number;
   loading: boolean;
   error: string | null;
-  fetchTypeDevices: (params?: GetTypeDeviceDto) => Promise<void>;
+  fetchTypeErrors: (params?: GetTypeErrorDto) => Promise<void>;
 }
 
-const useTypeDevices = (initialParams?: GetTypeDeviceDto): Result => {
-  const [typeDevices, setTypeDevices] = useState<TypeDeviceDto[]>([]);
+const useTypeError = (initialParams?: GetTypeErrorDto): Result => {
+  const [typeErrors, setTypeErrors] = useState<TypeErrorDto[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   // Hàm fetch data từ API
-  const fetchTypeDevices = useCallback(async (params?: GetTypeDeviceDto) => {
+  const fetchTypeErrors = useCallback(async (params?: GetTypeErrorDto) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await typeDeviceApi.get(params || initialParams);
-      setTypeDevices(result?.result?.items); // Set danh sách devices
+      const result = await typeErrorApi.get(params || initialParams);
+      setTypeErrors(result?.result?.items); // Set danh sách devices
       setTotalCount(result?.result.totalCount); // Set tổng số item
     } catch (err: any) {
       setError(err.message || "Failed to fetch  type devices");
@@ -35,12 +35,12 @@ const useTypeDevices = (initialParams?: GetTypeDeviceDto): Result => {
   // Tự động fetch khi khởi tạo hook
 
   return {
-    typeDevices,
+    typeErrors,
     totalCount,
     loading,
     error,
-    fetchTypeDevices,
+    fetchTypeErrors,
   };
 };
 
-export default useTypeDevices;
+export default useTypeError;

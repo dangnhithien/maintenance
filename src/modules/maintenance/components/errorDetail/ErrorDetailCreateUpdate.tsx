@@ -1,10 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import typeDeviceApi from "@modules/maintenance/apis/typeDeviceApi";
+import errorDetailApi from "@modules/maintenance/apis/errorDetailApi";
 import {
   unwrapError,
   unwrapObjectReponse,
 } from "@modules/maintenance/datas/comon/ApiResponse";
-import { CreateTypeDeviceDto } from "@modules/maintenance/datas/typeDevice/CreateTypeDeviceDto";
+import { CreateErrorDetailDto } from "@modules/maintenance/datas/errorDetail/CreateErrorDetailDto";
 import {
   Button,
   Grid2,
@@ -17,14 +17,13 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
+import TypeErrorSelect from "../common/select/TypeErrorSelect";
 
 // Định nghĩa schema validation với Yup
 const schema = yup.object({
-  name: yup.string().required("Name is required"),
-  code: yup.string().required("Code is required"),
-  description: yup
-    .string()
-    .max(255, "Description must be under 255 characters"),
+  code: yup.string().required("Name is required"),
+  content: yup.string().required("Code is required"),
+  typeErrorId: yup.string().required("Type device is required"),
 });
 
 // Định nghĩa kiểu dữ liệu của form
@@ -33,22 +32,23 @@ interface FormProps {
   id?: string; // Chỉ nhận vào id
 }
 
-const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
+const ErrorDetailCreateUpdate: React.FC<FormProps> = ({ id }) => {
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateTypeDeviceDto>({
+  } = useForm<CreateErrorDetailDto>({
     defaultValues: {
-      name: "",
       code: "",
-      description: "",
+      content: "",
+      typeErrorId: "",
     },
     resolver: yupResolver(schema),
   });
 
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { notify } = useNotification();
 
   // Fetch dữ liệu từ id
@@ -56,11 +56,11 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      typeDeviceApi
+      errorDetailApi
         .getById(id)
         .then(unwrapObjectReponse)
         .then((res) => {
-          reset(res as CreateTypeDeviceDto); // Reset form với dữ liệu từ API
+          reset(res as CreateErrorDetailDto); // Reset form với dữ liệu từ API
         })
         .catch((err) => {
           const { message } = unwrapError(err);
@@ -70,16 +70,16 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
     }
   }, []);
 
-  const onSubmit = async (data: CreateTypeDeviceDto) => {
+  const onSubmit = async (data: CreateErrorDetailDto) => {
     setLoading(true);
     try {
       if (id) {
         // Logic cập nhật (update)
-        const res = await typeDeviceApi.update(id, data);
+        const res = await errorDetailApi.update(id, data);
         notify(res.message, "success");
       } else {
         // Logic tạo mới (create)
-        const res = await typeDeviceApi.post(data);
+        const res = await errorDetailApi.post(data);
         notify(res.message, "success");
       }
     } catch (err) {
@@ -89,6 +89,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
       setLoading(false);
     }
   };
+
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
@@ -100,7 +101,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid2 container spacing={2} sx={{ marginTop: 2 }}>
-          <Grid2 size={4}>
+          <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
                 Mã
@@ -121,47 +122,59 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
               )}
             />
           </Grid2>
-          <Grid2 size={4}>
+          <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Tên
+                Lỗi
               </Typography>
               <Typography color="error">*</Typography>
             </Stack>
             <Controller
-              name="name"
+              name="content"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   fullWidth
                   size="small"
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
+                  error={!!errors.content}
+                  helperText={errors.content?.message}
                 />
               )}
             />
           </Grid2>
-          <Grid2 size={4}>
+
+          <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Mô tả
+                Loại thiết bị
               </Typography>
               <Typography color="error">*</Typography>
             </Stack>
             <Controller
-              name="description"
+              name="typeErrorId"
               control={control}
+              rules={{
+                required: "Please select a device type", // Validate bắt buộc
+              }}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  size="small"
-                  error={!!errors.description}
-                  helperText={errors.description?.message}
+                <TypeErrorSelect
+                  onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
                 />
               )}
             />
+            {errors.typeErrorId && (
+              <p
+                style={{
+                  color: "#d32f2f",
+                  fontSize: "12px",
+                  marginLeft: "14px",
+                  marginTop: "5px",
+                }}
+              >
+                {errors.typeErrorId.message}
+              </p>
+            )}
           </Grid2>
         </Grid2>
         <Grid2 container justifyContent={"center"} mt={2}>
@@ -172,8 +185,13 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
           </Grid2>
         </Grid2>
       </form>
+      {successMessage && (
+        <Typography mt={2} color="success.main">
+          {successMessage}
+        </Typography>
+      )}
     </Paper>
   );
 };
 
-export default TypeDeviceCreateUpdate;
+export default ErrorDetailCreateUpdate;

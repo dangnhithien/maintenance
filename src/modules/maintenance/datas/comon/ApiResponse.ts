@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export interface ApiResponse<T> {
+export interface ApiResponseWithList<T> {
   success: boolean;
   result: {
     items: T[];
@@ -9,9 +9,29 @@ export interface ApiResponse<T> {
   message: string;
   statusCode: number;
 }
-export const unwrapReponse = <T>(response: ApiResponse<T>): T[] => {
+
+export interface ApiResponseWithObject<T> {
+  success: boolean;
+  result: T;
+  message: string;
+  statusCode: number;
+}
+
+// Union type
+export type ApiResponse<T> = ApiResponseWithList<T> | ApiResponseWithObject<T>;
+
+export const unwrapListReponse = <T>(response: ApiResponseWithList<T>): T[] => {
   if (response.success && response.result) {
     return response.result.items;
+  } else {
+    throw new Error(response.message || "Failed to fetch data");
+  }
+};
+export const unwrapObjectReponse = <T>(
+  response: ApiResponseWithObject<T>
+): T => {
+  if (response.success && response.result) {
+    return response.result;
   } else {
     throw new Error(response.message || "Failed to fetch data");
   }

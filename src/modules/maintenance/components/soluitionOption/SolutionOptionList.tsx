@@ -1,6 +1,6 @@
 import StyledDataGrid from "@components/StyledDataGrid";
-import { GetProductDto } from "@modules/maintenance/datas/product/GetProductDto";
-import useProduct from "@modules/maintenance/hooks/useProduct";
+import { GetSolutionOptionDto } from "@modules/maintenance/datas/solutionOption/GetSolutionOptionDto";
+import useSolutionOptions from "@modules/maintenance/hooks/useSolutionOption";
 import { Add } from "@mui/icons-material";
 import { Button, Grid2, Paper } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -8,54 +8,54 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
 
-const ProductList = () => {
-  const {
-    products,
-    fetchProducts: fetchDevices,
-    error,
-    loading,
-    totalCount,
-  } = useProduct({
-    includeProperties: "Device",
-  });
-  const [params, setParams] = useState<GetProductDto>({
-    includeProperties: "Device",
+const SolutionOptionList = () => {
+  const { solutionOptions, fetchSolutionOptions, error, loading, totalCount } =
+    useSolutionOptions({
+      includeProperties: "ErrorDetail",
+    });
+  const [params, setParams] = useState<GetSolutionOptionDto>({
+    includeProperties: "ErrorDetail",
   });
   useEffect(() => {
-    fetchDevices(params);
+    fetchSolutionOptions(params);
   }, [params]);
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
-      field: "serialNumber",
-      headerName: "Số seri",
+      field: "code",
+      headerName: "Mã",
       editable: false,
       sortable: false,
       flex: 1,
     },
     {
-      field: "deviceCode",
-      headerName: "Mã thịết bị",
+      field: "name",
+      headerName: "Tên",
       editable: false,
       sortable: false,
       flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <>{params.row.deviceCode}</>
-      ),
     },
     {
-      field: "device.name",
-      headerName: "Tên thiết bị",
+      field: "description",
+      headerName: "Mô tả",
+      minWidth: 300,
+      editable: false,
+      sortable: false,
+      flex: 1,
+    },
+    {
+      field: "",
+      headerName: "Mô tả",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: GridRenderCellParams) => (
-        <>{params.row.device?.name}</>
+        <>{params.row.errorDetail?.name}</>
       ),
     },
   ];
-  console.log(products);
+
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
@@ -65,14 +65,14 @@ const ProductList = () => {
             variant="contained"
             color="success"
             component={Link}
-            to="/product/create"
+            to="/solution-option/create"
           >
             <Add />
           </Button>
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={products} />
+            <StyledDataGrid columns={columns} rows={solutionOptions} />
           </Paper>
         </Grid2>
       </Grid2>
@@ -80,4 +80,4 @@ const ProductList = () => {
   );
 };
 
-export default ProductList;
+export default SolutionOptionList;

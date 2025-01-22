@@ -1,10 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import typeDeviceApi from "@modules/maintenance/apis/typeDeviceApi";
+import typeErrorApi from "@modules/maintenance/apis/typeErrorApi";
 import {
   unwrapError,
   unwrapObjectReponse,
 } from "@modules/maintenance/datas/comon/ApiResponse";
-import { CreateTypeDeviceDto } from "@modules/maintenance/datas/typeDevice/CreateTypeDeviceDto";
+import { CreateTypeErrorDto } from "@modules/maintenance/datas/typeError/CreateTypeErrorDto";
 import {
   Button,
   Grid2,
@@ -20,29 +20,28 @@ import { useNotification } from "../common/Notistack";
 
 // Định nghĩa schema validation với Yup
 const schema = yup.object({
-  name: yup.string().required("Name is required"),
-  code: yup.string().required("Code is required"),
+  code: yup.string().required("code is required"),
+  name: yup.string().required("name is required"),
   description: yup
     .string()
     .max(255, "Description must be under 255 characters"),
 });
 
 // Định nghĩa kiểu dữ liệu của form
-
 interface FormProps {
   id?: string; // Chỉ nhận vào id
 }
 
-const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
+const TypeErrorCreateUpdate: React.FC<FormProps> = ({ id }) => {
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateTypeDeviceDto>({
+  } = useForm<CreateTypeErrorDto>({
     defaultValues: {
-      name: "",
       code: "",
+      name: "",
       description: "",
     },
     resolver: yupResolver(schema),
@@ -51,16 +50,15 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
   const [loading, setLoading] = useState(false);
   const { notify } = useNotification();
 
-  // Fetch dữ liệu từ id
-
+  // Fetch dữ liệu từ id nếu có
   useEffect(() => {
     if (id) {
       setLoading(true);
-      typeDeviceApi
+      typeErrorApi
         .getById(id)
         .then(unwrapObjectReponse)
         .then((res) => {
-          reset(res as CreateTypeDeviceDto); // Reset form với dữ liệu từ API
+          reset(res as CreateTypeErrorDto); // Reset form với dữ liệu từ API
         })
         .catch((err) => {
           const { message } = unwrapError(err);
@@ -70,16 +68,16 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
     }
   }, []);
 
-  const onSubmit = async (data: CreateTypeDeviceDto) => {
+  const onSubmit = async (data: CreateTypeErrorDto) => {
     setLoading(true);
     try {
       if (id) {
         // Logic cập nhật (update)
-        const res = await typeDeviceApi.update(id, data);
+        const res = await typeErrorApi.update(id, data);
         notify(res.message, "success");
       } else {
         // Logic tạo mới (create)
-        const res = await typeDeviceApi.post(data);
+        const res = await typeErrorApi.post(data);
         notify(res.message, "success");
       }
     } catch (err) {
@@ -89,6 +87,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
       setLoading(false);
     }
   };
+
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
@@ -96,11 +95,11 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
   return (
     <Paper sx={{ p: 2 }}>
       <Typography variant="body1" fontWeight={"bold"} color="primary">
-        Thông tin thiết bị
+        {id ? "Cập nhật thông tin lỗi" : "Thêm mới lỗi"}
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid2 container spacing={2} sx={{ marginTop: 2 }}>
-          <Grid2 size={4}>
+          <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
                 Mã
@@ -121,7 +120,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
               )}
             />
           </Grid2>
-          <Grid2 size={4}>
+          <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
                 Tên
@@ -142,7 +141,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
               )}
             />
           </Grid2>
-          <Grid2 size={4}>
+          <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
                 Mô tả
@@ -167,7 +166,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
         <Grid2 container justifyContent={"center"} mt={2}>
           <Grid2>
             <Button variant="contained" color="success" type="submit" fullWidth>
-              Lưu
+              {id ? "Cập nhật" : "Lưu"}
             </Button>
           </Grid2>
         </Grid2>
@@ -176,4 +175,4 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
   );
 };
 
-export default TypeDeviceCreateUpdate;
+export default TypeErrorCreateUpdate;

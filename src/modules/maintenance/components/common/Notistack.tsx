@@ -14,6 +14,7 @@ export const NoistackProvider: React.FC<PropsWithChildren> = ({ children }) => {
         vertical: "top",
         horizontal: "right",
       }}
+      autoHideDuration={2000} // Default hide duration set to 2000ms
     >
       {children}
     </SnackbarProvider>
@@ -32,6 +33,7 @@ export const useNotification = () => {
   ): SnackbarKey => {
     return enqueueSnackbar(message, {
       variant: type, // Set the type of notification
+      autoHideDuration: 2000, // Default hide duration for individual notifications
       ...options, // Allow overriding or adding options
     });
   };

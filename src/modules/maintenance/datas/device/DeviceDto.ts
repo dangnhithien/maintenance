@@ -9,4 +9,5 @@ export interface DeviceDto {
   description: string;
   typeDevice: TypeDeviceDto;
   isDeleted: boolean;
+  typeDeviceId: string;
 }

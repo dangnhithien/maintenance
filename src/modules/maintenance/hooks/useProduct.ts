@@ -4,7 +4,7 @@ import productApi from "../apis/productApi";
 import { GetProductDto } from "../datas/product/GetProductDto";
 import { ProductDto } from "../datas/product/ProductDto";
 
-interface UseDevicesResult {
+interface Result {
   products: ProductDto[];
   totalCount: number;
   loading: boolean;
@@ -12,7 +12,7 @@ interface UseDevicesResult {
   fetchProducts: (params?: GetProductDto) => Promise<void>;
 }
 
-const useProduct = (initialParams?: GetProductDto): UseDevicesResult => {
+const useProduct = (initialParams?: GetProductDto): Result => {
   const [products, setProducts] = useState<ProductDto[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);

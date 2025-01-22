@@ -3,7 +3,7 @@ import deviceApi from "../apis/deviceApi";
 import { DeviceDto } from "../datas/device/DeviceDto";
 import { GetDeviceDto } from "../datas/device/GetDeviceDto";
 
-interface UseDevicesResult {
+interface Result {
   devices: DeviceDto[];
   totalCount: number;
   loading: boolean;
@@ -11,7 +11,7 @@ interface UseDevicesResult {
   fetchDevices: (params?: GetDeviceDto) => Promise<void>;
 }
 
-const useDevices = (initialParams?: GetDeviceDto): UseDevicesResult => {
+const useDevices = (initialParams?: GetDeviceDto): Result => {
   const [devices, setDevices] = useState<DeviceDto[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
