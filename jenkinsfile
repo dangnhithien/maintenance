@@ -31,7 +31,7 @@ pipeline {
         checkout(
           [
             $class: 'GitSCM',
-            branches: [[name: 'refs/heads/main']],
+            branches: [[name: 'refs/heads/devops']],
             userRemoteConfigs: [
               [
                 url: GIT_URL,
