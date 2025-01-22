@@ -27,6 +27,11 @@ const TypeDeviceList = () => {
       width: 150,
       editable: false,
       sortable: false,
+      renderCell: (params: any) => (
+        <Link to={`/type-device/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
     },
     {
       field: "name",
@@ -35,6 +40,11 @@ const TypeDeviceList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/type-device/detail/${params.row.id}`}>
+          {params.row.name}
+        </Link>
+      ),
     },
   ];
   useEffect(() => {

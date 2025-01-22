@@ -1,21 +1,34 @@
 import typeDeviceApi from "@modules/maintenance/apis/typeDeviceApi";
+import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { GetTypeDeviceDto } from "@modules/maintenance/datas/typeDevice/GetTypeDeviceDto";
 import { TypeDeviceDto } from "@modules/maintenance/datas/typeDevice/TypeDeviceDto";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
 interface AsyncPaginateSelectProps {
-  value?: TypeDeviceDto | null;
+  id?: string;
   onChange?: (value: TypeDeviceDto | null) => void;
 }
 
 const TypeDeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
-  value,
+  id,
   onChange,
 }) => {
   const [internalValue, setInternalValue] = useState<TypeDeviceDto | null>(
-    value || null
+    null
   );
+
+  useEffect(() => {
+    if (id) {
+      typeDeviceApi
+        .getById(id)
+        .then(unwrapObjectReponse)
+        .then((res) => {
+          setInternalValue(res);
+        })
+        .catch((err) => {});
+    }
+  }, []);
 
   const handleChange = (val: TypeDeviceDto | null) => {
     setInternalValue(val);

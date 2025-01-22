@@ -27,6 +27,11 @@ const ErrorDetailList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/error-detail/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
     },
     {
       field: "content",
@@ -34,6 +39,11 @@ const ErrorDetailList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/error-detail/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
     },
     {
       field: "typeError.name",
@@ -52,7 +62,11 @@ const ErrorDetailList = () => {
     <>
       <Grid2 container direction={"column"} spacing={2}>
         <Grid2 container justifyContent={"space-between"}>
-          <InputSearch onSearch={() => {}} />
+          <InputSearch
+            onSearch={(searchText) => {
+              setParams({ ...params, searchTerm: searchText });
+            }}
+          />
           <Button
             variant="contained"
             color="success"

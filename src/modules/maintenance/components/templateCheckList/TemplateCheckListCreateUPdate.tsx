@@ -1,20 +1,28 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   unwrapError,
+  unwrapListReponse,
   unwrapObjectReponse,
 } from "@modules/maintenance/datas/comon/ApiResponse";
 
-import solutionOptionApi from "@modules/maintenance/apis/solutionOptionApi";
+import rowCheckListApi from "@modules/maintenance/apis/rowCheckListApi";
 import templateCheckListApi from "@modules/maintenance/apis/templateCheckListApi";
-import { CreateSolutionOptionDto } from "@modules/maintenance/datas/solutionOption/CreateSolutionOptionDto";
+import { CreateRowCheckListDto } from "@modules/maintenance/datas/rowCheckList/CreateRowCheckListDto";
 import { CreateTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/CreateTemplateCheckListDto";
-import { Grid2, Paper, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Grid2,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
-import ErrorDetailSelect from "../common/select/ErrorDetailSelect";
-import DynamicTable from "../survey/ConfigSuvey";
+import DeviceSelect from "../common/select/DeviceSelect";
+import DynamicTable from "../survey/DynamicTable";
 
 // Định nghĩa schema validation với Yup
 const schema = yup.object({
@@ -49,23 +57,37 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { notify } = useNotification();
+  const [rowChecklists, setRowChecklists] = useState<CreateRowCheckListDto[]>(
+    []
+  );
 
   // Fetch dữ liệu từ id
 
   useEffect(() => {
     if (id) {
       setLoading(true);
-      solutionOptionApi
+      templateCheckListApi
         .getById(id)
         .then(unwrapObjectReponse)
         .then((res) => {
-          reset(res as CreateSolutionOptionDto); // Reset form với dữ liệu từ API
+          reset(res as CreateTemplateCheckListDto); // Reset form với dữ liệu từ API
         })
         .catch((err) => {
           const { message } = unwrapError(err);
           notify(message, "error");
+        })
+        .finally(() => setLoading(false));
+
+      rowCheckListApi
+        .get({ templateCheckListId: id })
+        .then(unwrapListReponse)
+        .then((res) => {
+          setRowChecklists(res as CreateRowCheckListDto[]);
+        })
+        .catch((err) => {
+          const { message } = unwrapError(err);
+          // notify(message, "error");
         })
         .finally(() => setLoading(false));
     }
@@ -80,8 +102,17 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
         notify(res.message, "success");
       } else {
         // Logic tạo mới (create)
-        const res = await templateCheckListApi.post(data);
-        notify(res.message, "success");
+        const res = await templateCheckListApi
+          .post(data)
+          .then(unwrapObjectReponse);
+        rowChecklists.forEach(async (row: CreateRowCheckListDto, index) => {
+          await rowCheckListApi.post({
+            ...row,
+            code: res.id + Date.now().toString() + index,
+            templateCheckListId: res.id,
+          });
+        });
+        notify("success", "success");
       }
     } catch (err) {
       const { message } = unwrapError(err);
@@ -150,6 +181,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Mô tả
                 </Typography>
+                <Typography sx={{ color: "white" }}>*</Typography>
               </Stack>
               <Controller
                 name="description"
@@ -168,7 +200,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
             <Grid2 size={3}>
               <Stack direction="row" spacing={1}>
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                  Lỗi
+                  Thiết bị
                 </Typography>
                 <Typography color="error">*</Typography>
               </Stack>
@@ -179,7 +211,8 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   required: "Please select a device type", // Validate bắt buộc
                 }}
                 render={({ field }) => (
-                  <ErrorDetailSelect
+                  <DeviceSelect
+                    id={field.value} // Truyền giá trị vào select
                     onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
                   />
                 )}
@@ -198,13 +231,25 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
               )}
             </Grid2>
           </Grid2>
+          <DynamicTable
+            rowCheckLists={rowChecklists}
+            onChange={(data) => {
+              setRowChecklists(data);
+            }}
+          />
+          <Grid2 container justifyContent={"center"} mt={2}>
+            <Grid2>
+              <Button
+                variant="contained"
+                color="success"
+                type="submit"
+                fullWidth
+              >
+                Lưu
+              </Button>
+            </Grid2>
+          </Grid2>
         </form>
-        {successMessage && (
-          <Typography mt={2} color="success.main">
-            {successMessage}
-          </Typography>
-        )}
-        <DynamicTable rowCheckLists={[]} />
       </Paper>
     </>
   );

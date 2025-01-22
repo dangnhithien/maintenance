@@ -3,7 +3,7 @@ import { GetSolutionOptionDto } from "@modules/maintenance/datas/solutionOption/
 import useSolutionOptions from "@modules/maintenance/hooks/useSolutionOption";
 import { Add } from "@mui/icons-material";
 import { Button, Grid2, Paper } from "@mui/material";
-import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
@@ -27,6 +27,11 @@ const SolutionOptionList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/solution-option/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
     },
     {
       field: "name",
@@ -34,6 +39,19 @@ const SolutionOptionList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/solution-option/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
+    },
+    {
+      field: "",
+      headerName: "Lỗi",
+      editable: false,
+      sortable: false,
+      flex: 1,
+      renderCell: (params: any) => <>{params.row.errorDetail?.content}</>,
     },
     {
       field: "description",
@@ -42,17 +60,6 @@ const SolutionOptionList = () => {
       editable: false,
       sortable: false,
       flex: 1,
-    },
-    {
-      field: "",
-      headerName: "Mô tả",
-      minWidth: 300,
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <>{params.row.errorDetail?.name}</>
-      ),
     },
   ];
 
@@ -76,7 +83,11 @@ const SolutionOptionList = () => {
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={solutionOptions} />
+            <StyledDataGrid
+              columns={columns}
+              rows={solutionOptions}
+              rowSelection={false}
+            />
           </Paper>
         </Grid2>
       </Grid2>

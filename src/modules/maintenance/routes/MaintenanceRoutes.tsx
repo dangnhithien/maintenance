@@ -1,33 +1,41 @@
 // src/modules/maintenance/routes/MaintenanceRoutes.tsx
 
 import { Route, Routes } from "react-router-dom";
-import Survey from "../components/survey/Survey";
-import Home from "../pages";
+
 import DeviceCreateUpdatePage from "../pages/device/DeviceCreateUpdatePage";
+import DeviceDetailPage from "../pages/device/DeviceDetail";
 import DeviceListPage from "../pages/device/DeviceListPage";
 import ErrorDetailCreateUpdatePage from "../pages/errorDetail/ErrorDetailCreateUpdatePage";
 import ErrorDetailListPage from "../pages/errorDetail/ErrorDetailListPage";
+import ErrorDetailPage from "../pages/errorDetail/ErrorDetailPage";
 import ProductCreateUpdatePage from "../pages/product/ProductCreateUpdatePage";
 import ProductDetailPage from "../pages/product/ProductDetailPage";
 import ProductListPage from "../pages/product/ProductListPage";
 import SolutionOptionCreateUpdatePage from "../pages/solutionOption/SolutionOptionCreateUpdatePage";
+import SolutionOptionDetailPage from "../pages/solutionOption/SolutionOptionDetail";
 import SolutionOptionListPage from "../pages/solutionOption/SolutionOptionListPage";
 import ConfigSurveyPage from "../pages/survey/ConfigSurveyPage";
 import SurveyPage from "../pages/survey/SurveyPage";
-import SuverListPage from "../pages/survey/SuverListPage";
+import TaskCheckDetailPage from "../pages/taskCheck/TaskCheckDetailPage";
 import TemplateCheckListCreateUpdatePage from "../pages/templateCheckList/TemplateCheckListCreateUPdatePage";
 import TypeDeviceCreateUpdatePage from "../pages/typeDevice/TypeDeviceCreateUpdatePage";
+import TypeDeviceDetailPage from "../pages/typeDevice/TypeDeviceDetailPage";
 import { default as TypeDevicePage } from "../pages/typeDevice/TypeDeviceListPage";
 import TypeErrorCreateUpdatePage from "../pages/typeError/TypeErrorCreateUpdatePage";
+import TypeErrorDetailPage from "../pages/typeError/TypeErrorDetailPage";
 import TypeErrorListPage from "../pages/typeError/TypeErrorListPage";
 
 const MaintenanceRoutes = () => (
   <Routes>
-    <Route path="/" element={<Home />} />
+    <Route path="/" element={<ProductListPage />} />
     {/* survey */}
-    <Route path="/survey" element={<Survey />} />
+
     <Route
-      path="/template-check-list/create"
+      path="/template-check-list/create/device/:deviceId"
+      element={<TemplateCheckListCreateUpdatePage />}
+    />
+    <Route
+      path="/template-check-list/create/:id"
       element={<TemplateCheckListCreateUpdatePage />}
     />
     <Route path="/survey/detail/:id" element={<SurveyPage />} />
@@ -37,7 +45,7 @@ const MaintenanceRoutes = () => (
     <Route path="/device" element={<DeviceListPage />} />
     <Route path="/device/create" element={<DeviceCreateUpdatePage />} />
     <Route path="/device/create/:id" element={<DeviceCreateUpdatePage />} />
-    <Route path="/device/detail/:id" element={<SuverListPage />} />
+    <Route path="/device/detail/:id" element={<DeviceDetailPage />} />
 
     {/* type device*/}
     <Route path="/type-device" element={<TypeDevicePage />} />
@@ -53,7 +61,7 @@ const MaintenanceRoutes = () => (
       path="/type-device/create/:id"
       element={<TypeDeviceCreateUpdatePage />}
     />
-    <Route path="/type-device/detail/:id" element={<SuverListPage />} />
+    <Route path="/type-device/detail/:id" element={<TypeDeviceDetailPage />} />
 
     {/* product*/}
     <Route path="/product" element={<ProductListPage />} />
@@ -71,7 +79,7 @@ const MaintenanceRoutes = () => (
       path="/error-detail/create/:id"
       element={<ErrorDetailCreateUpdatePage />}
     />
-    <Route path="/error-detail/detail/:id" element={<SuverListPage />} />
+    <Route path="/error-detail/detail/:id" element={<ErrorDetailPage />} />
 
     {/* typeError*/}
     <Route path="/type-error" element={<TypeErrorListPage />} />
@@ -84,7 +92,7 @@ const MaintenanceRoutes = () => (
       path="/type-error/create/:id"
       element={<TypeErrorCreateUpdatePage />}
     />
-    <Route path="/type-error/detail/:id" element={<SuverListPage />} />
+    <Route path="/type-error/detail/:id" element={<TypeErrorDetailPage />} />
 
     {/* solutionOption*/}
     <Route path="/solution-option" element={<SolutionOptionListPage />} />
@@ -96,7 +104,13 @@ const MaintenanceRoutes = () => (
       path="/solution-option/create/:id"
       element={<SolutionOptionCreateUpdatePage />}
     />
-    <Route path="/solution-option/detail/:id" element={<SuverListPage />} />
+    <Route
+      path="/solution-option/detail/:id"
+      element={<SolutionOptionDetailPage />}
+    />
+    {/* taskCheck*/}
+
+    <Route path="/task-check/detail/:id" element={<TaskCheckDetailPage />} />
   </Routes>
 );
 

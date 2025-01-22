@@ -1,10 +1,10 @@
-import TemplateCheckListCreateUpdate from "@modules/maintenance/components/templateCheckList/TemplateCheckListCreateUPdate";
+import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
-const TemplateCheckListCreateUpdatePage = () => {
+const TaskCheckDetailPage = () => {
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -24,9 +24,9 @@ const TemplateCheckListCreateUpdatePage = () => {
         Thiết bị
       </span>
     </Link>,
-    <Link key="2" underline="none" component={RouterLink} to="/product/create">
+    <Link key="2" underline="none" component={RouterLink} to="">
       <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        Tạo mới
+        Chi tiết
       </span>
     </Link>,
   ];
@@ -46,9 +46,9 @@ const TemplateCheckListCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <TemplateCheckListCreateUpdate id={id} />
+      <TaskCheckDetail id={id} />
     </div>
   );
 };
 
-export default TemplateCheckListCreateUpdatePage;
+export default TaskCheckDetailPage;

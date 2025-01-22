@@ -1,8 +1,8 @@
 import StyledDataGrid from "@components/StyledDataGrid";
-import { GetTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/GetTemplateCheckListDto";
-import useTemplateCheckList from "@modules/maintenance/hooks/useTemplateCheckList";
-import { Add } from "@mui/icons-material";
-import { Button, Grid2, Paper } from "@mui/material";
+
+import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
+import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
+import { Grid2, Paper } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,23 +10,16 @@ import InputSearch from "../common/InputSearch";
 interface Props {
   deviceId?: string;
 }
-const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
-  const {
-    templateCheckLists,
-    fetchTemplateChecklists,
-    error,
-    loading,
-    totalCount,
-  } = useTemplateCheckList({
-    deviceId: deviceId,
-    includeProperties: "Device",
-  });
-  const [params, setParams] = useState<GetTemplateCheckListDto>({
-    deviceId: deviceId,
-    includeProperties: "Device",
+const TaskCheckList: React.FC<Props> = ({ deviceId }) => {
+  const { taskChecks, fetchTaskChecks, error, loading, totalCount } =
+    useTaskCheck({
+      includeProperties: "TemplateCheckList",
+    });
+  const [params, setParams] = useState<GetTaskCheckDto>({
+    includeProperties: "TemplateCheckList",
   });
   useEffect(() => {
-    fetchTemplateChecklists(params);
+    fetchTaskChecks(params);
   }, [params]);
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
@@ -37,35 +30,31 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/template-check-list/create/${params.row.id}`}>
+        <Link to={`/task-check/detail/${params.row.id}`}>
           {params.row.code}
         </Link>
       ),
     },
-    {
-      field: "name",
-      headerName: "Tên ",
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/template-check-list/create/${params.row.id}`}>
-          {params.row.name}
-        </Link>
-      ),
-    },
+
     {
       field: "",
-      headerName: "Tên thiết bị",
+      headerName: "Tên ",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/template-check-list/create/${params.row.id}`}>
-          {params.row.device?.name}
+        <Link to={`/task-check/detail/${params.row.id}`}>
+          {params.row.templateCheckList?.name}
         </Link>
       ),
+    },
+    {
+      field: "checkTime",
+      headerName: "Thời gian ",
+      editable: false,
+      sortable: false,
+      flex: 1,
     },
   ];
   return (
@@ -77,18 +66,18 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          <Button
+          {/* <Button
             variant="contained"
             color="success"
             component={Link}
             to={"/template-check-list/create/device/" + deviceId}
           >
             <Add />
-          </Button>
+          </Button> */}
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={templateCheckLists} />
+            <StyledDataGrid columns={columns} rows={taskChecks} />
           </Paper>
         </Grid2>
       </Grid2>
@@ -96,4 +85,4 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
   );
 };
 
-export default TemplateCheckList;
+export default TaskCheckList;

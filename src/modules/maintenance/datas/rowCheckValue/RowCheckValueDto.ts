@@ -1,0 +1,23 @@
+import { RowCheckListDto } from "../rowCheckList/RowCheckListDto";
+
+export interface RowCheckValueDto {
+  id: string;
+  rowCheckListName: string;
+  rowCheckListDescription: string | null;
+  errorDetailContent: string;
+  solutionOptionName: string;
+  solutionOptionDescription: string;
+  isPassed: boolean;
+  errorDetailId: string;
+  errorDetailCode: string;
+  errorDetail: any | null;
+  rowCheckListId: string;
+  rowCheckListCode: string;
+  taskCheckId: string;
+  taskCheckCode: string;
+  taskCheck: any | null;
+  solutionOptionId: string;
+  solutionOptionCode: string;
+  solutionOption: any | null;
+  rowCheckList: RowCheckListDto;
+}

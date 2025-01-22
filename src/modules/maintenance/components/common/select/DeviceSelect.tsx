@@ -1,27 +1,35 @@
 import deviceApi from "@modules/maintenance/apis/deviceApi";
+import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { DeviceDto } from "@modules/maintenance/datas/device/DeviceDto";
 import { GetDeviceDto } from "@modules/maintenance/datas/device/GetDeviceDto";
 import { TypeDeviceDto } from "@modules/maintenance/datas/typeDevice/TypeDeviceDto";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
 interface AsyncPaginateSelectProps {
-  value?: DeviceDto | null;
+  id?: string;
   onChange?: (value: DeviceDto | null) => void;
 }
 
-const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
-  value,
-  onChange,
-}) => {
-  const [internalValue, setInternalValue] = useState<DeviceDto | null>(
-    value || null
-  );
+const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({ id, onChange }) => {
+  const [internalValue, setInternalValue] = useState<DeviceDto | null>(null);
 
   const handleChange = (val: DeviceDto | null) => {
     setInternalValue(val);
     onChange?.(val); // Gọi callback onChange nếu được truyền từ component cha
   };
+
+  useEffect(() => {
+    if (id) {
+      deviceApi
+        .getById(id)
+        .then(unwrapObjectReponse)
+        .then((res) => {
+          setInternalValue(res);
+        })
+        .catch((err) => {});
+    }
+  }, []);
 
   const loadOptionDevices = async (
     search: any,

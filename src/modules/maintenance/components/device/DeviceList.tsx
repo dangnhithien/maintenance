@@ -20,24 +20,30 @@ const DeviceList = () => {
     {
       field: "code",
       headerName: "Mã thiết bị",
-      width: 150,
+
       editable: false,
       sortable: false,
+      renderCell: (params: any) => (
+        <Link to={`/device/detail/${params.row.id}`}>{params.row.code}</Link>
+      ),
     },
     {
       field: "name",
       headerName: "Tên thiết bị",
-      minWidth: 300,
+
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/device/detail/${params.row.id}`}>{params.row.name}</Link>
+      ),
     },
     {
       field: "typeDevice",
       headerName: "Loại thiết bị",
-      width: 200,
       editable: false,
       sortable: false,
+      flex: 1,
       renderCell: (params: GridRenderCellParams) => (
         <>{params.row.typeDevice?.name}</>
       ),
@@ -68,7 +74,11 @@ const DeviceList = () => {
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={devices} />
+            <StyledDataGrid
+              columns={columns}
+              rows={devices}
+              rowSelection={false}
+            />
           </Paper>
         </Grid2>
       </Grid2>

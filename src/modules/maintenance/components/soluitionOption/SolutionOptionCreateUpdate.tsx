@@ -153,6 +153,7 @@ const SolutionOptionCreateUpdate: React.FC<FormProps> = ({ id }) => {
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
                 Mô tả
               </Typography>
+              <Typography sx={{ color: "white" }}>*</Typography>
             </Stack>
             <Controller
               name="description"

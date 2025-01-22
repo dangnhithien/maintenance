@@ -1,8 +1,5 @@
 const ConfigSurveyPage = () => {
-  return (
-    // <div><DynamicTable/></div>
-    <></>
-  );
+  return <div>ConfigSurveyPage</div>;
 };
 
 export default ConfigSurveyPage;

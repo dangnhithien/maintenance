@@ -17,17 +17,27 @@ const TypeErrorList = () => {
     {
       field: "code",
       headerName: "Mã loại thiết bị",
-      width: 150,
+      flex: 1,
       editable: false,
       sortable: false,
+      renderCell: (params: any) => (
+        <Link to={`/type-error/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
     },
     {
       field: "name",
       headerName: "Tên loại thiết bị ",
-      minWidth: 300,
-      editable: false,
-      sortable: false,
       flex: 1,
+      editable: false,
+
+      sortable: false,
+      renderCell: (params: any) => (
+        <Link to={`/type-error/detail/${params.row.id}`}>
+          {params.row.code}
+        </Link>
+      ),
     },
   ];
   useEffect(() => {
@@ -63,7 +73,11 @@ const TypeErrorList = () => {
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={typeErrors} />
+            <StyledDataGrid
+              columns={columns}
+              rows={typeErrors}
+              rowSelection={false}
+            />
           </Paper>
         </Grid2>
       </Grid2>

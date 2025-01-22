@@ -32,6 +32,11 @@ const ProductList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/product/detail/${params.row.id}`}>
+          {params.row.serialNumber}
+        </Link>
+      ),
     },
     {
       field: "deviceCode",
@@ -39,8 +44,10 @@ const ProductList = () => {
       editable: false,
       sortable: false,
       flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <>{params.row.deviceCode}</>
+      renderCell: (params: any) => (
+        <Link to={`/product/detail/${params.row.id}`}>
+          {params.row.deviceCode}
+        </Link>
       ),
     },
     {
@@ -50,17 +57,21 @@ const ProductList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+
       renderCell: (params: GridRenderCellParams) => (
         <>{params.row.device?.name}</>
       ),
     },
   ];
-  console.log(products);
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
         <Grid2 container justifyContent={"space-between"}>
-          <InputSearch onSearch={() => {}} />
+          <InputSearch
+            onSearch={(searchText) => {
+              setParams({ ...params, searchTerm: searchText });
+            }}
+          />
           <Button
             variant="contained"
             color="success"

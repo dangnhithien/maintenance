@@ -1,22 +1,32 @@
 import typeErrorApi from "@modules/maintenance/apis/typeErrorApi";
+import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { GetTypeErrorDto } from "@modules/maintenance/datas/typeError/GetTypeErrorDto";
 import { TypeErrorDto } from "@modules/maintenance/datas/typeError/TypeErrorDto";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
 interface AsyncPaginateSelectProps {
-  value?: TypeErrorDto | null;
+  id?: string;
   onChange?: (value: TypeErrorDto | null) => void;
 }
 
 const TypeErrorSelect: React.FC<AsyncPaginateSelectProps> = ({
-  value,
+  id,
   onChange,
 }) => {
-  const [internalValue, setInternalValue] = useState<TypeErrorDto | null>(
-    value || null
-  );
+  const [internalValue, setInternalValue] = useState<TypeErrorDto | null>(null);
+  useEffect(() => {
+    if (id) {
+      typeErrorApi
+        .getById(id)
+        .then(unwrapObjectReponse)
+        .then((res) => {
+          setInternalValue(res);
+        })
+        .catch((err) => {});
+    }
+  }, []);
 
   const handleChange = (val: TypeErrorDto | null) => {
     setInternalValue(val);

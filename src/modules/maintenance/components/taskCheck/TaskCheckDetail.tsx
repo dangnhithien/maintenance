@@ -1,12 +1,43 @@
+import rowCheckValueApi from "@modules/maintenance/apis/rowCheckValueApi";
+import taskCheckApi from "@modules/maintenance/apis/taskCheckApi";
+import {
+  unwrapListReponse,
+  unwrapObjectReponse,
+} from "@modules/maintenance/datas/comon/ApiResponse";
+import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCheckValueDto";
+import { TaskCheckDto } from "@modules/maintenance/datas/taskCheck/TaskCheckDto";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { Avatar, Box, Button, Grid2, Paper, Typography } from "@mui/material";
-import SurveyRow from "./SurveyRow";
-
-const Survey = () => {
+import { Avatar, Box, Grid2, Paper, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import RowCheckValue from "../survey/RowCheckValue";
+interface Props {
+  id?: string;
+}
+const TaskCheckDetail: React.FC<Props> = ({ id }) => {
+  const [rowCheckValues, setRowCheckValues] = useState<RowCheckValueDto[]>([]);
+  const [taskCheck, setTaskCheck] = useState<TaskCheckDto>();
+  useEffect(() => {
+    if (id) {
+      rowCheckValueApi
+        .get({ taskCheckId: id })
+        .then(unwrapListReponse)
+        .then((res) => {
+          setRowCheckValues(res);
+        })
+        .catch((err) => {});
+      taskCheckApi
+        .getById(id, { includeProperties: "TemplateCheckList" })
+        .then(unwrapObjectReponse)
+        .then((res) => {
+          setTaskCheck(res);
+        })
+        .catch((err) => {});
+    }
+  }, []);
   return (
     <Grid2 container spacing={1}>
       <Paper sx={{ width: "100%", py: 2, px: 4 }}>
-        <Grid2
+        {/* <Grid2
           container
           direction={"row"}
           spacing={1}
@@ -25,7 +56,7 @@ const Survey = () => {
           <Typography variant="caption" sx={{ marginLeft: "0.5rem" }}>
             Chưa hoàn thành
           </Typography>
-        </Grid2>
+        </Grid2> */}
 
         <Grid2 size={12}>
           <Typography
@@ -33,7 +64,7 @@ const Survey = () => {
             sx={{ textAlign: "justify", lineHeight: 1.6 }}
             fontWeight="bold"
           >
-            Phiếu khảo sát máy in linx
+            {taskCheck?.templateCheckList?.name}
           </Typography>
         </Grid2>
 
@@ -82,14 +113,14 @@ const Survey = () => {
                   fontWeight="bold"
                   sx={{ fontSize: "0.875rem" }}
                 >
-                  Ngày làm việc
+                  Ngày kiểm tra
                 </Typography>
                 <Typography
                   variant="body2"
                   color="textSecondary"
                   sx={{ fontSize: "0.75rem" }}
                 >
-                  15 tháng 1, 2025
+                  {taskCheck?.checkTime.toString()}
                 </Typography>
               </Box>
             </Grid2>
@@ -98,42 +129,20 @@ const Survey = () => {
       </Paper>
 
       <Grid2 container size={12} spacing={1} direction={"column"}>
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
-
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
-
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
-
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
-
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
-
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
-
-        <Grid2>
-          <SurveyRow />
-        </Grid2>
+        {rowCheckValues.map((rowCheckValue, index) => (
+          <Grid2 key={index} size={12} spacing={1}>
+            <RowCheckValue data={rowCheckValue} />
+          </Grid2>
+        ))}
       </Grid2>
 
-      <Grid2>
+      {/* <Grid2>
         <Button variant="contained" color="success">
           Xác nhận
         </Button>
-      </Grid2>
+      </Grid2> */}
     </Grid2>
   );
 };
 
-export default Survey;
+export default TaskCheckDetail;

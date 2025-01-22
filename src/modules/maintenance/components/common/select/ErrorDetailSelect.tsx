@@ -1,22 +1,38 @@
 import errorDetailApi from "@modules/maintenance/apis/errorDetailApi";
+import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { ErrorDetailDto } from "@modules/maintenance/datas/errorDetail/ErrorDetailDto";
 import { GetErrorDetailDto } from "@modules/maintenance/datas/errorDetail/GetErrorDetailDto";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
 interface AsyncPaginateSelectProps {
-  value?: ErrorDetailDto | null;
+  id?: string;
+  isDisabled?: boolean;
   onChange?: (value: ErrorDetailDto | null) => void;
 }
 
 const ErrorDetailSelect: React.FC<AsyncPaginateSelectProps> = ({
-  value,
+  id,
+
+  isDisabled,
   onChange,
 }) => {
   const [internalValue, setInternalValue] = useState<ErrorDetailDto | null>(
-    value || null
+    null
   );
+
+  useEffect(() => {
+    if (id) {
+      errorDetailApi
+        .getById(id)
+        .then(unwrapObjectReponse)
+        .then((res) => {
+          setInternalValue(res);
+        })
+        .catch((err) => {});
+    }
+  }, []);
 
   const handleChange = (val: ErrorDetailDto | null) => {
     setInternalValue(val);
@@ -59,6 +75,7 @@ const ErrorDetailSelect: React.FC<AsyncPaginateSelectProps> = ({
 
   return (
     <AsyncPaginate
+      isDisabled={isDisabled}
       isClearable
       value={internalValue}
       onChange={handleChange}

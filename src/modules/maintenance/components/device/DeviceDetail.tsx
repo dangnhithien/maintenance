@@ -1,7 +1,6 @@
+import deviceApi from "@modules/maintenance/apis/deviceApi";
 import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
-
-import productApi from "@modules/maintenance/apis/productApi";
-import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
+import { DeviceDto } from "@modules/maintenance/datas/device/DeviceDto";
 import {
   Box,
   Button,
@@ -17,16 +16,16 @@ import { useNotification } from "../common/Notistack";
 interface Props {
   id?: string;
 }
-const ProductDetail: React.FC<Props> = ({ id }) => {
-  const [product, setProduct] = useState<ProductDto | null>(null);
+const DeviceDetail: React.FC<Props> = ({ id }) => {
+  const [device, setDevice] = useState<DeviceDto | null>(null);
   const [loading, setLoading] = useState(true);
   const { notify } = useNotification();
 
   useEffect(() => {
     if (id) {
-      productApi
+      deviceApi
         .getById(id)
-        .then((res) => setProduct(res.result)) // Cập nhật chi tiết sản phẩm
+        .then((res) => setDevice(res.result)) // Cập nhật chi tiết sản phẩm
         .catch((err) => {
           const { message } = unwrapError(err);
           notify(message, "error");
@@ -43,7 +42,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
     );
   }
 
-  if (!product) {
+  if (!device) {
     return (
       <Paper sx={{ p: 3, textAlign: "center" }}>
         <Typography variant="body1" color="error">
@@ -62,11 +61,11 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
         <Grid2 size={3} direction={"column"}>
           <Grid2>
             <Typography variant="body1">
-              <strong>Số seri</strong>
+              <strong>Mã</strong>
             </Typography>
           </Grid2>
           <Grid2>
-            <Typography variant="body1">{product.serialNumber}</Typography>
+            <Typography variant="body1">{device.code}</Typography>
           </Grid2>
         </Grid2>
         <Grid2 size={3} direction={"column"}>
@@ -76,7 +75,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
             </Typography>
           </Grid2>
           <Grid2>
-            <Typography variant="body1">{product.device?.name}</Typography>
+            <Typography variant="body1">{device.name}</Typography>
           </Grid2>
         </Grid2>
         <Grid2 size={3} direction={"column"}>
@@ -86,9 +85,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
             </Typography>
           </Grid2>
           <Grid2>
-            <Typography variant="body1">
-              {product.device?.description}
-            </Typography>
+            <Typography variant="body1">{device.description}</Typography>
           </Grid2>
         </Grid2>
       </Grid2>
@@ -97,7 +94,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
           variant="contained"
           color="primary"
           component={Link}
-          to={`/solution-option/create/${product.id}`}
+          to={`/device/create/${device.id}`}
         >
           Chỉnh sửa
         </Button>
@@ -106,4 +103,4 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
   );
 };
 
-export default ProductDetail;
+export default DeviceDetail;

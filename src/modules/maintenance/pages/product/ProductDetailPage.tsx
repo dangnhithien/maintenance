@@ -1,6 +1,6 @@
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import ProductDetail from "@modules/maintenance/components/product/ProductDetail";
-import TemplateCheckList from "@modules/maintenance/components/templateCheckList/TemplateCheckList";
+import TaskCheckList from "@modules/maintenance/components/taskCheck/TaskCheckList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -21,7 +21,7 @@ const ProductDetailPage = () => {
       to="/product/detail/:id"
     >
       <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        chi tiết
+        Chi tiết
       </span>
     </Link>,
   ];
@@ -43,7 +43,7 @@ const ProductDetailPage = () => {
       </Breadcrumbs>
       <ProductDetail id={id} />
       <Wrapper title="Danh sách phiếu khảo sát">
-        <TemplateCheckList />
+        <TaskCheckList deviceId={id} />
       </Wrapper>
     </div>
   );
