@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -34,12 +35,39 @@ const Navbar: React.FC = () => {
 
         {/* Menu Items */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Button color="inherit" sx={{ textTransform: "none" }}>
+          <Button
+            component={Link}
+            to="/type-device"
+            color="inherit"
+            sx={{ textTransform: "none" }}
+          >
             Loại thiết bị
           </Button>
-          <Button color="inherit" sx={{ textTransform: "none" }}>
+          <Button
+            component={Link}
+            to="/device"
+            color="inherit"
+            sx={{ textTransform: "none" }}
+          >
             Thiết bị
           </Button>
+          <Button
+            component={Link}
+            to="/error-detail"
+            color="inherit"
+            sx={{ textTransform: "none" }}
+          >
+            Danh mục lỗi
+          </Button>
+          <Button
+            component={Link}
+            to="/survey/config"
+            color="inherit"
+            sx={{ textTransform: "none" }}
+          >
+            cấu hình phiếu khảo sát
+          </Button>
+
           <Button
             color="inherit"
             sx={{ textTransform: "none" }}
@@ -52,13 +80,35 @@ const Navbar: React.FC = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleMenuClose}>Option 1</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Option 2</MenuItem>
+            <MenuItem
+              component={Link}
+              to="/survey-option1"
+              onClick={handleMenuClose}
+            >
+              Option 1
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to="/survey-option2"
+              onClick={handleMenuClose}
+            >
+              Option 2
+            </MenuItem>
           </Menu>
-          <Button color="inherit" sx={{ textTransform: "none" }}>
+          <Button
+            component={Link}
+            to="/history"
+            color="inherit"
+            sx={{ textTransform: "none" }}
+          >
             Lịch sử
           </Button>
-          <Button color="inherit" sx={{ textTransform: "none" }}>
+          <Button
+            component={Link}
+            to="/reports"
+            color="inherit"
+            sx={{ textTransform: "none" }}
+          >
             Báo cáo
           </Button>
         </Box>

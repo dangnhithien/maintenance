@@ -122,6 +122,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   size="small"
                   error={!!errors.code}
                   helperText={errors.code?.message}
+                  disabled={!!id} // Không cho phép nhập mã khi đang ở trạng thái update
                 />
               )}
             />

@@ -1,9 +1,11 @@
-import SurveyList from "@modules/maintenance/components/survey/SurveyList"
+import SurveyList from "@modules/maintenance/components/templateCheckList/TemplateCheckList";
 
 const SuverListPage = () => {
   return (
-    <div><SurveyList/></div>
-  )
-}
+    <div>
+      <SurveyList />
+    </div>
+  );
+};
 
-export default SuverListPage
+export default SuverListPage;

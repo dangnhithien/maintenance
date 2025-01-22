@@ -1,19 +1,21 @@
 // src/modules/maintenance/routes/MaintenanceRoutes.tsx
 
 import { Route, Routes } from "react-router-dom";
+import Survey from "../components/survey/Survey";
 import Home from "../pages";
 import DeviceCreateUpdatePage from "../pages/device/DeviceCreateUpdatePage";
 import DeviceListPage from "../pages/device/DeviceListPage";
 import ErrorDetailCreateUpdatePage from "../pages/errorDetail/ErrorDetailCreateUpdatePage";
 import ErrorDetailListPage from "../pages/errorDetail/ErrorDetailListPage";
 import ProductCreateUpdatePage from "../pages/product/ProductCreateUpdatePage";
+import ProductDetailPage from "../pages/product/ProductDetailPage";
 import ProductListPage from "../pages/product/ProductListPage";
 import SolutionOptionCreateUpdatePage from "../pages/solutionOption/SolutionOptionCreateUpdatePage";
 import SolutionOptionListPage from "../pages/solutionOption/SolutionOptionListPage";
 import ConfigSurveyPage from "../pages/survey/ConfigSurveyPage";
-import SurveyCreateUpdatePage from "../pages/survey/SurveyCreateUpdatePage";
 import SurveyPage from "../pages/survey/SurveyPage";
 import SuverListPage from "../pages/survey/SuverListPage";
+import TemplateCheckListCreateUpdatePage from "../pages/templateCheckList/TemplateCheckListCreateUPdatePage";
 import TypeDeviceCreateUpdatePage from "../pages/typeDevice/TypeDeviceCreateUpdatePage";
 import { default as TypeDevicePage } from "../pages/typeDevice/TypeDeviceListPage";
 import TypeErrorCreateUpdatePage from "../pages/typeError/TypeErrorCreateUpdatePage";
@@ -23,10 +25,13 @@ const MaintenanceRoutes = () => (
   <Routes>
     <Route path="/" element={<Home />} />
     {/* survey */}
-    <Route path="/survey" element={<SuverListPage />} />
-    <Route path="/survey/create" element={<SurveyCreateUpdatePage />} />
+    <Route path="/survey" element={<Survey />} />
+    <Route
+      path="/template-check-list/create"
+      element={<TemplateCheckListCreateUpdatePage />}
+    />
     <Route path="/survey/detail/:id" element={<SurveyPage />} />
-    <Route path="/config" element={<ConfigSurveyPage />} />
+    <Route path="/survey/config" element={<ConfigSurveyPage />} />
 
     {/* device*/}
     <Route path="/device" element={<DeviceListPage />} />
@@ -54,7 +59,7 @@ const MaintenanceRoutes = () => (
     <Route path="/product" element={<ProductListPage />} />
     <Route path="/product/create" element={<ProductCreateUpdatePage />} />
     <Route path="/product/create/:id" element={<ProductCreateUpdatePage />} />
-    <Route path="/product/detail/:id" element={<SuverListPage />} />
+    <Route path="/product/detail/:id" element={<ProductDetailPage />} />
 
     {/* errorDetail*/}
     <Route path="/error-detail" element={<ErrorDetailListPage />} />

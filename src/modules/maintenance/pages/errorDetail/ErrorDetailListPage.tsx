@@ -8,7 +8,7 @@ const TypeErrorListPage = () => {
   const breadcrumbs = [
     <Link key="1" underline="none" component={RouterLink} to="/error-detail">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách Lỗi
+        Danh sách lỗi
       </span>
     </Link>,
   ];
