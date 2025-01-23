@@ -85,6 +85,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
         // Logic tạo mới (create)
         const res = await deviceApi.post(data);
         notify(res.message, "success");
+        reset({} as CreateDeviceDto);
       }
     } catch (err) {
       const { message } = unwrapError(err);

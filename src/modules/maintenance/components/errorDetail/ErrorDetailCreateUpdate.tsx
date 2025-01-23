@@ -81,6 +81,7 @@ const ErrorDetailCreateUpdate: React.FC<FormProps> = ({ id }) => {
         // Logic tạo mới (create)
         const res = await errorDetailApi.post(data);
         notify(res.message, "success");
+        reset({} as CreateErrorDetailDto);
       }
     } catch (err) {
       const { message } = unwrapError(err);

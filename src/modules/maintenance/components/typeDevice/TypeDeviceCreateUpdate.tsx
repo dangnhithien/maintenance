@@ -76,11 +76,13 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
       if (id) {
         // Logic cập nhật (update)
         const res = await typeDeviceApi.update(id, data);
+        reset({} as CreateTypeDeviceDto);
         notify(res.message, "success");
       } else {
         // Logic tạo mới (create)
         const res = await typeDeviceApi.post(data);
         notify(res.message, "success");
+        reset({} as CreateTypeDeviceDto);
       }
     } catch (err) {
       const { message } = unwrapError(err);

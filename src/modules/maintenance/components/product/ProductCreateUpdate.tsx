@@ -85,6 +85,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
         // Logic tạo mới (create)
         const res = await productApi.post(data);
         notify(res.message, "success");
+        reset({} as CreateProductDto);
       }
     } catch (err) {
       const { message } = unwrapError(err);

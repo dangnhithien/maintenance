@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
 import DeviceSelect from "../common/select/DeviceSelect";
@@ -57,6 +58,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const { deviceId } = useParams();
   const { notify } = useNotification();
   const [rowChecklists, setRowChecklists] = useState<CreateRowCheckListDto[]>(
     []
@@ -125,7 +127,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
-
+  console.log("device", deviceId);
   return (
     <>
       <Paper sx={{ p: 2 }}>
@@ -212,8 +214,9 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 }}
                 render={({ field }) => (
                   <DeviceSelect
-                    id={field.value} // Truyền giá trị vào select
+                    id={deviceId || field.value} // Truyền giá trị vào select
                     onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
+                    // disabled={true}
                   />
                 )}
               />

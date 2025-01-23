@@ -23,7 +23,11 @@ class ProductApi {
   post = async (
     params?: CreateProductDto
   ): Promise<ApiResponseWithList<ProductDto>> => {
-    return await axiosInstance.post(BASE_URL, params);
+    return await axiosInstance.post(BASE_URL, params, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   };
   getById = async (id: string): Promise<ApiResponseWithObject<ProductDto>> => {
     return await axiosInstance.get(`${BASE_URL}/${id}`);

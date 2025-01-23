@@ -79,6 +79,7 @@ const TypeErrorCreateUpdate: React.FC<FormProps> = ({ id }) => {
         // Logic tạo mới (create)
         const res = await typeErrorApi.post(data);
         notify(res.message, "success");
+        reset({} as CreateTypeErrorDto);
       }
     } catch (err) {
       const { message } = unwrapError(err);

@@ -8,10 +8,15 @@ import { AsyncPaginate } from "react-select-async-paginate";
 
 interface AsyncPaginateSelectProps {
   id?: string;
+  disabled?: boolean;
   onChange?: (value: DeviceDto | null) => void;
 }
 
-const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({ id, onChange }) => {
+const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
+  id,
+  onChange,
+  disabled,
+}) => {
   const [internalValue, setInternalValue] = useState<DeviceDto | null>(null);
 
   const handleChange = (val: DeviceDto | null) => {
@@ -79,6 +84,7 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({ id, onChange }) => {
       debounceTimeout={400}
       menuPortalTarget={document.body}
       styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+      isDisabled={disabled}
     />
   );
 };

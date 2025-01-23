@@ -86,6 +86,7 @@ const SolutionOptionCreateUpdate: React.FC<FormProps> = ({ id }) => {
         // Logic tạo mới (create)
         const res = await solutionOptionApi.post(data);
         notify(res.message, "success");
+        reset({} as CreateSolutionOptionDto);
       }
     } catch (err) {
       const { message } = unwrapError(err);
