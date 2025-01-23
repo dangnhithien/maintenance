@@ -77,7 +77,11 @@ const TaskCheckList: React.FC<Props> = ({ deviceId }) => {
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={taskChecks} />
+            <StyledDataGrid
+              columns={columns}
+              rows={taskChecks}
+              rowCount={taskChecks.length}
+            />
           </Paper>
         </Grid2>
       </Grid2>

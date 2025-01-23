@@ -88,7 +88,11 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid columns={columns} rows={templateCheckLists} />
+            <StyledDataGrid
+              columns={columns}
+              rows={templateCheckLists}
+              rowCount={templateCheckLists.length}
+            />
           </Paper>
         </Grid2>
       </Grid2>
