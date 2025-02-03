@@ -49,6 +49,9 @@ const TaskCheckDetailPage = React.lazy(
 const TemplateCheckListCreateUpdatePage = React.lazy(
   () => import("../pages/templateCheckList/TemplateCheckListCreateUPdatePage")
 );
+const TemplateCheckListPage = React.lazy(
+  () => import("../pages/templateCheckList/TemplateCheckListPage")
+);
 const TypeDeviceCreateUpdatePage = React.lazy(
   () => import("../pages/typeDevice/TypeDeviceCreateUpdatePage")
 );
@@ -79,6 +82,14 @@ const MaintenanceRoutes = () => (
       }
     />
     {/* survey */}
+    <Route
+      path="/template-check-list"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <TemplateCheckListPage />
+        </React.Suspense>
+      }
+    />
     <Route
       path="/template-check-list/create/device/:deviceId"
       element={

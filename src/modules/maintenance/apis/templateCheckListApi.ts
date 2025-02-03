@@ -9,7 +9,7 @@ import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 
-const BASE_URL = "/api/template-check-list";
+const BASE_URL = "/api/template-check";
 
 class TemplateCheckListApi {
   // Hàm get danh sách devices

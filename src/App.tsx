@@ -9,6 +9,10 @@ const mdTheme = createTheme({
   components: {
     MuiButton: {
       styleOverrides: {
+        root: {
+          padding: "7px 10px !important",
+          minWidth: "0px",
+        },
         containedPrimary: {
           color: "white", // Màu chữ ghi đè
           backgroundColor: "#10428E", // Màu nền ghi đè

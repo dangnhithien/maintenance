@@ -10,7 +10,7 @@ import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 
-const BASE_URL = "/api/-row-check-list";
+const BASE_URL = "/api/row-check";
 
 class RowCheckListApi {
   // Hàm get danh sách devices

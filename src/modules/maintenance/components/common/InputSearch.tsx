@@ -1,8 +1,7 @@
-import { Button, Stack, TextField } from '@mui/material';
-import { GridSearchIcon } from '@mui/x-data-grid';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-
+import { Button, Stack, TextField } from "@mui/material";
+import { GridSearchIcon } from "@mui/x-data-grid";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 export interface Props {
   onSearch: (data: string) => void;
@@ -21,21 +20,33 @@ const InputSearch: React.FC<Props> = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} >
-      <Stack direction="row" justifyContent="flex-start" spacing={0}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Stack
+        direction="row"
+        justifyContent="flex-start"
+        spacing={0}
+        sx={{ width: 500 }}
+      >
         <TextField
           size="small"
           fullWidth
-          {...register('searchText')} // Register searchText field
-          placeholder="Search"
+          {...register("searchText")} // Register searchText field
+          placeholder="Nhập từ khóa tìm kiếm ..."
           sx={{
-            backgroundColor: 'white',
+            backgroundColor: "white",
+            borderTopRightRadius: " 0px !important",
+            borderBottomRightRadius: "0px !important",
+            borderRadius: " 0px !important",
           }}
         />
         <Button
           variant="contained"
           type="submit"
-          sx={{ borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px' }}
+          sx={{
+            marginLeft: "-2px",
+            borderTopLeftRadius: "0px",
+            borderBottomLeftRadius: "0px",
+          }}
         >
           <GridSearchIcon />
         </Button>
