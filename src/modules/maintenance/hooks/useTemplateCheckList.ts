@@ -68,6 +68,12 @@ export const useTemplateCheckList = (
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
+  const restoreChecklist = useMutation({
+    mutationFn: (ids: string[]) => templateCheckListApi.restore(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
 
   return {
     templateCheckLists: data?.items || [],
@@ -78,6 +84,7 @@ export const useTemplateCheckList = (
     createChecklist: createChecklist.mutateAsync,
     updateChecklist: updateChecklist.mutateAsync,
     deleteChecklist: deleteChecklist.mutateAsync,
+    restoreChecklist: restoreChecklist.mutateAsync,
   };
 };
 

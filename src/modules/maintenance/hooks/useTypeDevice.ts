@@ -1,46 +1,87 @@
-import { useCallback, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import typeDeviceApi from "../apis/typeDeviceApi";
+import { CreateTypeDeviceDto } from "../datas/typeDevice/CreateTypeDeviceDto";
+import { DeleteTypeDeviceDto } from "../datas/typeDevice/DeleteTypeDeviceDto";
 import { GetTypeDeviceDto } from "../datas/typeDevice/GetTypeDeviceDto";
-import { TypeDeviceDto } from "../datas/typeDevice/TypeDeviceDto";
 
-interface Result {
-  typeDevices: TypeDeviceDto[];
-  totalCount: number;
-  loading: boolean;
-  error: string | null;
-  fetchTypeDevices: (params?: GetTypeDeviceDto) => Promise<void>;
-}
+const KEY = "typeDevices";
+export const useTypeDevice = (initialParams?: GetTypeDeviceDto) => {
+  const queryClient = useQueryClient();
 
-const useTypeDevices = (initialParams?: GetTypeDeviceDto): Result => {
-  const [typeDevices, setTypeDevices] = useState<TypeDeviceDto[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  // Fetch template checklists
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [KEY, initialParams], // Dynamic queryKey
+    queryFn: () => typeDeviceApi.get(initialParams).then((res) => res.result),
+    staleTime: 60000,
+    retry: (failureCount, error) => {
+      const axiosError = error as AxiosError;
+      if (
+        axiosError?.response?.status === 400 ||
+        axiosError?.response?.status === 401
+      ) {
+        return false; // Không retry với lỗi Bad Request hoặc Unauthorized
+      }
+      return failureCount < 3; // Retry với các lỗi khác
+    },
+  });
 
-  // Hàm fetch data từ API
-  const fetchTypeDevices = useCallback(async (params?: GetTypeDeviceDto) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await typeDeviceApi.get(params || initialParams);
-      setTypeDevices(result?.result?.items); // Set danh sách devices
-      setTotalCount(result?.result.totalCount); // Set tổng số item
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch  type devices");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Function to manually refetch with new params
+  const fetchTypeDevices = (newParams: GetTypeDeviceDto) => {
+    queryClient.invalidateQueries({
+      queryKey: [KEY, newParams],
+    });
+  };
 
-  // Tự động fetch khi khởi tạo hook
+  // Create a new checklist
+  const createTypeDevice = useMutation({
+    mutationFn: (newData: CreateTypeDeviceDto) => typeDeviceApi.post(newData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] }); // Refresh list
+    },
+  });
+
+  // Update a checklist
+  const updateTypeDevice = useMutation({
+    mutationFn: ({
+      id,
+      updatedData,
+    }: {
+      id: string;
+      updatedData: CreateTypeDeviceDto;
+    }) => typeDeviceApi.update(id, updatedData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  // Delete a checklist
+  const deleteTypeDevice = useMutation({
+    mutationFn: (data: DeleteTypeDeviceDto) =>
+      typeDeviceApi.delete(data.isHardDeleted, data.ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  const restoreChecklist = useMutation({
+    mutationFn: (ids: string[]) => typeDeviceApi.restore(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
 
   return {
-    typeDevices,
-    totalCount,
-    loading,
-    error,
-    fetchTypeDevices,
+    typeDevices: data?.items || [],
+    totalCount: data?.totalCount || 0,
+    loading: isPending,
+    error: isError ? error?.message : null,
+    fetchTypeDevices, // Now accepts params
+    createTypeDevice: createTypeDevice.mutateAsync,
+    updateTypeDevice: updateTypeDevice.mutateAsync,
+    deleteTypeDevice: deleteTypeDevice.mutateAsync,
+    restoreTypeDevice: restoreChecklist.mutateAsync,
   };
 };
 
-export default useTypeDevices;
+export default useTypeDevice;

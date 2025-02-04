@@ -2,6 +2,7 @@ import PaginatedDataGrid from "@components/PaginationDatagrid";
 import { GetTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/GetTemplateCheckListDto";
 import useTemplateCheckList from "@modules/maintenance/hooks/useTemplateCheckList";
 import { Add, Warning } from "@mui/icons-material";
+import RestoreIcon from "@mui/icons-material/Restore";
 import { Button, Divider, Grid2, Paper } from "@mui/material";
 import {
   GridColDef,
@@ -28,8 +29,14 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
 
-  const { templateCheckLists, deleteChecklist, error, loading, totalCount } =
-    useTemplateCheckList(params);
+  const {
+    templateCheckLists,
+    deleteChecklist,
+    restoreChecklist,
+    error,
+    loading,
+    totalCount,
+  } = useTemplateCheckList(params);
 
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
@@ -101,19 +108,30 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
     await deleteChecklist({
       isHardDeleted: false,
       ids: rowSelectionModel as string[],
-    }).then(() => {
-      notify("success", "success");
-      setOpenPopupsoftDelete(false);
-    });
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupsoftDelete(false);
+      })
+      .catch(() => {});
   };
   const handleConfirmHardDelete = async () => {
     await deleteChecklist({
       isHardDeleted: true,
       ids: rowSelectionModel as string[],
-    }).then(() => {
-      notify("success", "success");
-      setOpenPopupHardDelete(false);
-    });
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupHardDelete(false);
+      })
+      .catch(() => {});
+  };
+  const restore = async () => {
+    await restoreChecklist(rowSelectionModel as string[])
+      .then(() => {
+        notify("success", "success");
+      })
+      .catch(() => {});
   };
   return (
     <>
@@ -142,6 +160,16 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
                 size="small"
               >
                 <GridDeleteIcon />
+              </Button>
+            )}
+            {rowSelectionModel.length > 0 && params.isDeleted && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={restore}
+                size="small"
+              >
+                <RestoreIcon />
               </Button>
             )}
 

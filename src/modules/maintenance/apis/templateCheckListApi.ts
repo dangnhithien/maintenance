@@ -39,9 +39,7 @@ class TemplateCheckListApi {
   restore = async (
     ids: string[]
   ): Promise<ApiResponseWithList<TemplateCheckListDto>> => {
-    return await axiosInstance.delete(`${BASE_URL}/restore`, {
-      data: ids,
-    });
+    return await axiosInstance.put(`${BASE_URL}/restore`, ids);
   };
   delete = async (
     isHardDeleted: boolean,

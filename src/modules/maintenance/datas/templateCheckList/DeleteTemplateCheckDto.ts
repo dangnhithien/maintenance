@@ -1,4 +1,3 @@
-export interface DeleteTemplateCheckDto {
-  isHardDeleted: boolean;
-  ids: string[];
-}
+import { DeletedBaseDto } from "../comon/DeletedBaseDto";
+
+export interface DeleteTemplateCheckDto extends DeletedBaseDto {}
