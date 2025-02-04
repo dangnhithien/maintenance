@@ -36,6 +36,23 @@ class TemplateCheckListApi {
   ): Promise<ApiResponseWithList<TemplateCheckListDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
   };
+  restore = async (
+    ids: string[]
+  ): Promise<ApiResponseWithList<TemplateCheckListDto>> => {
+    return await axiosInstance.delete(`${BASE_URL}/restore`, {
+      data: ids,
+    });
+  };
+  delete = async (
+    isHardDeleted: boolean,
+    ids: string[] // Mảng UUIDs
+  ): Promise<ApiResponseWithList<TemplateCheckListDto>> => {
+    const params = { isHardDeleted };
+    return await axiosInstance.delete(`${BASE_URL}`, {
+      params: params,
+      data: ids,
+    });
+  };
 }
 
 const templateCheckListApi = new TemplateCheckListApi();

@@ -108,11 +108,14 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           .post(data)
           .then(unwrapObjectReponse);
         rowChecklists.forEach(async (row: CreateRowCheckListDto, index) => {
-          await rowCheckListApi.post({
-            ...row,
-            code: res.id + Date.now().toString() + index,
-            templateCheckListId: res.id,
-          });
+          await rowCheckListApi
+            .post({
+              ...row,
+              code: res.id + Date.now().toString() + index,
+              templateCheckListId: res.id,
+            })
+            .then(unwrapObjectReponse)
+            .catch(unwrapError);
         });
         notify("success", "success");
       }
@@ -234,12 +237,14 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
               )}
             </Grid2>
           </Grid2>
-          <DynamicTable
-            rowCheckLists={rowChecklists}
-            onChange={(data) => {
-              setRowChecklists(data);
-            }}
-          />
+          <Grid2 sx={{ mt: 2 }}>
+            <DynamicTable
+              rowCheckLists={rowChecklists}
+              onChange={(data) => {
+                setRowChecklists(data);
+              }}
+            />
+          </Grid2>
           <Grid2 container justifyContent={"center"} mt={2}>
             <Grid2>
               <Button

@@ -2,24 +2,22 @@ import { CreateRowCheckListDto } from "@modules/maintenance/datas/rowCheckList/C
 import { Add } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
+  Box,
   Button,
+  Checkbox,
+  Container,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  Grid2,
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
+  Paper,
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TypeErrorSelect from "../common/select/TypeErrorSelect";
 
-// Initial sample data
-const initialData: CreateRowCheckListDto[] = [];
-
-// Row Component
+// Row Component – hiển thị dạng card, không có số thứ tự
 interface RowProps {
   index: number;
   row: CreateRowCheckListDto;
@@ -29,33 +27,100 @@ interface RowProps {
     value: string
   ) => void;
   onDelete: (index: number) => void;
+  onAdd: (index: number) => void;
 }
 
-const Row: React.FC<RowProps> = ({ index, row, onInputChange, onDelete }) => {
+const Row: React.FC<RowProps> = ({
+  index,
+  row,
+  onInputChange,
+  onDelete,
+  onAdd,
+}) => {
   return (
-    <TableRow>
-      <TableCell style={{ width: "50px" }}>{index + 1}</TableCell>
-      <TableCell>
+    <Paper elevation={3} sx={{ px: 3, marginBottom: 2 }}>
+      {/* Row: Nội dung và nút xóa */}
+      <Box display="flex" alignItems="center" marginBottom={1} pt={1.5}>
         <TextField
           value={row.name}
           onChange={(e) => onInputChange(index, "name", e.target.value)}
           variant="outlined"
+          fullWidth
           size="small"
-          style={{ width: "100%" }}
+          color="primary"
+          placeholder="Nhiệt độ máy hiện tại đang như thế nào( nhiệt độ bình thường? độ C)?"
+          inputProps={{
+            style: {
+              fontSize: 14,
+              paddingTop: 8,
+              paddingBottom: 8,
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { border: "none" },
+              "&:hover fieldset": { border: "none" },
+              "&.Mui-focused fieldset": {
+                border: "1px solid rgba(0, 0, 0, 0.23)",
+              },
+            },
+          }}
         />
-      </TableCell>
-      <TableCell>
-        <TypeErrorSelect
-          id={row.typeErrorId}
-          onChange={(val) => onInputChange(index, "typeErrorId", val?.id || "")}
-        />
-      </TableCell>
-      <TableCell>
-        <IconButton color="error" onClick={() => onDelete(index)}>
-          <DeleteIcon />
-        </IconButton>
-      </TableCell>
-    </TableRow>
+      </Box>
+      <Box sx={{ px: 3 }}>
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Checkbox
+                defaultChecked
+                sx={{
+                  padding: "6px",
+                  "& .MuiSvgIcon-root": { fontSize: 20 },
+                }}
+              />
+            }
+            label="Bình thường"
+            sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
+          />
+          <Grid2 container direction={"row"} spacing={1} alignItems="center">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    padding: "6px",
+                    "& .MuiSvgIcon-root": { fontSize: 20 },
+                  }}
+                />
+              }
+              label="Bất thường"
+              sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
+            />
+            <TypeErrorSelect
+              id={row.typeErrorId}
+              onChange={(val) =>
+                onInputChange(index, "typeErrorId", val?.id || "")
+              }
+            />
+          </Grid2>
+        </FormGroup>
+      </Box>
+      <Divider sx={{ width: "100%", mt: 1.5 }} />
+      <Box
+        display="flex"
+        alignItems="center"
+        marginBottom={1}
+        justifyContent={"flex-end"}
+      >
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton onClick={() => onAdd(index)} sx={{ padding: "6px" }}>
+            <Add fontSize="small" />
+          </IconButton>
+          <IconButton onClick={() => onDelete(index)} sx={{ padding: "6px" }}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
+    </Paper>
   );
 };
 
@@ -64,31 +129,15 @@ interface Props {
   onChange?: (value: CreateRowCheckListDto[]) => void;
 }
 
-// Main Table Component
-const DynamicTable: React.FC<Props> = ({ rowCheckLists, onChange }) => {
+// Component chính sử dụng giao diện dạng form
+const DynamicForm: React.FC<Props> = ({ rowCheckLists, onChange }) => {
   const [rows, setRows] = useState<CreateRowCheckListDto[]>(rowCheckLists);
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof CreateRowCheckListDto;
-    direction: "asc" | "desc";
-  } | null>(null);
+
   useEffect(() => {
     setRows(rowCheckLists);
   }, [rowCheckLists]);
 
-  const handleSort = (key: keyof CreateRowCheckListDto) => {
-    const isAsc = sortConfig?.key === key && sortConfig.direction === "asc";
-    const direction = isAsc ? "desc" : "asc";
-
-    // const sortedRows = [...rows].sort((a, b) => {
-    //   if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-    //   if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-    //   return 0;
-    // });
-
-    // setRows(sortedRows);
-    setSortConfig({ key, direction });
-  };
-
+  // Cập nhật giá trị của các trường trong card
   const handleInputChange = (
     index: number,
     field: keyof CreateRowCheckListDto,
@@ -101,83 +150,60 @@ const DynamicTable: React.FC<Props> = ({ rowCheckLists, onChange }) => {
     if (onChange) onChange(updatedRows);
   };
 
+  // Xóa một card
   const handleDelete = (index: number) => {
     const updatedRows = rows.filter((_, i) => i !== index);
     setRows(updatedRows);
     if (onChange) onChange(updatedRows);
   };
 
-  const handleAddRow = () => {
+  // Thêm một card mới ngay sau card có chỉ số index
+  const handleAddRowAt = (index: number) => {
     const newRow: CreateRowCheckListDto = {
       name: "",
       typeErrorId: "",
       code: "",
       templateCheckListId: "",
     };
-    const newRows = [...rows, newRow];
+
+    let newRows: CreateRowCheckListDto[] = [];
+    if (rows.length === 0) {
+      newRows = [newRow];
+    } else {
+      newRows = [...rows];
+      newRows.splice(index + 1, 0, newRow);
+    }
     setRows(newRows);
     if (onChange) onChange(newRows);
   };
 
   return (
-    <>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {[
-                { key: "index", label: "STT" },
-                { key: "name", label: "Nội dung" },
-                { key: "typeErrorId", label: "Loại lỗi" },
-                { key: "actions", label: "Thao tác" },
-              ].map(({ key, label }) => (
-                <TableCell
-                  key={key}
-                  style={key === "index" ? { width: "50px" } : undefined}
-                >
-                  {key !== "actions" ? (
-                    <TableSortLabel
-                      active={sortConfig?.key === key}
-                      direction={
-                        sortConfig?.key === key ? sortConfig.direction : "asc"
-                      }
-                      onClick={() =>
-                        handleSort(key as keyof CreateRowCheckListDto)
-                      }
-                    >
-                      {label}
-                    </TableSortLabel>
-                  ) : (
-                    label
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <Row
-                key={index}
-                index={index}
-                row={row}
-                onInputChange={handleInputChange}
-                onDelete={handleDelete}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Button
-        variant="contained"
-        color="success"
-        style={{ marginTop: "16px" }}
-        onClick={handleAddRow}
-        startIcon={<Add />}
-      >
-        Thêm
-      </Button>
-    </>
+    <Container>
+      <Box>
+        {rows.length > 0 ? (
+          rows.map((row, index) => (
+            <Row
+              key={index}
+              index={index}
+              row={row}
+              onInputChange={handleInputChange}
+              onDelete={handleDelete}
+              onAdd={handleAddRowAt}
+            />
+          ))
+        ) : (
+          // Nếu chưa có card nào, hiển thị nút thêm chung
+          <Button
+            variant="contained"
+            onClick={() => handleAddRowAt(-1)}
+            startIcon={<Add />}
+          >
+            Thêm
+          </Button>
+        )}
+      </Box>
+    </Container>
   );
 };
 
-export default DynamicTable;
+export default DynamicForm;

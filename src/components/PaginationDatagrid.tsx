@@ -2,29 +2,39 @@ import StyledDataGrid from "@components/StyledDataGrid";
 import StyledPagination from "@components/StyledPagination";
 import { PaginationItem } from "@mui/material";
 import { DataGridProps, GridColDef } from "@mui/x-data-grid";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 interface PaginatedDataGridProps extends DataGridProps {
   columns: GridColDef[];
   rows: any[];
   totalCount: number;
-  paginationModel: { page: number; pageSize: number };
-  onPageChange: (newPage: number) => void;
+  setParams: (params: any) => void;
 }
 
 const PaginatedDataGrid = ({
   columns,
   rows,
   totalCount,
-  paginationModel,
-  onPageChange,
+  setParams,
   ...dataGridProps
 }: PaginatedDataGridProps) => {
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 20,
+    page: 0,
+  });
+
   const handlePageChange = useCallback(
     (_: React.ChangeEvent<unknown>, page: number) => {
-      onPageChange(page - 1); // Chuyển từ base 1 sang base 0
+      setPaginationModel((prev) => ({
+        ...prev,
+        page: page - 1, // Chuyển từ base 1 sang base 0
+      }));
+      setParams((prev: any) => ({
+        ...prev,
+        skipCount: (page - 1) * paginationModel.pageSize,
+      }));
     },
-    [onPageChange]
+    [paginationModel.pageSize, setParams]
   );
 
   const PaginationComponent = useCallback(() => {
@@ -58,6 +68,7 @@ const PaginatedDataGrid = ({
       checkboxSelection
       disableRowSelectionOnClick
       disableColumnMenu
+      paginationMode="server"
       slots={{
         pagination: PaginationComponent,
       }}

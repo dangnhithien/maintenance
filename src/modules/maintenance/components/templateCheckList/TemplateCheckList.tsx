@@ -1,38 +1,35 @@
 import PaginatedDataGrid from "@components/PaginationDatagrid";
 import { GetTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/GetTemplateCheckListDto";
 import useTemplateCheckList from "@modules/maintenance/hooks/useTemplateCheckList";
-import { Add } from "@mui/icons-material";
+import { Add, Warning } from "@mui/icons-material";
 import { Button, Divider, Grid2, Paper } from "@mui/material";
-import { GridColDef, GridDeleteIcon } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import {
+  GridColDef,
+  GridDeleteIcon,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
+import { useNotification } from "../common/Notistack";
+import PopupConfirm from "../common/PopupConfirm";
+import TrashButton from "../common/TrashButton";
 interface Props {
   deviceId?: string;
 }
 const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 20,
-    page: 0,
-  });
-
-  const {
-    templateCheckLists,
-    fetchTemplateChecklists,
-    error,
-    loading,
-    totalCount,
-  } = useTemplateCheckList({
-    deviceId: deviceId,
-    includeProperties: "Device",
-  });
+  const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
+  const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
+  const { notify } = useNotification();
   const [params, setParams] = useState<GetTemplateCheckListDto>({
     deviceId: deviceId,
     includeProperties: "Device",
   });
-  useEffect(() => {
-    fetchTemplateChecklists(params);
-  }, [params]);
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
+
+  const { templateCheckLists, deleteChecklist, error, loading, totalCount } =
+    useTemplateCheckList(params);
 
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
@@ -82,6 +79,42 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
       flex: 1,
     },
   ];
+
+  const handleCancelSoftDelete = () => {
+    setOpenPopupsoftDelete(false);
+  };
+  const handleCancelHardDelete = () => {
+    setOpenPopupHardDelete(false);
+  };
+
+  const onSoftDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupsoftDelete(true);
+    }
+  };
+  const onHardDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupHardDelete(true);
+    }
+  };
+  const handelConfirmSoftDelete = async () => {
+    await deleteChecklist({
+      isHardDeleted: false,
+      ids: rowSelectionModel as string[],
+    }).then(() => {
+      notify("success", "success");
+      setOpenPopupsoftDelete(false);
+    });
+  };
+  const handleConfirmHardDelete = async () => {
+    await deleteChecklist({
+      isHardDeleted: true,
+      ids: rowSelectionModel as string[],
+    }).then(() => {
+      notify("success", "success");
+      setOpenPopupHardDelete(false);
+    });
+  };
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
@@ -101,19 +134,24 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
             >
               <Add />
             </Button>
+            {rowSelectionModel.length > 0 && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
+                size="small"
+              >
+                <GridDeleteIcon />
+              </Button>
+            )}
 
             <Divider draggable={false} orientation="vertical" flexItem />
 
-            <Button
-              variant="contained"
-              color="primary"
-              component={Link}
-              to={"/template-check-list/create/device/" + deviceId}
-              size="small"
-              endIcon={<GridDeleteIcon />}
-            >
-              Thùng rác
-            </Button>
+            <TrashButton
+              onClick={(isDeleted) =>
+                setParams({ ...params, isDeleted: isDeleted })
+              }
+            />
           </Grid2>
         </Grid2>
         <Grid2>
@@ -122,21 +160,35 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
               columns={columns}
               rows={templateCheckLists}
               totalCount={totalCount}
-              paginationModel={paginationModel}
-              onPageChange={(newPage) => {
-                setPaginationModel((prev) => ({
-                  ...prev,
-                  page: newPage,
-                }));
-                setParams((prev) => ({
-                  ...prev,
-                  skipCount: newPage * paginationModel.pageSize,
-                }));
+              setParams={setParams}
+              onRowSelectionModelChange={(newRowSelectionModel) => {
+                setRowSelectionModel(newRowSelectionModel);
               }}
+              loading={loading}
             />
           </Paper>
         </Grid2>
       </Grid2>
+      <PopupConfirm
+        open={openPopupSoftDelete}
+        onClose={() => setOpenPopupsoftDelete(false)}
+        onCancel={handleCancelSoftDelete}
+        onConfirm={handelConfirmSoftDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá, danh sách sẽ được chuyển vào thùng rác."
+        sx={{ width: 450 }}
+      />
+      <PopupConfirm
+        open={openPopupHardDelete}
+        onClose={() => setOpenPopupHardDelete(false)}
+        onCancel={handleCancelHardDelete}
+        onConfirm={handleConfirmHardDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá danh sách sẽ biến mất vĩnh viễn!"
+        sx={{ width: 450 }}
+      />
     </>
   );
 };
