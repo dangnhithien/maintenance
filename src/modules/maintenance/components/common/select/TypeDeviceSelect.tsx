@@ -83,6 +83,7 @@ const TypeDeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
       debounceTimeout={400}
       menuPortalTarget={document.body}
       styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+      placeholder="Loại thiết bị ..."
     />
   );
 };

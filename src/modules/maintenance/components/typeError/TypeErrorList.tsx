@@ -20,7 +20,7 @@ const TypeErrorList = () => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
-  const [params, setParams] = useState<GetTypeErrorDto>({});
+  const [params, setParams] = useState<GetTypeErrorDto>({ takeCount: 5 });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
 

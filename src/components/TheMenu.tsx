@@ -1,11 +1,23 @@
 import { Grid2 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <AppBar
       position="static"
@@ -66,63 +78,57 @@ const Navbar: React.FC = () => {
               gap: 2,
             }}
           >
-            {/* Các button menu giữ nguyên */}
+            {/* Dropdown button menu */}
             <Button
-              component={Link}
-              to="/type-device"
               color="inherit"
               sx={{ textTransform: "none" }}
+              onClick={handleClick}
             >
-              Loại thiết bị
+              Cấu hình
             </Button>
-            <Button
-              component={Link}
-              to="/template-check-list"
-              color="inherit"
-              sx={{ textTransform: "none" }}
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
             >
-              Danh sách biểu mẫu
-            </Button>
-            <Button
-              component={Link}
-              to="/device"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Nhóm thiết bị
-            </Button>
-            <Button
-              component={Link}
-              to="/type-error"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Loại lỗi
-            </Button>
-            <Button
-              component={Link}
-              to="/error-detail"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Danh mục lỗi
-            </Button>
-            <Button
-              component={Link}
-              to="/solution-option"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Giải pháp
-            </Button>
-            <Button
-              component={Link}
-              to="/product"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Thiết bị
-            </Button>
+              <MenuItem
+                onClick={handleClose}
+                component={Link}
+                to="/type-device"
+              >
+                Loại thiết bị
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={Link}
+                to="/template-check-list"
+              >
+                Danh sách biểu mẫu
+              </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/device">
+                Nhóm thiết bị
+              </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/type-error">
+                Loại lỗi
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={Link}
+                to="/error-detail"
+              >
+                Danh mục lỗi
+              </MenuItem>
+              <MenuItem
+                onClick={handleClose}
+                component={Link}
+                to="/solution-option"
+              >
+                Giải pháp
+              </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/product">
+                Thiết bị
+              </MenuItem>
+            </Menu>
             <Button
               component={Link}
               to="/task-check"

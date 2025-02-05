@@ -25,6 +25,7 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
   const [params, setParams] = useState<GetTemplateCheckListDto>({
     deviceId: deviceId,
     includeProperties: "Device",
+    takeCount: 5,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

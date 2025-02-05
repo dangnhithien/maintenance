@@ -2,7 +2,6 @@ import deviceApi from "@modules/maintenance/apis/deviceApi";
 import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { DeviceDto } from "@modules/maintenance/datas/device/DeviceDto";
 import { GetDeviceDto } from "@modules/maintenance/datas/device/GetDeviceDto";
-import { TypeDeviceDto } from "@modules/maintenance/datas/typeDevice/TypeDeviceDto";
 import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
@@ -34,7 +33,7 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
         })
         .catch((err) => {});
     }
-  }, []);
+  }, [id]);
 
   const loadOptionDevices = async (
     search: any,
@@ -76,8 +75,8 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
       value={internalValue}
       onChange={handleChange}
       loadOptions={loadOptionDevices}
-      getOptionLabel={(option: TypeDeviceDto) => option.name}
-      getOptionValue={(option: TypeDeviceDto) => option.id}
+      getOptionLabel={(option: DeviceDto) => option.name}
+      getOptionValue={(option: DeviceDto) => option.id}
       additional={{
         page: 1,
       }}
@@ -85,6 +84,7 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
       menuPortalTarget={document.body}
       styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
       isDisabled={disabled}
+      placeholder="Thiết bị..."
     />
   );
 };

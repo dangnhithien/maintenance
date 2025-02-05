@@ -19,7 +19,7 @@ const PaginatedDataGrid = ({
   ...dataGridProps
 }: PaginatedDataGridProps) => {
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 20,
+    pageSize: 5,
     page: 0,
   });
 

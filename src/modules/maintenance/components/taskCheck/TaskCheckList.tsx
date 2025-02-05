@@ -16,6 +16,7 @@ const TaskCheckList = () => {
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
     includeProperties: "TemplateCheck",
+    takeCount: 5,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

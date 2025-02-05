@@ -22,6 +22,7 @@ const ProductList = () => {
   const { notify } = useNotification();
   const [params, setParams] = useState<GetProductDto>({
     includeProperties: "Device",
+    takeCount: 5,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

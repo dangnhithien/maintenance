@@ -22,6 +22,7 @@ const SolutionOptionList = () => {
   const { notify } = useNotification();
   const [params, setParams] = useState<GetSolutionOptionDto>({
     includeProperties: "ErrorDetail",
+    takeCount: 5,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

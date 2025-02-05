@@ -46,6 +46,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
     control,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<CreateTemplateCheckListDto>({
     defaultValues: {
@@ -84,7 +85,6 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           const { message } = unwrapError(err);
           notify(message, "error");
         });
-
       rowCheckListApi
         .get({ templateCheckId: id })
         .then(unwrapListReponse)
@@ -131,6 +131,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
+  console.log(getValues("deviceId"));
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -234,9 +235,8 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   }}
                   render={({ field }) => (
                     <DeviceSelect
-                      id={field?.value} // Truyền giá trị vào select
+                      id={field?.value}
                       onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
-                      // disabled={true}
                     />
                   )}
                 />

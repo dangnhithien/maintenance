@@ -38,9 +38,15 @@ const RowCheck: React.FC<RowProps> = ({
   return (
     <Paper elevation={3} sx={{ px: 3, marginBottom: 2 }}>
       {/* Row: Nội dung và nút xóa */}
-      <Box display="flex" alignItems="center" marginBottom={1} pt={1.5}>
+      <Box
+        display="flex"
+        alignItems="center"
+        marginBottom={1}
+        pt={1.5}
+        justifyContent={"space-between"}
+      >
         <TextField
-          value={row.name}
+          value={row.name || ""}
           onChange={(e) => onInputChange(index, "name", e.target.value)}
           variant="outlined"
           fullWidth
@@ -64,13 +70,20 @@ const RowCheck: React.FC<RowProps> = ({
             },
           }}
         />
+        <Box minWidth={150} ml={2}>
+          <TypeErrorSelect
+            id={row.typeErrorId}
+            onChange={(val) =>
+              onInputChange(index, "typeErrorId", val?.id || "")
+            }
+          />
+        </Box>
       </Box>
       <Box sx={{ px: 3 }}>
         <FormGroup>
           <FormControlLabel
             control={
               <Checkbox
-                defaultChecked
                 sx={{
                   padding: "6px",
                   "& .MuiSvgIcon-root": { fontSize: 20 },
@@ -78,6 +91,7 @@ const RowCheck: React.FC<RowProps> = ({
               />
             }
             label="Bình thường"
+            disabled
             sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
           />
           <Grid2 container direction={"row"} spacing={1} alignItems="center">
@@ -91,13 +105,8 @@ const RowCheck: React.FC<RowProps> = ({
                 />
               }
               label="Bất thường"
+              disabled
               sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
-            />
-            <TypeErrorSelect
-              id={row.typeErrorId}
-              onChange={(val) =>
-                onInputChange(index, "typeErrorId", val?.id || "")
-              }
             />
           </Grid2>
         </FormGroup>
@@ -111,10 +120,10 @@ const RowCheck: React.FC<RowProps> = ({
       >
         <Box display="flex" justifyContent="flex-end">
           <IconButton onClick={() => onAdd(index)} sx={{ padding: "6px" }}>
-            <Add fontSize="small" />
+            <Add fontSize="medium" />
           </IconButton>
           <IconButton onClick={() => onDelete(index)} sx={{ padding: "6px" }}>
-            <DeleteIcon fontSize="small" />
+            <DeleteIcon fontSize="medium" />
           </IconButton>
         </Box>
       </Box>
