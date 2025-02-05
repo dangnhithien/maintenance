@@ -3,6 +3,7 @@ import { DeleteTemplateCheckDto } from "@modules/maintenance/datas/templateCheck
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import templateCheckListApi from "../apis/templateCheckListApi";
+import { ApiRequest } from "../datas/comon/ApiRequest";
 import { GetTemplateCheckListDto } from "../datas/templateCheckList/GetTemplateCheckListDto";
 
 const KEY = "templateChecks";
@@ -31,7 +32,6 @@ export const useTemplateCheckList = (
 
   // Function to manually refetch with new params
   const fetchTemplateChecklists = (newParams: GetTemplateCheckListDto) => {
-    console.log("newParams", newParams);
     queryClient.invalidateQueries({
       queryKey: [KEY, newParams],
     });
@@ -75,6 +75,14 @@ export const useTemplateCheckList = (
     },
   });
 
+  const getChecklistById = async (id: string, params?: ApiRequest) => {
+    return queryClient.fetchQuery({
+      queryKey: [KEY, "detail", id],
+      queryFn: () =>
+        templateCheckListApi.getById(id, params).then((res) => res.result),
+    });
+  };
+
   return {
     templateCheckLists: data?.items || [],
     totalCount: data?.totalCount || 0,
@@ -85,6 +93,7 @@ export const useTemplateCheckList = (
     updateChecklist: updateChecklist.mutateAsync,
     deleteChecklist: deleteChecklist.mutateAsync,
     restoreChecklist: restoreChecklist.mutateAsync,
+    getChecklistById,
   };
 };
 

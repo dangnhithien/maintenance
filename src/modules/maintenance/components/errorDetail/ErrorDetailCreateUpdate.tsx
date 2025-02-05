@@ -119,6 +119,7 @@ const ErrorDetailCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   size="small"
                   error={!!errors.code}
                   helperText={errors.code?.message}
+                  disabled={!!id}
                 />
               )}
             />
@@ -148,7 +149,7 @@ const ErrorDetailCreateUpdate: React.FC<FormProps> = ({ id }) => {
           <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Loại thiết bị
+                Loại lỗi
               </Typography>
               <Typography color="error">*</Typography>
             </Stack>
@@ -156,10 +157,11 @@ const ErrorDetailCreateUpdate: React.FC<FormProps> = ({ id }) => {
               name="typeErrorId"
               control={control}
               rules={{
-                required: "Please select a device type", // Validate bắt buộc
+                required: "Hãy chọn loại lỗi!!!", // Validate bắt buộc
               }}
               render={({ field }) => (
                 <TypeErrorSelect
+                  id={field?.value}
                   onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
                 />
               )}

@@ -26,7 +26,7 @@ const SolutionOptionDetail: React.FC<Props> = ({ id }) => {
   useEffect(() => {
     if (id) {
       solutionOptionApi
-        .getById(id)
+        .getById(id, { includeProperties: "ErrorDetail" })
         .then((res) => setSolutionOption(res.result)) // Cập nhật chi tiết sản phẩm
         .catch((err) => {
           const { message } = unwrapError(err);
@@ -89,6 +89,18 @@ const SolutionOptionDetail: React.FC<Props> = ({ id }) => {
           <Grid2>
             <Typography variant="body1">
               {solutionOption.description}
+            </Typography>
+          </Grid2>
+        </Grid2>
+        <Grid2 size={3} direction={"column"}>
+          <Grid2>
+            <Typography variant="body1">
+              <strong>Lỗi</strong>
+            </Typography>
+          </Grid2>
+          <Grid2>
+            <Typography variant="body1">
+              {solutionOption.errorDetail?.content}
             </Typography>
           </Grid2>
         </Grid2>

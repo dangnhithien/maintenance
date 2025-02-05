@@ -1,26 +1,34 @@
-import StyledDataGrid from "@components/StyledDataGrid";
-
+import PaginatedDataGrid from "@components/PaginationDatagrid";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
+import { Warning } from "@mui/icons-material";
 import { Grid2, Paper } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
-interface Props {
-  deviceId?: string;
-}
-const TaskCheckList: React.FC<Props> = ({ deviceId }) => {
-  const { taskChecks, fetchTaskChecks, error, loading, totalCount } =
-    useTaskCheck({
-      includeProperties: "TemplateCheckList",
-    });
+import { useNotification } from "../common/Notistack";
+import PopupConfirm from "../common/PopupConfirm";
+
+const TaskCheckList = () => {
+  const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
+  const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
+  const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
-    includeProperties: "TemplateCheckList",
+    includeProperties: "TemplateCheck",
   });
-  useEffect(() => {
-    fetchTaskChecks(params);
-  }, [params]);
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
+
+  const {
+    taskChecks,
+    deleteTaskCheck,
+    restoreTaskCheck,
+    error,
+    loading,
+    totalCount,
+  } = useTaskCheck(params);
+
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
@@ -38,14 +46,14 @@ const TaskCheckList: React.FC<Props> = ({ deviceId }) => {
 
     {
       field: "",
-      headerName: "Tên ",
+      headerName: "Tên biểu mẫu ",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.templateCheckList?.name}
+          {params.row.templateCheck?.name}
         </Link>
       ),
     },
@@ -56,7 +64,61 @@ const TaskCheckList: React.FC<Props> = ({ deviceId }) => {
       sortable: false,
       flex: 1,
     },
+    {
+      field: "createdBy",
+      headerName: "Người tạo",
+      editable: false,
+      sortable: false,
+      flex: 1,
+    },
   ];
+
+  const handleCancelSoftDelete = () => {
+    setOpenPopupsoftDelete(false);
+  };
+  const handleCancelHardDelete = () => {
+    setOpenPopupHardDelete(false);
+  };
+
+  const onSoftDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupsoftDelete(true);
+    }
+  };
+  const onHardDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupHardDelete(true);
+    }
+  };
+  const handelConfirmSoftDelete = async () => {
+    await deleteTaskCheck({
+      isHardDeleted: false,
+      ids: rowSelectionModel as string[],
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupsoftDelete(false);
+      })
+      .catch(() => {});
+  };
+  const handleConfirmHardDelete = async () => {
+    await deleteTaskCheck({
+      isHardDeleted: true,
+      ids: rowSelectionModel as string[],
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupHardDelete(false);
+      })
+      .catch(() => {});
+  };
+  const restore = async () => {
+    await restoreTaskCheck(rowSelectionModel as string[])
+      .then(() => {
+        notify("success", "success");
+      })
+      .catch(() => {});
+  };
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
@@ -66,25 +128,81 @@ const TaskCheckList: React.FC<Props> = ({ deviceId }) => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          {/* <Button
-            variant="contained"
-            color="success"
-            component={Link}
-            to={"/template-check-list/create/device/" + deviceId}
-          >
-            <Add />
-          </Button> */}
+          {/* <Grid2 container spacing={1}>
+            <Button
+              variant="contained"
+              color="success"
+              component={Link}
+              to={""}
+              size="small"
+            >
+              <Add />
+            </Button>
+            {rowSelectionModel.length > 0 && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
+                size="small"
+              >
+                <GridDeleteIcon />
+              </Button>
+            )}
+            {rowSelectionModel.length > 0 && params.isDeleted && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={restore}
+                size="small"
+              >
+                <RestoreIcon />
+              </Button>
+            )}
+
+            <Divider draggable={false} orientation="vertical" flexItem />
+
+            <TrashButton
+              onClick={(isDeleted) =>
+                setParams({ ...params, isDeleted: isDeleted })
+              }
+            />
+          </Grid2> */}
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid
+            <PaginatedDataGrid
               columns={columns}
               rows={taskChecks}
-              rowCount={taskChecks.length}
+              totalCount={totalCount}
+              setParams={setParams}
+              onRowSelectionModelChange={(newRowSelectionModel) => {
+                setRowSelectionModel(newRowSelectionModel);
+              }}
+              loading={loading}
             />
           </Paper>
         </Grid2>
       </Grid2>
+      <PopupConfirm
+        open={openPopupSoftDelete}
+        onClose={() => setOpenPopupsoftDelete(false)}
+        onCancel={handleCancelSoftDelete}
+        onConfirm={handelConfirmSoftDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá, danh sách sẽ được chuyển vào thùng rác."
+        sx={{ width: 450 }}
+      />
+      <PopupConfirm
+        open={openPopupHardDelete}
+        onClose={() => setOpenPopupHardDelete(false)}
+        onCancel={handleCancelHardDelete}
+        onConfirm={handleConfirmHardDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá danh sách sẽ biến mất vĩnh viễn!"
+        sx={{ width: 450 }}
+      />
     </>
   );
 };

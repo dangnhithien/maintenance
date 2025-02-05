@@ -17,11 +17,10 @@ const SolutionOptionCreateUpdatePage = () => {
         Danh sách giải pháp
       </span>
     </Link>,
-    <Link key="2" underline="none" component={RouterLink} to={page.subUrl}>
-      <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        Tạo mới
-      </span>
-    </Link>,
+
+    <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
+      Tạo mới
+    </span>,
   ];
 
   return (

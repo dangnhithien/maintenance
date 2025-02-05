@@ -164,6 +164,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
               }}
               render={({ field }) => (
                 <TypeDeviceSelect
+                  id={field?.value}
                   onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
                 />
               )}

@@ -1,25 +1,46 @@
-import StyledDataGrid from "@components/StyledDataGrid";
+import PaginatedDataGrid from "@components/PaginationDatagrid";
 import { GetTypeErrorDto } from "@modules/maintenance/datas/typeError/GetTypeErrorDto";
 import useTypeError from "@modules/maintenance/hooks/useTypeError";
-import { Add, Download, Upload } from "@mui/icons-material";
-import { Button, Grid2, Paper, Stack } from "@mui/material";
-import { GridColDef } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { Add, Warning } from "@mui/icons-material";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { Button, Divider, Grid2, Paper } from "@mui/material";
+import {
+  GridColDef,
+  GridDeleteIcon,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
+import { useNotification } from "../common/Notistack";
+import PopupConfirm from "../common/PopupConfirm";
+import TrashButton from "../common/TrashButton";
 
 const TypeErrorList = () => {
-  const { typeErrors, fetchTypeErrors, error, loading, totalCount } =
-    useTypeError();
-  const [params, setParams] = useState<GetTypeErrorDto>();
+  const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
+  const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
+  const { notify } = useNotification();
+  const [params, setParams] = useState<GetTypeErrorDto>({});
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
+
+  const {
+    typeErrors,
+    deleteTypeError,
+    restoreTypeError,
+    error,
+    loading,
+    totalCount,
+  } = useTypeError(params);
+
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
       field: "code",
-      headerName: "Mã loại thiết bị",
-      flex: 1,
+      headerName: "Mã",
       editable: false,
       sortable: false,
+      flex: 1,
       renderCell: (params: any) => (
         <Link to={`/type-error/detail/${params.row.id}`}>
           {params.row.code}
@@ -28,22 +49,73 @@ const TypeErrorList = () => {
     },
     {
       field: "name",
-      headerName: "Tên loại thiết bị ",
-      flex: 1,
+      headerName: "Tên",
       editable: false,
-
       sortable: false,
+      flex: 1,
       renderCell: (params: any) => (
         <Link to={`/type-error/detail/${params.row.id}`}>
-          {params.row.code}
+          {params.row.name}
         </Link>
       ),
     },
-  ];
-  useEffect(() => {
-    fetchTypeErrors(params);
-  }, [params]);
 
+    {
+      field: "date",
+      headerName: "Ngày tạo",
+      minWidth: 300,
+      editable: false,
+      sortable: false,
+      flex: 1,
+    },
+  ];
+
+  const handleCancelSoftDelete = () => {
+    setOpenPopupsoftDelete(false);
+  };
+  const handleCancelHardDelete = () => {
+    setOpenPopupHardDelete(false);
+  };
+
+  const onSoftDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupsoftDelete(true);
+    }
+  };
+  const onHardDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupHardDelete(true);
+    }
+  };
+  const handelConfirmSoftDelete = async () => {
+    await deleteTypeError({
+      isHardDeleted: false,
+      ids: rowSelectionModel as string[],
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupsoftDelete(false);
+      })
+      .catch(() => {});
+  };
+  const handleConfirmHardDelete = async () => {
+    await deleteTypeError({
+      isHardDeleted: true,
+      ids: rowSelectionModel as string[],
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupHardDelete(false);
+      })
+      .catch(() => {});
+  };
+  const restore = async () => {
+    await restoreTypeError(rowSelectionModel as string[])
+      .then(() => {
+        notify("success", "success");
+      })
+      .catch(() => {});
+  };
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
@@ -53,34 +125,81 @@ const TypeErrorList = () => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          <Stack direction={"row"} spacing={2}>
+          <Grid2 container spacing={1}>
             <Button
               variant="contained"
               color="success"
-              component={Link} // Kết hợp Button với Link từ react-router-dom
-              to="/type-error/create" // Đường dẫn liên kết
+              component={Link}
+              to={"/type-error/create"}
               size="small"
             >
               <Add />
             </Button>
-            <Button variant="contained" color="success" size="small">
-              <Upload />
-            </Button>
-            <Button variant="contained" color="success" size="small">
-              <Download />
-            </Button>
-          </Stack>
+            {rowSelectionModel.length > 0 && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
+                size="small"
+              >
+                <GridDeleteIcon />
+              </Button>
+            )}
+            {rowSelectionModel.length > 0 && params.isDeleted && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={restore}
+                size="small"
+              >
+                <RestoreIcon />
+              </Button>
+            )}
+
+            <Divider draggable={false} orientation="vertical" flexItem />
+
+            <TrashButton
+              onClick={(isDeleted) =>
+                setParams({ ...params, isDeleted: isDeleted })
+              }
+            />
+          </Grid2>
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid
+            <PaginatedDataGrid
               columns={columns}
               rows={typeErrors}
-              rowSelection={false}
+              totalCount={totalCount}
+              setParams={setParams}
+              onRowSelectionModelChange={(newRowSelectionModel) => {
+                setRowSelectionModel(newRowSelectionModel);
+              }}
+              loading={loading}
             />
           </Paper>
         </Grid2>
       </Grid2>
+      <PopupConfirm
+        open={openPopupSoftDelete}
+        onClose={() => setOpenPopupsoftDelete(false)}
+        onCancel={handleCancelSoftDelete}
+        onConfirm={handelConfirmSoftDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá, danh sách sẽ được chuyển vào thùng rác."
+        sx={{ width: 450 }}
+      />
+      <PopupConfirm
+        open={openPopupHardDelete}
+        onClose={() => setOpenPopupHardDelete(false)}
+        onCancel={handleCancelHardDelete}
+        onConfirm={handleConfirmHardDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá danh sách sẽ biến mất vĩnh viễn!"
+        sx={{ width: 450 }}
+      />
     </>
   );
 };

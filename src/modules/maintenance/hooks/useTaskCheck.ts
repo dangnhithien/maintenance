@@ -1,45 +1,86 @@
-import { useCallback, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import taskCheckApi from "../apis/taskCheckApi";
+import { CreateTaskCheckDto } from "../datas/taskCheck/CreateTaskCheckDto";
+import { DeleteTaskCheckDto } from "../datas/taskCheck/DeleteTaskCheckDto";
 import { GetTaskCheckDto } from "../datas/taskCheck/GetTaskCheckDto";
-import { TaskCheckDto } from "../datas/taskCheck/TaskCheckDto";
 
-interface Result {
-  taskChecks: TaskCheckDto[];
-  totalCount: number;
-  loading: boolean;
-  error: string | null;
-  fetchTaskChecks: (params?: GetTaskCheckDto) => Promise<void>;
-}
+const KEY = "TaskChecks";
+export const useTaskCheck = (initialParams?: GetTaskCheckDto) => {
+  const queryClient = useQueryClient();
 
-const useTaskCheck = (initialParams?: GetTaskCheckDto): Result => {
-  const [taskChecks, setTaskChecks] = useState<TaskCheckDto[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  // Fetch template checklists
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [KEY, initialParams], // Dynamic queryKey
+    queryFn: () => taskCheckApi.get(initialParams).then((res) => res.result),
+    staleTime: 60000,
+    retry: (failureCount, error) => {
+      const axiosError = error as AxiosError;
+      if (
+        axiosError?.response?.status === 400 ||
+        axiosError?.response?.status === 401
+      ) {
+        return false; // Không retry với lỗi Bad Request hoặc Unauthorized
+      }
+      return failureCount < 3; // Retry với các lỗi khác
+    },
+  });
 
-  // Hàm fetch data từ API
-  const fetchTaskChecks = useCallback(async (params?: GetTaskCheckDto) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await taskCheckApi.get(params || initialParams);
-      setTaskChecks(result?.result?.items); // Set danh sách devices
-      setTotalCount(result?.result.totalCount); // Set tổng số item
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch  type devices");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Function to manually refetch with new params
+  const fetchTaskChecks = (newParams: GetTaskCheckDto) => {
+    queryClient.invalidateQueries({
+      queryKey: [KEY, newParams],
+    });
+  };
 
-  // Tự động fetch khi khởi tạo hook
+  // Create a new checklist
+  const createTaskCheck = useMutation({
+    mutationFn: (newData: CreateTaskCheckDto) => taskCheckApi.post(newData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] }); // Refresh list
+    },
+  });
+
+  // Update a checklist
+  const updateTaskCheck = useMutation({
+    mutationFn: ({
+      id,
+      updatedData,
+    }: {
+      id: string;
+      updatedData: CreateTaskCheckDto;
+    }) => taskCheckApi.update(id, updatedData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  // Delete a checklist
+  const deleteTaskCheck = useMutation({
+    mutationFn: (data: DeleteTaskCheckDto) =>
+      taskCheckApi.delete(data.isHardDeleted, data.ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  const restoreChecklist = useMutation({
+    mutationFn: (ids: string[]) => taskCheckApi.restore(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
 
   return {
-    taskChecks,
-    totalCount,
-    loading,
-    error,
-    fetchTaskChecks,
+    taskChecks: data?.items || [],
+    totalCount: data?.totalCount || 0,
+    loading: isPending,
+    error: isError ? error?.message : null,
+    fetchTaskChecks, // Now accepts params
+    createTaskCheck: createTaskCheck.mutateAsync,
+    updateTaskCheck: updateTaskCheck.mutateAsync,
+    deleteTaskCheck: deleteTaskCheck.mutateAsync,
+    restoreTaskCheck: restoreChecklist.mutateAsync,
   };
 };
 

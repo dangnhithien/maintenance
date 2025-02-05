@@ -42,7 +42,7 @@ const TypeDeviceList = () => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/type-device/create/${params.row.id}`}>
+        <Link to={`/type-device/detail/${params.row.id}`}>
           {params.row.code}
         </Link>
       ),

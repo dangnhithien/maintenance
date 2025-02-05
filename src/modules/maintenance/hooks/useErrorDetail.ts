@@ -1,45 +1,86 @@
-import { useCallback, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import errorDetailApi from "../apis/errorDetailApi";
-import { ErrorDetailDto } from "../datas/errorDetail/ErrorDetailDto";
+import { CreateErrorDetailDto } from "../datas/errorDetail/CreateErrorDetailDto";
+import { DeleteErrorDetailDto } from "../datas/errorDetail/DeleteErrorDetailDto";
 import { GetErrorDetailDto } from "../datas/errorDetail/GetErrorDetailDto";
 
-interface Result {
-  errorDetails: ErrorDetailDto[];
-  totalCount: number;
-  loading: boolean;
-  error: string | null;
-  fetchErrorDetails: (params?: GetErrorDetailDto) => Promise<void>;
-}
+const KEY = "ErrorDetails";
+export const useErrorDetail = (initialParams?: GetErrorDetailDto) => {
+  const queryClient = useQueryClient();
 
-const useErrorDetail = (initialParams?: GetErrorDetailDto): Result => {
-  const [errorDetails, setErrorDetails] = useState<ErrorDetailDto[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  // Fetch template checklists
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [KEY, initialParams], // Dynamic queryKey
+    queryFn: () => errorDetailApi.get(initialParams).then((res) => res.result),
+    staleTime: 60000,
+    retry: (failureCount, error) => {
+      const axiosError = error as AxiosError;
+      if (
+        axiosError?.response?.status === 400 ||
+        axiosError?.response?.status === 401
+      ) {
+        return false; // Không retry với lỗi Bad Request hoặc Unauthorized
+      }
+      return failureCount < 3; // Retry với các lỗi khác
+    },
+  });
 
-  // Hàm fetch data từ API
-  const fetchErrorDetails = useCallback(async (params?: GetErrorDetailDto) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await errorDetailApi.get(params || initialParams);
-      setErrorDetails(result?.result?.items); // Set danh sách devices
-      setTotalCount(result?.result.totalCount); // Set tổng số item
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch  type devices");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Function to manually refetch with new params
+  const fetchErrorDetails = (newParams: GetErrorDetailDto) => {
+    queryClient.invalidateQueries({
+      queryKey: [KEY, newParams],
+    });
+  };
 
-  // Tự động fetch khi khởi tạo hook
+  // Create a new checklist
+  const createErrorDetail = useMutation({
+    mutationFn: (newData: CreateErrorDetailDto) => errorDetailApi.post(newData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] }); // Refresh list
+    },
+  });
+
+  // Update a checklist
+  const updateErrorDetail = useMutation({
+    mutationFn: ({
+      id,
+      updatedData,
+    }: {
+      id: string;
+      updatedData: CreateErrorDetailDto;
+    }) => errorDetailApi.update(id, updatedData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  // Delete a checklist
+  const deleteErrorDetail = useMutation({
+    mutationFn: (data: DeleteErrorDetailDto) =>
+      errorDetailApi.delete(data.isHardDeleted, data.ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  const restoreChecklist = useMutation({
+    mutationFn: (ids: string[]) => errorDetailApi.restore(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
 
   return {
-    errorDetails,
-    totalCount,
-    loading,
-    error,
-    fetchErrorDetails,
+    errorDetails: data?.items || [],
+    totalCount: data?.totalCount || 0,
+    loading: isPending,
+    error: isError ? error?.message : null,
+    fetchErrorDetails, // Now accepts params
+    createErrorDetail: createErrorDetail.mutateAsync,
+    updateErrorDetail: updateErrorDetail.mutateAsync,
+    deleteErrorDetail: deleteErrorDetail.mutateAsync,
+    restoreErrorDetail: restoreChecklist.mutateAsync,
   };
 };
 

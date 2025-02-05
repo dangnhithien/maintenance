@@ -36,6 +36,21 @@ class ErrorDetailApi {
   ): Promise<ApiResponseWithList<ErrorDetailDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
   };
+  restore = async (
+    ids: string[]
+  ): Promise<ApiResponseWithList<ErrorDetailDto>> => {
+    return await axiosInstance.put(`${BASE_URL}/restore`, ids);
+  };
+  delete = async (
+    isHardDeleted: boolean,
+    ids: string[] // Mảng UUIDs
+  ): Promise<ApiResponseWithList<ErrorDetailDto>> => {
+    const params = { isHardDeleted };
+    return await axiosInstance.delete(`${BASE_URL}`, {
+      params: params,
+      data: ids,
+    });
+  };
 }
 
 const errorDetailApi = new ErrorDetailApi();

@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
           <div
             style={{
               position: "absolute",
-              right: "-25px",
+              right: "-24px",
               top: "50%",
               transform: "translateY(-50%)",
               width: 0,
@@ -122,6 +122,14 @@ const Navbar: React.FC = () => {
               sx={{ textTransform: "none" }}
             >
               Thiết bị
+            </Button>
+            <Button
+              component={Link}
+              to="/task-check"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Lịch sử quét
             </Button>
           </Grid2>
         </Grid2>

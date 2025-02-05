@@ -95,7 +95,7 @@ const ErrorDetail: React.FC<Props> = ({ id }) => {
           variant="contained"
           color="primary"
           component={Link}
-          to={`/Error/create/${errorDetail.id}`}
+          to={`/error-detail/create/${errorDetail.id}`}
         >
           Chỉnh sửa
         </Button>

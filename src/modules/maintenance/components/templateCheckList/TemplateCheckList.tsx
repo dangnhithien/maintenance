@@ -147,7 +147,7 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
               variant="contained"
               color="success"
               component={Link}
-              to={"/template-check-list/create/device/" + deviceId}
+              to={"/template-check-list/create"}
               size="small"
             >
               <Add />

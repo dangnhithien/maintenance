@@ -1,3 +1,4 @@
+import { ApiRequest } from "../datas/comon/ApiRequest";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
@@ -26,9 +27,10 @@ class TemplateCheckListApi {
     return await axiosInstance.post(BASE_URL, params);
   };
   getById = async (
-    id: string
+    id: string,
+    params?: ApiRequest
   ): Promise<ApiResponseWithObject<TemplateCheckListDto>> => {
-    return await axiosInstance.get(`${BASE_URL}/${id}`);
+    return await axiosInstance.get(`${BASE_URL}/${id}`, { params: params });
   };
   update = async (
     id: string,

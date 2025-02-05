@@ -1,115 +1,124 @@
 import { CreateRowCheckListDto } from "@modules/maintenance/datas/rowCheckList/CreateRowCheckListDto";
+import { Add } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
-  FormControl,
+  Checkbox,
+  Divider,
   FormControlLabel,
-  FormHelperText,
-  Radio,
-  RadioGroup,
+  FormGroup,
+  Grid2,
+  IconButton,
+  Paper,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import ErrorDetailSelect from "../common/select/ErrorDetailSelect";
+import React from "react";
+import TypeErrorSelect from "../common/select/TypeErrorSelect";
 
-interface Props {
-  data: CreateRowCheckListDto;
+// Row Component – hiển thị dạng card, không có số thứ tự
+interface RowProps {
+  index: number;
+  row: CreateRowCheckListDto;
+  onInputChange: (
+    index: number,
+    field: keyof CreateRowCheckListDto,
+    value: string
+  ) => void;
+  onDelete: (index: number) => void;
+  onAdd: (index: number) => void;
 }
 
-const RowCheck: React.FC<Props> = ({ data }) => {
-  const [checkedTrue, setCheckedTrue] = useState(false);
-  const [checkedFalse, setCheckedFalse] = useState(false);
-  const [note, setNote] = useState("");
-  const [selectedReason, setSelectedReason] = useState("");
-  const [radioError, setRadioError] = useState(false);
-  const [title, setTitle] = useState(data.name);
-  const [titleError, setTitleError] = useState(false);
-
-  useEffect(() => {
-    setRadioError(!checkedTrue && !checkedFalse);
-  }, [checkedTrue, checkedFalse]);
-
-  const handleCheckboxChange = (value: string) => {
-    if (value === "true") {
-      setCheckedTrue(true);
-      setCheckedFalse(false);
-      setNote("");
-      setSelectedReason("");
-    } else {
-      setCheckedTrue(false);
-      setCheckedFalse(true);
-    }
-  };
-
-  const validateTitle = () => {
-    setTitleError(title.trim() === "");
-  };
-
+const RowCheck: React.FC<RowProps> = ({
+  index,
+  row,
+  onInputChange,
+  onDelete,
+  onAdd,
+}) => {
   return (
-    <Box
-      sx={{ mb: 3, p: 2, border: 1, borderColor: "#e0e0e0", borderRadius: 1 }}
-    >
-      <TextField
-        fullWidth
-        variant="outlined"
-        label="Question Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        onBlur={validateTitle}
-        error={titleError}
-        helperText={titleError && "Title is required"}
-        required
-        sx={{ mb: 2 }}
-      />
-
-      <FormControl
-        component="fieldset"
-        required
-        error={radioError}
-        fullWidth
-        sx={{ mb: 2 }}
-      >
-        <RadioGroup
-          row
-          aria-label="status"
-          name="status"
-          value={checkedTrue ? "true" : checkedFalse ? "false" : ""}
-          onChange={(e) => handleCheckboxChange(e.target.value)}
-        >
+    <Paper elevation={3} sx={{ px: 3, marginBottom: 2 }}>
+      {/* Row: Nội dung và nút xóa */}
+      <Box display="flex" alignItems="center" marginBottom={1} pt={1.5}>
+        <TextField
+          value={row.name}
+          onChange={(e) => onInputChange(index, "name", e.target.value)}
+          variant="outlined"
+          fullWidth
+          size="small"
+          color="primary"
+          placeholder="Nhập câu hỏi khảo sát ..."
+          inputProps={{
+            style: {
+              fontSize: 14,
+              paddingTop: 8,
+              paddingBottom: 8,
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { border: "none" },
+              "&:hover fieldset": { border: "none" },
+              "&.Mui-focused fieldset": {
+                border: "1px solid rgba(0, 0, 0, 0.23)",
+              },
+            },
+          }}
+        />
+      </Box>
+      <Box sx={{ px: 3 }}>
+        <FormGroup>
           <FormControlLabel
-            value="true"
-            control={<Radio />}
-            label="Đã kiểm tra"
-            sx={{ mr: 3 }}
+            control={
+              <Checkbox
+                defaultChecked
+                sx={{
+                  padding: "6px",
+                  "& .MuiSvgIcon-root": { fontSize: 20 },
+                }}
+              />
+            }
+            label="Bình thường"
+            sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
           />
-          <FormControlLabel value="false" control={<Radio />} label="Lỗi" />
-        </RadioGroup>
-        {radioError && (
-          <FormHelperText sx={{ ml: 0 }}>
-            Please select an option
-          </FormHelperText>
-        )}
-      </FormControl>
-
-      {checkedFalse && (
-        <>
-          <ErrorDetailSelect />
-
-          <TextField
-            fullWidth
-            variant="outlined"
-            label="Ghi chú"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            required
-            error={!note}
-            helperText={!note && "Note is required when error is selected"}
-            multiline
-            rows={2}
-          />
-        </>
-      )}
-    </Box>
+          <Grid2 container direction={"row"} spacing={1} alignItems="center">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    padding: "6px",
+                    "& .MuiSvgIcon-root": { fontSize: 20 },
+                  }}
+                />
+              }
+              label="Bất thường"
+              sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
+            />
+            <TypeErrorSelect
+              id={row.typeErrorId}
+              onChange={(val) =>
+                onInputChange(index, "typeErrorId", val?.id || "")
+              }
+            />
+          </Grid2>
+        </FormGroup>
+      </Box>
+      <Divider sx={{ width: "100%", mt: 1.5 }} />
+      <Box
+        display="flex"
+        alignItems="center"
+        marginBottom={1}
+        justifyContent={"flex-end"}
+      >
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton onClick={() => onAdd(index)} sx={{ padding: "6px" }}>
+            <Add fontSize="small" />
+          </IconButton>
+          <IconButton onClick={() => onDelete(index)} sx={{ padding: "6px" }}>
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
+    </Paper>
   );
 };
-
 export default RowCheck;

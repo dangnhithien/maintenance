@@ -1,12 +1,17 @@
 import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCheckValueDto";
+import { Add } from "@mui/icons-material";
 import {
-  FormControl,
+  Box,
+  Checkbox,
+  Divider,
   FormControlLabel,
-  FormLabel,
+  FormGroup,
+  Grid2,
+  IconButton,
   Paper,
-  Radio,
   TextField,
 } from "@mui/material";
+import { GridDeleteIcon } from "@mui/x-data-grid";
 import { useState } from "react";
 import ErrorDetailSelect from "../common/select/ErrorDetailSelect";
 interface Props {
@@ -47,56 +52,82 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <Paper elevation={2} sx={{ width: "100%", pt: 3, pb: 4, px: 4 }}>
-      <FormControl component="fieldset" style={{ width: "100%" }}>
-        <FormLabel sx={{ fontWeight: "bold" }}>
-          {data.rowCheckListName}
-        </FormLabel>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "20px",
-            marginTop: "8px",
+    <Paper elevation={3} sx={{ px: 3, marginBottom: 2 }}>
+      {/* Row: Nội dung và nút xóa */}
+      <Box display="flex" alignItems="center" marginBottom={1} pt={1.5}>
+        <TextField
+          value={data.rowCheckListName}
+          variant="outlined"
+          fullWidth
+          size="small"
+          color="primary"
+          placeholder="Nhiệt độ máy hiện tại đang như thế nào( nhiệt độ bình thường? độ C)?"
+          inputProps={{
+            style: {
+              fontSize: 14,
+              paddingTop: 8,
+              paddingBottom: 8,
+            },
           }}
-        >
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { border: "none" },
+              "&:hover fieldset": { border: "none" },
+              "&.Mui-focused fieldset": {
+                border: "1px solid rgba(0, 0, 0, 0.23)",
+              },
+            },
+          }}
+        />
+      </Box>
+      <Box sx={{ px: 3 }}>
+        <FormGroup>
           <FormControlLabel
             control={
-              <Radio
-                checked={!data.errorDetailId}
-                // onChange={() => handleCheckboxChange("true")}
+              <Checkbox
+                defaultChecked
+                sx={{
+                  padding: "6px",
+                  "& .MuiSvgIcon-root": { fontSize: 20 },
+                }}
               />
             }
-            label="Đã kiểm tra"
+            label="Bình thường"
+            sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
           />
-          <FormControlLabel
-            control={
-              <Radio
-                checked={!!data.errorDetailId}
-                // onChange={() => handleCheckboxChange("false")}
-              />
-            }
-            label="Lỗi"
-          />
-          {!!data.errorDetailId && (
-            <ErrorDetailSelect id={data.errorDetailId} isDisabled={true} />
-          )}
-        </div>
-        <div style={{ display: "flex", alignItems: "flex-end" }}>
-          <FormLabel
-            style={{ marginRight: "8px", width: 80, marginBottom: "-5px" }}
-          >
-            Ghi chú
-          </FormLabel>
-          <TextField
-            variant="standard"
-            fullWidth
-            value={note}
-            onChange={handleNoteChange}
-            disabled={true}
-          />
-        </div>
-      </FormControl>
+          <Grid2 container direction={"row"} spacing={1} alignItems="center">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  sx={{
+                    padding: "6px",
+                    "& .MuiSvgIcon-root": { fontSize: 20 },
+                  }}
+                />
+              }
+              label="Bất thường"
+              sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
+            />
+            <ErrorDetailSelect id={data.errorDetailId} />
+          </Grid2>
+        </FormGroup>
+      </Box>
+      <Divider sx={{ width: "100%", mt: 1.5 }} />
+      <Box
+        display="flex"
+        alignItems="center"
+        marginBottom={1}
+        justifyContent={"flex-end"}
+      >
+        <Box display="flex" justifyContent="flex-end">
+          <IconButton sx={{ padding: "6px" }}>
+            <Add fontSize="small" />
+          </IconButton>
+          <IconButton sx={{ padding: "6px" }}>
+            <GridDeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </Box>
     </Paper>
   );
 };

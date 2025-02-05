@@ -1,36 +1,49 @@
-import StyledDataGrid from "@components/StyledDataGrid";
-import { GetDeviceDto } from "@modules/maintenance/datas/device/GetDeviceDto";
-import useDevices from "@modules/maintenance/hooks/useDevice";
-import { Add } from "@mui/icons-material";
-import { Button, Grid2, Paper } from "@mui/material";
-import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import PaginatedDataGrid from "@components/PaginationDatagrid";
+import { GetTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/GetTemplateCheckListDto";
+import useDevice from "@modules/maintenance/hooks/useDevice";
+import { Add, Warning } from "@mui/icons-material";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { Button, Divider, Grid2, Paper } from "@mui/material";
+import {
+  GridColDef,
+  GridDeleteIcon,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
+import { useNotification } from "../common/Notistack";
+import PopupConfirm from "../common/PopupConfirm";
+import TrashButton from "../common/TrashButton";
 
 const DeviceList = () => {
-  const { devices, fetchDevices, error, loading, totalCount } = useDevices({
+  const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
+  const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
+  const { notify } = useNotification();
+  const [params, setParams] = useState<GetTemplateCheckListDto>({
     includeProperties: "TypeDevice",
   });
-  const [params, setParams] = useState<GetDeviceDto>({
-    includeProperties: "TypeDevice",
-  });
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
+
+  const { devices, deleteDevice, restoreDevice, error, loading, totalCount } =
+    useDevice(params);
+
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
       field: "code",
-      headerName: "Mã thiết bị",
-
+      headerName: "Mã",
       editable: false,
       sortable: false,
+      flex: 1,
       renderCell: (params: any) => (
         <Link to={`/device/detail/${params.row.id}`}>{params.row.code}</Link>
       ),
     },
     {
       field: "name",
-      headerName: "Tên thiết bị",
-
+      headerName: "Tên biểu mẫu ",
       editable: false,
       sortable: false,
       flex: 1,
@@ -39,20 +52,74 @@ const DeviceList = () => {
       ),
     },
     {
-      field: "typeDevice",
-      headerName: "Loại thiết bị",
+      field: "",
+      headerName: "Thiết bị",
+      minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
-      renderCell: (params: GridRenderCellParams) => (
-        <>{params.row.typeDevice?.name}</>
+      renderCell: (params: any) => (
+        <Link to={`/device/detail/${params.row.id}`}>
+          {params.row.device?.name}
+        </Link>
       ),
     },
+    {
+      field: "date",
+      headerName: "Ngày tạo",
+      minWidth: 300,
+      editable: false,
+      sortable: false,
+      flex: 1,
+    },
   ];
-  useEffect(() => {
-    fetchDevices(params);
-  }, [params]);
 
+  const handleCancelSoftDelete = () => {
+    setOpenPopupsoftDelete(false);
+  };
+  const handleCancelHardDelete = () => {
+    setOpenPopupHardDelete(false);
+  };
+
+  const onSoftDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupsoftDelete(true);
+    }
+  };
+  const onHardDelete = () => {
+    if (rowSelectionModel.length > 0) {
+      setOpenPopupHardDelete(true);
+    }
+  };
+  const handelConfirmSoftDelete = async () => {
+    await deleteDevice({
+      isHardDeleted: false,
+      ids: rowSelectionModel as string[],
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupsoftDelete(false);
+      })
+      .catch(() => {});
+  };
+  const handleConfirmHardDelete = async () => {
+    await deleteDevice({
+      isHardDeleted: true,
+      ids: rowSelectionModel as string[],
+    })
+      .then(() => {
+        notify("success", "success");
+        setOpenPopupHardDelete(false);
+      })
+      .catch(() => {});
+  };
+  const restore = async () => {
+    await restoreDevice(rowSelectionModel as string[])
+      .then(() => {
+        notify("success", "success");
+      })
+      .catch(() => {});
+  };
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
@@ -62,26 +129,81 @@ const DeviceList = () => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          <Button
-            variant="contained"
-            color="success"
-            component={Link} // Kết hợp Button với Link từ react-router-dom
-            to="/device/create" // Đường dẫn liên kết
-            size="small"
-          >
-            <Add />
-          </Button>
+          <Grid2 container spacing={1}>
+            <Button
+              variant="contained"
+              color="success"
+              component={Link}
+              to={"/device/create"}
+              size="small"
+            >
+              <Add />
+            </Button>
+            {rowSelectionModel.length > 0 && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
+                size="small"
+              >
+                <GridDeleteIcon />
+              </Button>
+            )}
+            {rowSelectionModel.length > 0 && params.isDeleted && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={restore}
+                size="small"
+              >
+                <RestoreIcon />
+              </Button>
+            )}
+
+            <Divider draggable={false} orientation="vertical" flexItem />
+
+            <TrashButton
+              onClick={(isDeleted) =>
+                setParams({ ...params, isDeleted: isDeleted })
+              }
+            />
+          </Grid2>
         </Grid2>
         <Grid2>
           <Paper sx={{ p: 2 }}>
-            <StyledDataGrid
+            <PaginatedDataGrid
               columns={columns}
               rows={devices}
-              rowSelection={false}
+              totalCount={totalCount}
+              setParams={setParams}
+              onRowSelectionModelChange={(newRowSelectionModel) => {
+                setRowSelectionModel(newRowSelectionModel);
+              }}
+              loading={loading}
             />
           </Paper>
         </Grid2>
       </Grid2>
+      <PopupConfirm
+        open={openPopupSoftDelete}
+        onClose={() => setOpenPopupsoftDelete(false)}
+        onCancel={handleCancelSoftDelete}
+        onConfirm={handelConfirmSoftDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá, danh sách sẽ được chuyển vào thùng rác."
+        sx={{ width: 450 }}
+      />
+      <PopupConfirm
+        open={openPopupHardDelete}
+        onClose={() => setOpenPopupHardDelete(false)}
+        onCancel={handleCancelHardDelete}
+        onConfirm={handleConfirmHardDelete}
+        icon={<Warning fontSize="large" color="warning" />}
+        message="Bạn có chắc chắn muốn xóa?"
+        subMessage="Sau khi xoá danh sách sẽ biến mất vĩnh viễn!"
+        sx={{ width: 450 }}
+      />
     </>
   );
 };

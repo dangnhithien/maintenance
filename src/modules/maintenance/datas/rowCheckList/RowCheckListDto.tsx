@@ -9,7 +9,7 @@ export interface RowCheckListDto {
   typeErrorId: string;
   typeErrorCode: string;
   typeError?: TypeErrorDto;
-  templateCheckListId: string;
-  templateCheckListCode: string;
-  templateCheckList?: TemplateCheckListDto;
+  templateCheckId: string;
+  templateCheckCode: string;
+  templateChecks?: TemplateCheckListDto;
 }

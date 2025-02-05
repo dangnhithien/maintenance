@@ -119,6 +119,7 @@ const TypeDeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   size="small"
                   error={!!errors.code}
                   helperText={errors.code?.message}
+                  disabled={!!id}
                 />
               )}
             />

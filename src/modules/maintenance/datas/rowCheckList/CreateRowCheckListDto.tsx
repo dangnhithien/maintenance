@@ -3,5 +3,5 @@ export interface CreateRowCheckListDto {
   name: string;
   description?: string;
   typeErrorId: string;
-  templateCheckListId: string;
+  templateCheckId: string;
 }

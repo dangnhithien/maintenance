@@ -12,16 +12,10 @@ const TypeErrorCreateUpdatePage = () => {
         Danh sách loại lỗi
       </span>
     </Link>,
-    <Link
-      key="2"
-      underline="none"
-      component={RouterLink}
-      to="/type-error/create"
-    >
-      <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        Tạo mới
-      </span>
-    </Link>,
+
+    <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
+      Tạo mới
+    </span>,
   ];
 
   return (

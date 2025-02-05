@@ -24,7 +24,7 @@ const DeviceDetail: React.FC<Props> = ({ id }) => {
   useEffect(() => {
     if (id) {
       deviceApi
-        .getById(id)
+        .getById(id, { includeProperties: "TypeDevice" })
         .then((res) => setDevice(res.result)) // Cập nhật chi tiết sản phẩm
         .catch((err) => {
           const { message } = unwrapError(err);
@@ -76,6 +76,16 @@ const DeviceDetail: React.FC<Props> = ({ id }) => {
           </Grid2>
           <Grid2>
             <Typography variant="body1">{device.name}</Typography>
+          </Grid2>
+        </Grid2>
+        <Grid2 size={3} direction={"column"}>
+          <Grid2>
+            <Typography variant="body1">
+              <strong>Loại thiết bị</strong>
+            </Typography>
+          </Grid2>
+          <Grid2>
+            <Typography variant="body1">{device.typeDevice?.name}</Typography>
           </Grid2>
         </Grid2>
         <Grid2 size={3} direction={"column"}>

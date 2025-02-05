@@ -1,45 +1,86 @@
-import { useCallback, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import typeErrorApi from "../apis/typeErrorApi";
+import { CreateTypeErrorDto } from "../datas/typeError/CreateTypeErrorDto";
+import { DeleteTypeErrorDto } from "../datas/typeError/DeleteTypeErrorDto";
 import { GetTypeErrorDto } from "../datas/typeError/GetTypeErrorDto";
-import { TypeErrorDto } from "../datas/typeError/TypeErrorDto";
 
-interface Result {
-  typeErrors: TypeErrorDto[];
-  totalCount: number;
-  loading: boolean;
-  error: string | null;
-  fetchTypeErrors: (params?: GetTypeErrorDto) => Promise<void>;
-}
+const KEY = "typeErrors";
+export const useTypeError = (initialParams?: GetTypeErrorDto) => {
+  const queryClient = useQueryClient();
 
-const useTypeError = (initialParams?: GetTypeErrorDto): Result => {
-  const [typeErrors, setTypeErrors] = useState<TypeErrorDto[]>([]);
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  // Fetch template checklists
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [KEY, initialParams], // Dynamic queryKey
+    queryFn: () => typeErrorApi.get(initialParams).then((res) => res.result),
+    staleTime: 60000,
+    retry: (failureCount, error) => {
+      const axiosError = error as AxiosError;
+      if (
+        axiosError?.response?.status === 400 ||
+        axiosError?.response?.status === 401
+      ) {
+        return false; // Không retry với lỗi Bad Request hoặc Unauthorized
+      }
+      return failureCount < 3; // Retry với các lỗi khác
+    },
+  });
 
-  // Hàm fetch data từ API
-  const fetchTypeErrors = useCallback(async (params?: GetTypeErrorDto) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await typeErrorApi.get(params || initialParams);
-      setTypeErrors(result?.result?.items); // Set danh sách devices
-      setTotalCount(result?.result.totalCount); // Set tổng số item
-    } catch (err: any) {
-      setError(err.message || "Failed to fetch  type devices");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Function to manually refetch with new params
+  const fetchTypeErrors = (newParams: GetTypeErrorDto) => {
+    queryClient.invalidateQueries({
+      queryKey: [KEY, newParams],
+    });
+  };
 
-  // Tự động fetch khi khởi tạo hook
+  // Create a new checklist
+  const createTypeError = useMutation({
+    mutationFn: (newData: CreateTypeErrorDto) => typeErrorApi.post(newData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] }); // Refresh list
+    },
+  });
+
+  // Update a checklist
+  const updateTypeError = useMutation({
+    mutationFn: ({
+      id,
+      updatedData,
+    }: {
+      id: string;
+      updatedData: CreateTypeErrorDto;
+    }) => typeErrorApi.update(id, updatedData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  // Delete a checklist
+  const deleteTypeError = useMutation({
+    mutationFn: (data: DeleteTypeErrorDto) =>
+      typeErrorApi.delete(data.isHardDeleted, data.ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  const restoreChecklist = useMutation({
+    mutationFn: (ids: string[]) => typeErrorApi.restore(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
 
   return {
-    typeErrors,
-    totalCount,
-    loading,
-    error,
-    fetchTypeErrors,
+    typeErrors: data?.items || [],
+    totalCount: data?.totalCount || 0,
+    loading: isPending,
+    error: isError ? error?.message : null,
+    fetchTypeErrors, // Now accepts params
+    createTypeError: createTypeError.mutateAsync,
+    updateTypeError: updateTypeError.mutateAsync,
+    deleteTypeError: deleteTypeError.mutateAsync,
+    restoreTypeError: restoreChecklist.mutateAsync,
   };
 };
 

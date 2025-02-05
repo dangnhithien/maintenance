@@ -38,6 +38,21 @@ class TaskCheckApi {
   ): Promise<ApiResponseWithList<TaskCheckDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
   };
+  restore = async (
+    ids: string[]
+  ): Promise<ApiResponseWithList<TaskCheckDto>> => {
+    return await axiosInstance.put(`${BASE_URL}/restore`, ids);
+  };
+  delete = async (
+    isHardDeleted: boolean,
+    ids: string[] // Mảng UUIDs
+  ): Promise<ApiResponseWithList<TaskCheckDto>> => {
+    const params = { isHardDeleted };
+    return await axiosInstance.delete(`${BASE_URL}`, {
+      params: params,
+      data: ids,
+    });
+  };
 }
 
 const taskCheckApi = new TaskCheckApi();

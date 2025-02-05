@@ -5,7 +5,6 @@ import {
 import { CreateRowCheckValueDto } from "../datas/rowCheckValue/CreateRowCheckValueDto";
 import { GetRowCheckValueDto } from "../datas/rowCheckValue/GetRowCheckValueDto";
 import { RowCheckValueDto } from "../datas/rowCheckValue/RowCheckValueDto";
-import { TemplateCheckListDto } from "../datas/templateCheckList/TemplateCheckListDto";
 import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
@@ -34,8 +33,23 @@ class RowCheckValueApi {
   update = async (
     id: string,
     params: CreateRowCheckValueDto
-  ): Promise<ApiResponseWithList<TemplateCheckListDto>> => {
+  ): Promise<ApiResponseWithList<RowCheckValueDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
+  };
+  restore = async (
+    ids: string[]
+  ): Promise<ApiResponseWithList<RowCheckValueDto>> => {
+    return await axiosInstance.put(`${BASE_URL}/restore`, ids);
+  };
+  delete = async (
+    isHardDeleted: boolean,
+    ids: string[] // Mảng UUIDs
+  ): Promise<ApiResponseWithList<RowCheckValueDto>> => {
+    const params = { isHardDeleted };
+    return await axiosInstance.delete(`${BASE_URL}`, {
+      params: params,
+      data: ids,
+    });
   };
 }
 

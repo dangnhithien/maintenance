@@ -7,6 +7,6 @@ export interface SolutionOptionDto {
   description?: string;
   errorDetailId: string;
   errorDetailCode: string;
-  errorDetail: ErrorDetailDto;
+  errorDetail?: ErrorDetailDto;
   isDeleted: boolean;
 }

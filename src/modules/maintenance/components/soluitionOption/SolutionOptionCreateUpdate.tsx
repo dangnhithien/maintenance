@@ -124,6 +124,7 @@ const SolutionOptionCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   size="small"
                   error={!!errors.code}
                   helperText={errors.code?.message}
+                  disabled={!!id}
                 />
               )}
             />
@@ -185,6 +186,7 @@ const SolutionOptionCreateUpdate: React.FC<FormProps> = ({ id }) => {
               }}
               render={({ field }) => (
                 <ErrorDetailSelect
+                  id={field?.value}
                   onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
                 />
               )}
