@@ -46,8 +46,8 @@ const RowCheck: React.FC<RowProps> = ({
         justifyContent={"space-between"}
       >
         <TextField
-          value={row.name || ""}
-          onChange={(e) => onInputChange(index, "name", e.target.value)}
+          value={row.content || ""}
+          onChange={(e) => onInputChange(index, "content", e.target.value)}
           variant="outlined"
           fullWidth
           size="small"

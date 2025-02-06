@@ -4,7 +4,10 @@ import {
   ApiResponseWithObject,
 } from "../datas/comon/ApiResponse";
 import { GetDeviceDto } from "../datas/device/GetDeviceDto";
-import { CreateTaskCheckDto } from "../datas/taskCheck/CreateTaskCheckDto";
+import {
+  CreateTaskCheckDto,
+  UpdateTaskCheckDto,
+} from "../datas/taskCheck/CreateTaskCheckDto";
 import { TaskCheckDto } from "../datas/taskCheck/TaskCheckDto";
 import axiosInstance from "./axiosInstance";
 
@@ -37,6 +40,12 @@ class TaskCheckApi {
     params: CreateTaskCheckDto
   ): Promise<ApiResponseWithList<TaskCheckDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
+  };
+  updateStatus = async (
+    id: string,
+    params: UpdateTaskCheckDto
+  ): Promise<ApiResponseWithList<TaskCheckDto>> => {
+    return await axiosInstance.put(`${BASE_URL}/update-status/${id}`, params);
   };
   restore = async (
     ids: string[]

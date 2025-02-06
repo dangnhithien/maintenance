@@ -2,8 +2,8 @@ import { RowCheckListDto } from "../rowCheckList/RowCheckListDto";
 
 export interface RowCheckValueDto {
   id?: string;
-  rowCheckListName?: string;
-  rowCheckListDescription?: string | null;
+  rowCheckContent?: string;
+  rowCheckDescription?: string | null;
   errorDetailContent?: string;
   solutionOptionName?: string;
   solutionOptionDescription?: string;
@@ -20,4 +20,5 @@ export interface RowCheckValueDto {
   solutionOptionCode?: string;
   solutionOption?: any | null;
   rowCheckList?: RowCheckListDto;
+  note?: string;
 }

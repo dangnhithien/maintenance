@@ -1,4 +1,5 @@
 import PaginatedDataGrid from "@components/PaginationDatagrid";
+import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusTaskCheck";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
@@ -11,13 +12,14 @@ import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
 import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 
-const TaskCheckList = () => {
+const Approval = () => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
     includeProperties: "TemplateCheck",
     takeCount: 5,
+    taskCheckStatus: EnumStatusTaskCheck.WAITING,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
@@ -40,9 +42,7 @@ const TaskCheckList = () => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.code}
-        </Link>
+        <Link to={`/approval/${params.row.id}`}>{params.row.code}</Link>
       ),
     },
 
@@ -52,9 +52,11 @@ const TaskCheckList = () => {
       minWidth: 300,
       editable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
+        <Link to={`/approval/${params.row.id}`}>
           {params.row.templateCheck?.name}
         </Link>
       ),
@@ -70,15 +72,23 @@ const TaskCheckList = () => {
       ),
     },
     {
+      field: "createdBy",
+      headerName: "Người tạo",
+      editable: false,
+      sortable: false,
+      flex: 1,
+    },
+    {
       field: "checkTime",
       headerName: "Thời gian ",
       editable: false,
       sortable: false,
       flex: 1,
     },
+
     {
-      field: "createdBy",
-      headerName: "Người tạo",
+      field: "note",
+      headerName: "Ghi chú",
       editable: false,
       sortable: false,
       flex: 1,
@@ -219,4 +229,4 @@ const TaskCheckList = () => {
   );
 };
 
-export default TaskCheckList;
+export default Approval;

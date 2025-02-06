@@ -42,8 +42,8 @@ const ProductDetailPage = () => {
         {breadcrumbs}
       </Breadcrumbs>
       <ProductDetail id={id} />
-      <Wrapper title="Danh sách phiếu khảo sát">
-        <TaskCheckList deviceId={id} />
+      <Wrapper title="Lịch sử quét" sx={{ mt: 2 }}>
+        <TaskCheckList />
       </Wrapper>
     </div>
   );

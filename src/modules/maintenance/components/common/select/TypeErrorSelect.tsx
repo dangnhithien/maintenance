@@ -26,7 +26,7 @@ const TypeErrorSelect: React.FC<AsyncPaginateSelectProps> = ({
         })
         .catch((err) => {});
     }
-  }, []);
+  }, [id]);
 
   const handleChange = (val: TypeErrorDto | null) => {
     setInternalValue(val);

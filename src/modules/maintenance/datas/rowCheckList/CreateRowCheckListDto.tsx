@@ -1,6 +1,6 @@
 export interface CreateRowCheckListDto {
   code: string;
-  name: string;
+  content: string;
   description?: string;
   typeErrorId: string;
   templateCheckId: string;

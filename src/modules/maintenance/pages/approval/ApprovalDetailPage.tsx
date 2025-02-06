@@ -1,30 +1,20 @@
+import ApprovalDetail from "@modules/maintenance/components/approval/ApprovalDetail";
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Container, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
-const TaskCheckDetailPage = () => {
+const ApprovalDetailPage = () => {
   const { id } = useParams();
-
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    navigate(-1); // Trở lại trang trước đó
-  };
   const breadcrumbs = [
-    <Link
-      key="1"
-      underline="none"
-      component={RouterLink}
-      to=""
-      onClick={goBack}
-    >
+    <Link key="1" underline="none" component={RouterLink} to="/approval">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Lịch sử quét
+        Danh sách cần duyệt
       </span>
     </Link>,
-    <Link key="2" underline="none" component={RouterLink} to="">
+    <Link key="2" underline="none" component={RouterLink} to="#">
       <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
         Chi tiết
       </span>
@@ -34,8 +24,8 @@ const TaskCheckDetailPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Create Device</title>
-        <meta name="description" content="Create a new device" />
+        <title>Chi tiết</title>
+        <meta name="description" content="Chi tiết" />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -48,9 +38,12 @@ const TaskCheckDetailPage = () => {
       </Breadcrumbs>
       <Container>
         <TaskCheckDetail id={id} />
+        <Wrapper sx={{ mt: 1 }}>
+          <ApprovalDetail id={id} />
+        </Wrapper>
       </Container>
     </div>
   );
 };
 
-export default TaskCheckDetailPage;
+export default ApprovalDetailPage;

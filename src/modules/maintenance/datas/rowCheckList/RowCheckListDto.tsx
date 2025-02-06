@@ -4,7 +4,7 @@ import { TypeErrorDto } from "../typeError/TypeErrorDto";
 export interface RowCheckListDto {
   id: string;
   code: string;
-  name: string;
+  content: string;
   description?: string;
   typeErrorId: string;
   typeErrorCode: string;

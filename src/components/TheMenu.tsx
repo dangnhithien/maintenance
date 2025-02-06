@@ -27,41 +27,43 @@ const Navbar: React.FC = () => {
       }}
     >
       <Grid2 container direction={"row"}>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            backgroundColor: "white",
-            height: "70px",
-            padding: "0 20px",
-            display: "flex",
-            alignItems: "center",
-            position: "relative",
-            overflow: "visible",
-            marginRight: "25px",
-          }}
-        >
-          <img
-            src="http://report.vmsco.com.vn/assets/logo-vms-Byn70t6I.webp"
-            alt="Logo"
-            style={{ height: "40px" }}
-          />
-
-          {/* Tam giác separator trắng */}
-          <div
-            style={{
-              position: "absolute",
-              right: "-24px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 0,
-              height: 0,
-              borderTop: "35px solid transparent", // 50% chiều cao container
-              borderBottom: "35px solid transparent", // 50% chiều cao container
-              borderLeft: "25px solid white",
+        <Link to="/">
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              backgroundColor: "white",
+              height: "70px",
+              padding: "0 20px",
+              display: "flex",
+              alignItems: "center",
+              position: "relative",
+              overflow: "visible",
+              marginRight: "25px",
             }}
-          />
-        </Typography>
+          >
+            <img
+              src="http://report.vmsco.com.vn/assets/logo-vms-Byn70t6I.webp"
+              alt="Logo"
+              style={{ height: "40px" }}
+            />
+
+            {/* Tam giác separator trắng */}
+            <div
+              style={{
+                position: "absolute",
+                right: "-24px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: 0,
+                height: 0,
+                borderTop: "35px solid transparent", // 50% chiều cao container
+                borderBottom: "35px solid transparent", // 50% chiều cao container
+                borderLeft: "25px solid white",
+              }}
+            />
+          </Typography>
+        </Link>
 
         {/* Phần menu */}
         <Grid2
@@ -84,7 +86,7 @@ const Navbar: React.FC = () => {
               sx={{ textTransform: "none" }}
               onClick={handleClick}
             >
-              Cấu hình
+              Danh mục
             </Button>
             <Menu
               anchorEl={anchorEl}
@@ -98,6 +100,12 @@ const Navbar: React.FC = () => {
               >
                 Loại thiết bị
               </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/device">
+                Nhóm thiết bị
+              </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/product">
+                Thiết bị
+              </MenuItem>
               <MenuItem
                 onClick={handleClose}
                 component={Link}
@@ -105,9 +113,7 @@ const Navbar: React.FC = () => {
               >
                 Danh sách biểu mẫu
               </MenuItem>
-              <MenuItem onClick={handleClose} component={Link} to="/device">
-                Nhóm thiết bị
-              </MenuItem>
+
               <MenuItem onClick={handleClose} component={Link} to="/type-error">
                 Loại lỗi
               </MenuItem>
@@ -125,9 +131,6 @@ const Navbar: React.FC = () => {
               >
                 Giải pháp
               </MenuItem>
-              <MenuItem onClick={handleClose} component={Link} to="/product">
-                Thiết bị
-              </MenuItem>
             </Menu>
             <Button
               component={Link}
@@ -136,6 +139,14 @@ const Navbar: React.FC = () => {
               sx={{ textTransform: "none" }}
             >
               Lịch sử quét
+            </Button>
+            <Button
+              component={Link}
+              to="/approval"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Danh sách duyệt
             </Button>
           </Grid2>
         </Grid2>

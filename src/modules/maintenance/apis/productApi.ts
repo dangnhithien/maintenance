@@ -1,3 +1,4 @@
+import { ApiRequest } from "../datas/comon/ApiRequest";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
@@ -29,9 +30,13 @@ class ProductApi {
       },
     });
   };
-  getById = async (id: string): Promise<ApiResponseWithObject<ProductDto>> => {
-    return await axiosInstance.get(`${BASE_URL}/${id}`);
+  getById = async (
+    id: string,
+    params?: ApiRequest
+  ): Promise<ApiResponseWithObject<ProductDto>> => {
+    return await axiosInstance.get(`${BASE_URL}/${id}`, { params: params });
   };
+
   update = async (
     id: string,
     params: CreateProductDto

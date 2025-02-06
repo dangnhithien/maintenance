@@ -25,7 +25,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
   useEffect(() => {
     if (id) {
       productApi
-        .getById(id)
+        .getById(id, { includeProperties: "Device" })
         .then((res) => setProduct(res.result)) // Cập nhật chi tiết sản phẩm
         .catch((err) => {
           const { message } = unwrapError(err);
@@ -52,11 +52,10 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
       </Paper>
     );
   }
-
   return (
     <Paper sx={{ p: 3 }}>
       <Typography variant="h6" color="primary" fontWeight="bold" mb={2}>
-        Chi tiết loại sản phẩm
+        Chi tiết
       </Typography>
       <Grid2 container spacing={2}>
         <Grid2 size={3} direction={"column"}>
@@ -77,18 +76,6 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
           </Grid2>
           <Grid2>
             <Typography variant="body1">{product.device?.name}</Typography>
-          </Grid2>
-        </Grid2>
-        <Grid2 size={3} direction={"column"}>
-          <Grid2>
-            <Typography variant="body1">
-              <strong>Mô tả</strong>
-            </Typography>
-          </Grid2>
-          <Grid2>
-            <Typography variant="body1">
-              {product.device?.description}
-            </Typography>
           </Grid2>
         </Grid2>
       </Grid2>

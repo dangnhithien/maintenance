@@ -17,18 +17,16 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
-import TypeDeviceSelect from "../common/select/TypeDeviceSelect";
+import DeviceSelect from "../common/select/DeviceSelect";
 
-// Định nghĩa schema validation với Yup
+// Cập nhật schema validation: imageQR là string
 const schema = yup.object({
-  qrCode: yup.string().required("Name is required"),
-  imageQR: yup.string().required("Code is required"),
+  qrCode: yup.string(),
+  imageQR: yup.string().required("Image is required"),
   deviceId: yup.string().required("Type device is required"),
   serialNumber: yup.string().required("Type device is required"),
   note: yup.string().max(255, "Description must be under 255 characters"),
 });
-
-// Định nghĩa kiểu dữ liệu của form
 
 interface FormProps {
   id?: string; // Chỉ nhận vào id
@@ -55,8 +53,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { notify } = useNotification();
 
-  // Fetch dữ liệu từ id
-
+  // Fetch dữ liệu từ id nếu có
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -72,7 +69,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, []);
+  }, [id, notify, reset]);
 
   const onSubmit = async (data: CreateProductDto) => {
     setLoading(true);
@@ -127,6 +124,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
               )}
             />
           </Grid2>
+          {/* Cập nhật trường imageQR: sử dụng input file và chuyển đổi file thành chuỗi */}
           <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
@@ -138,13 +136,28 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
               name="imageQR"
               control={control}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  size="small"
-                  error={!!errors.imageQR}
-                  helperText={errors.imageQR?.message}
-                />
+                <>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          // Chuyển file thành chuỗi Base64
+                          field.onChange(reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  {errors.imageQR && (
+                    <Typography color="error" variant="caption">
+                      {errors.imageQR.message}
+                    </Typography>
+                  )}
+                </>
               )}
             />
           </Grid2>
@@ -192,7 +205,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
           <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Loại thiết bị
+                Nhóm thiết bị
               </Typography>
               <Typography color="error">*</Typography>
             </Stack>
@@ -200,11 +213,12 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
               name="deviceId"
               control={control}
               rules={{
-                required: "Please select a device type", // Validate bắt buộc
+                required: "Please select a device type",
               }}
               render={({ field }) => (
-                <TypeDeviceSelect
-                  onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
+                <DeviceSelect
+                  id={field?.value}
+                  onChange={(value) => field.onChange(value?.id)}
                 />
               )}
             />

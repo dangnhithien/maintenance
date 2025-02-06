@@ -1,15 +1,21 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Theme } from "@emotion/react";
+import { Box, Paper, SxProps, Typography } from "@mui/material";
 import React, { PropsWithChildren } from "react";
 
 interface Props {
-  title: string;
+  title?: string;
   subtitle?: string; // Thêm phụ đề tùy chọn
   actions?: React.ReactNode; // Thêm khu vực hành động (nút hoặc link)
+  sx?: SxProps<Theme>;
 }
 
-const Wrapper: React.FC<PropsWithChildren<Props>> = ({ title, children }) => {
+const Wrapper: React.FC<PropsWithChildren<Props>> = ({
+  title,
+  children,
+  sx,
+}) => {
   return (
-    <Paper sx={{ p: 3, mt: 3, borderRadius: 2, boxShadow: 3 }}>
+    <Paper sx={{ p: 2, width: "100%", height: "100%", ...sx }}>
       <Box
         sx={{
           display: "flex",
@@ -18,11 +24,13 @@ const Wrapper: React.FC<PropsWithChildren<Props>> = ({ title, children }) => {
           mb: 2,
         }}
       >
-        <Box>
-          <Typography variant="h6" color="primary" fontWeight="bold" mb={2}>
-            {title}
-          </Typography>
-        </Box>
+        {title && (
+          <Box>
+            <Typography variant="h6" color="primary" fontWeight="bold">
+              {title}
+            </Typography>
+          </Box>
+        )}
       </Box>
       <Box>{children}</Box>
     </Paper>

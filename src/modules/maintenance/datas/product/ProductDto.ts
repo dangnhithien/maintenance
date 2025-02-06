@@ -6,6 +6,6 @@ export interface ProductDto {
   qrCode: string;
   deviceId: string;
   deviceCode: string;
-  device: DeviceDto;
+  device?: DeviceDto;
   imageQR: string;
 }

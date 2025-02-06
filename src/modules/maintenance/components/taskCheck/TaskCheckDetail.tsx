@@ -6,15 +6,7 @@ import {
 } from "@modules/maintenance/datas/comon/ApiResponse";
 import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCheckValueDto";
 import { TaskCheckDto } from "@modules/maintenance/datas/taskCheck/TaskCheckDto";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import {
-  Avatar,
-  Box,
-  Container,
-  Grid2,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Grid2, Paper, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import RowCheckValue from "../survey/RowCheckValue";
 interface Props {
@@ -24,8 +16,8 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
   const [rowCheckValues, setRowCheckValues] = useState<RowCheckValueDto[]>([
     {
       id: "1",
-      rowCheckListName: "Kiểm tra động cơ",
-      rowCheckListDescription: "Kiểm tra tình trạng động cơ trước khi vận hành",
+      rowCheckContent: "Kiểm tra động cơ",
+      rowCheckDescription: "Kiểm tra tình trạng động cơ trước khi vận hành",
       errorDetailContent: "Động cơ phát ra tiếng ồn bất thường",
       solutionOptionName: "Bảo trì động cơ",
       solutionOptionDescription:
@@ -48,8 +40,8 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
     },
     {
       id: "2",
-      rowCheckListName: "Kiểm tra hệ thống điện",
-      rowCheckListDescription: "Đánh giá tình trạng dây điện và kết nối",
+      rowCheckContent: "Kiểm tra hệ thống điện",
+      rowCheckDescription: "Đánh giá tình trạng dây điện và kết nối",
       errorDetailContent: "Dây điện bị đứt",
       solutionOptionName: "Thay dây điện",
       solutionOptionDescription: "Thay thế dây điện bị hỏng bằng dây mới",
@@ -71,8 +63,8 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
     },
     {
       id: "3",
-      rowCheckListName: "Kiểm tra áp suất dầu",
-      rowCheckListDescription: "Đánh giá áp suất dầu trong hệ thống thủy lực",
+      rowCheckContent: "Kiểm tra áp suất dầu",
+      rowCheckDescription: "Đánh giá áp suất dầu trong hệ thống thủy lực",
       errorDetailContent: "Áp suất dầu thấp hơn mức cho phép",
       solutionOptionName: "Nạp dầu bổ sung",
       solutionOptionDescription:
@@ -105,7 +97,7 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
         })
         .catch((err) => {});
       taskCheckApi
-        .getById(id, { includeProperties: "TemplateCheckList" })
+        .getById(id, { includeProperties: "TemplateCheck" })
         .then(unwrapObjectReponse)
         .then((res) => {
           setTaskCheck(res);
@@ -115,78 +107,52 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
   }, []);
   return (
     <Grid2 container spacing={1}>
-      <Container>
-        <Paper sx={{ width: "100%", py: 2, px: 4, mb: 1 }}>
-          <Grid2 size={12}>
-            <Typography
-              variant="h5"
-              sx={{ textAlign: "justify", lineHeight: 1.6 }}
-              fontWeight="bold"
-            >
-              {taskCheck?.templateCheckList?.name}
-            </Typography>
+      <Paper sx={{ p: 2, width: "100%" }}>
+        <Typography variant="body1" fontWeight={"bold"} color="primary">
+          Thông tin thiết bị
+        </Typography>
+        <Grid2 container spacing={2} sx={{ marginTop: 2 }}>
+          <Grid2 size={3}>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                Mã
+              </Typography>
+              <Typography color="error">*</Typography>
+            </Stack>
+            <Typography>{taskCheck?.templateCheck?.code}</Typography>
           </Grid2>
-
-          <Grid2 container size={12} direction="row" flexWrap="nowrap">
-            {/* Employee Info */}
-            <Grid2 container size={6} alignItems="center" spacing={1}>
-              <Grid2>
-                <Avatar
-                  alt="Nhân viên Nguyễn Văn A"
-                  src="https://tranhincanvas.com/uploads/images/H%C3%ACnh%20trong%20b%C3%A0i%20h%E1%BB%8Da%20s%C4%A9%20phung%20huyen/20.jpg"
-                  sx={{ width: 32, height: 32 }}
-                />
-              </Grid2>
-              <Grid2>
-                <Box>
-                  <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    sx={{ fontSize: "0.875rem" }}
-                  >
-                    Nhân viên
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ fontSize: "0.75rem" }}
-                  >
-                    Nguyễn Văn A
-                  </Typography>
-                </Box>
-              </Grid2>
-            </Grid2>
-
-            {/* Calendar Info */}
-            <Grid2 container size={6} alignItems="center" spacing={1}>
-              <Grid2>
-                <CalendarMonthIcon
-                  sx={{ width: 32, height: 32 }}
-                  color="primary"
-                />
-              </Grid2>
-              <Grid2>
-                <Box>
-                  <Typography
-                    variant="body1"
-                    fontWeight="bold"
-                    sx={{ fontSize: "0.875rem" }}
-                  >
-                    Ngày kiểm tra
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ fontSize: "0.75rem" }}
-                  >
-                    {taskCheck?.checkTime.toString()}
-                  </Typography>
-                </Box>
-              </Grid2>
-            </Grid2>
+          <Grid2 size={3}>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                Tên
+              </Typography>
+              <Typography color="error">*</Typography>
+            </Stack>
+            <Typography>{taskCheck?.templateCheck?.name}</Typography>
           </Grid2>
-        </Paper>
+          <Grid2 size={3}>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                Mô tả
+              </Typography>
+              <Typography sx={{ color: "white" }}>*</Typography>
+            </Stack>
+            <Typography>{taskCheck?.templateCheck?.description}</Typography>
+          </Grid2>
+          <Grid2 size={3}>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                Thiết bị
+              </Typography>
+              <Typography color="error">*</Typography>
+            </Stack>
+            <Typography>{taskCheck?.templateCheck?.name}</Typography>
+          </Grid2>
+        </Grid2>
+        <Grid2 sx={{ mt: 2 }}></Grid2>
+      </Paper>
 
+      <Paper sx={{ p: 2, width: "100%" }}>
         <Grid2 container size={12} spacing={1} direction={"column"}>
           {rowCheckValues.map((rowCheckValue, index) => (
             <Grid2 key={index} size={12} spacing={1}>
@@ -194,13 +160,13 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
             </Grid2>
           ))}
         </Grid2>
+      </Paper>
 
-        {/* <Grid2>
+      {/* <Grid2>
         <Button variant="contained" color="success">
           Xác nhận
         </Button>
       </Grid2> */}
-      </Container>
     </Grid2>
   );
 };

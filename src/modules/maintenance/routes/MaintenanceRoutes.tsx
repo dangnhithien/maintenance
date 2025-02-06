@@ -3,6 +3,13 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 // Thay bằng đường dẫn đến component SpinnerLoading của bạn
 
+const DashBoardPage = React.lazy(
+  () => import("../pages/dashBoard/DashBoardPage")
+);
+const ApprovalPage = React.lazy(() => import("../pages/approval/ApprovalPage"));
+const ApprovalDetailPage = React.lazy(
+  () => import("../pages/approval/ApprovalDetailPage")
+);
 const DeviceCreateUpdatePage = React.lazy(
   () => import("../pages/device/DeviceCreateUpdatePage")
 );
@@ -80,7 +87,23 @@ const MaintenanceRoutes = () => (
       path="/"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductListPage />
+          <DashBoardPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/approval"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <ApprovalPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/approval/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <ApprovalDetailPage />
         </React.Suspense>
       }
     />
