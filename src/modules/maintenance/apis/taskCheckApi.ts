@@ -41,11 +41,11 @@ class TaskCheckApi {
   ): Promise<ApiResponseWithList<TaskCheckDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
   };
-  updateStatus = async (
+  approveStatus = async (
     id: string,
     params: UpdateTaskCheckDto
   ): Promise<ApiResponseWithList<TaskCheckDto>> => {
-    return await axiosInstance.put(`${BASE_URL}/update-status/${id}`, params);
+    return await axiosInstance.put(`${BASE_URL}/approve-status/${id}`, params);
   };
   restore = async (
     ids: string[]

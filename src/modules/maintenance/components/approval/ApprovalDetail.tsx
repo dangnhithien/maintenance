@@ -13,7 +13,7 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
   const handleApprove = (e: React.FormEvent) => {
     if (!id) return;
     taskCheckApi
-      .updateStatus(id, {
+      .approveStatus(id, {
         taskCheckStatus: EnumStatusTaskCheck.APPROVED,
       })
       .catch(() => {});
@@ -22,7 +22,7 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
   const handleReject = (e: React.FormEvent) => {
     if (!id) return;
     taskCheckApi
-      .updateStatus(id, {
+      .approveStatus(id, {
         taskCheckStatus: EnumStatusTaskCheck.REJECTED,
       })
       .catch(() => {});
