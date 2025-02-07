@@ -1,6 +1,8 @@
 import SpinnerLoading from "@components/SpinerLoading";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import DeviceDetailPageTest from "../components/product/ProductDetailNew";
+import Test from "../components/product/ProductListNew";
 // Thay bằng đường dẫn đến component SpinnerLoading của bạn
 
 const DashBoardPage = React.lazy(
@@ -87,7 +89,15 @@ const MaintenanceRoutes = () => (
       path="/"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
-          <DashBoardPage />
+          <Test />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/1"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceDetailPageTest />
         </React.Suspense>
       }
     />
