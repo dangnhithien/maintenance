@@ -1,6 +1,8 @@
 // App.tsx
 
 import TheLayout from "@components/Layout";
+import RequireAuth from "@components/RequireAuth";
+import LoginRoutes from "@modules/login/routes/LoginRoutes";
 import { NoistackProvider } from "@modules/maintenance/components/common/Notistack";
 import { createTheme, ThemeProvider } from "@mui/material";
 import AllRoutes from "./routes/AllRoutes";
@@ -53,9 +55,12 @@ function App() {
   return (
     <ThemeProvider theme={mdTheme}>
       <NoistackProvider>
-        <TheLayout>
-          <AllRoutes />
-        </TheLayout>
+        <LoginRoutes />
+        <RequireAuth redirectTo={"/login"}>
+          <TheLayout>
+            <AllRoutes />
+          </TheLayout>
+        </RequireAuth>
       </NoistackProvider>
     </ThemeProvider>
   );

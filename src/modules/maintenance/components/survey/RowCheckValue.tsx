@@ -50,7 +50,7 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ px: 2, py: 2 }}>
+    <Paper sx={{ px: 2, py: 2 }}>
       {/* Tiêu đề: Hiển thị tên checklist */}
       <Box display="flex" alignItems="center" mb={2} pt={1}>
         <Typography variant="subtitle1" fontWeight="bold" color="primary">

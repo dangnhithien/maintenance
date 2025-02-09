@@ -1,3 +1,4 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import DeviceList from "@modules/maintenance/components/device/DeviceList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
@@ -28,7 +29,9 @@ const DeviceListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <DeviceList />
+      <Wrapper>
+        <DeviceList />
+      </Wrapper>
     </div>
   );
 };

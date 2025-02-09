@@ -1,6 +1,8 @@
-import { Grid2 } from "@mui/material";
+import useAuth from "@modules/login/hooks/useAuth";
+import { Avatar, Grid2 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
@@ -9,6 +11,9 @@ import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [isLoggedIn] = useState(true); // Replace with actual authentication state
+  const { logout } = useAuth();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -16,6 +21,20 @@ const Navbar: React.FC = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleAvatarMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleAvatarMenuClose = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    handleAvatarMenuClose();
+    logout();
+    window.location.href = "/";
   };
 
   return (
@@ -48,7 +67,7 @@ const Navbar: React.FC = () => {
               style={{ height: "40px" }}
             />
 
-            {/* Tam giác separator trắng */}
+            {/* White triangle separator */}
             <div
               style={{
                 position: "absolute",
@@ -57,15 +76,15 @@ const Navbar: React.FC = () => {
                 transform: "translateY(-50%)",
                 width: 0,
                 height: 0,
-                borderTop: "35px solid transparent", // 50% chiều cao container
-                borderBottom: "35px solid transparent", // 50% chiều cao container
+                borderTop: "35px solid transparent",
+                borderBottom: "35px solid transparent",
                 borderLeft: "25px solid white",
               }}
             />
           </Typography>
         </Link>
 
-        {/* Phần menu */}
+        {/* Menu section */}
         <Grid2
           container
           direction={"row"}
@@ -80,7 +99,7 @@ const Navbar: React.FC = () => {
               gap: 2,
             }}
           >
-            {/* Dropdown button menu */}
+            {/* Dropdown menu button */}
             <Button
               color="inherit"
               sx={{ textTransform: "none" }}
@@ -113,7 +132,6 @@ const Navbar: React.FC = () => {
               >
                 Danh sách biểu mẫu
               </MenuItem>
-
               <MenuItem onClick={handleClose} component={Link} to="/type-error">
                 Loại lỗi
               </MenuItem>
@@ -134,6 +152,14 @@ const Navbar: React.FC = () => {
             </Menu>
             <Button
               component={Link}
+              to="/product-list-detail"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Thiết bị
+            </Button>
+            <Button
+              component={Link}
               to="/task-check"
               color="inherit"
               sx={{ textTransform: "none" }}
@@ -149,6 +175,48 @@ const Navbar: React.FC = () => {
               Danh sách duyệt
             </Button>
           </Grid2>
+
+          {/* Avatar section */}
+          {isLoggedIn && (
+            <Grid2
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <IconButton onClick={handleAvatarMenuOpen} sx={{ p: 0 }}>
+                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+              <Menu
+                anchorEl={anchorElUser}
+                open={Boolean(anchorElUser)}
+                onClose={handleAvatarMenuClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    mt: 1.5,
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              >
+                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+              </Menu>
+            </Grid2>
+          )}
         </Grid2>
       </Grid2>
     </AppBar>

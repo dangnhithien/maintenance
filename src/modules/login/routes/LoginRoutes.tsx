@@ -1,10 +1,10 @@
-// src/modules/maintenance/routes/MaintenanceRoutes.tsx
-import SurveyPage from "@modules/maintenance/pages/survey/SurveyPage";
+// src/modules/maintenance/routes/MaintenanceRo
 import { Route, Routes } from "react-router-dom";
+import Login from "../pages/Login";
 
 const LoginRoutes = () => (
   <Routes>
-    <Route path="/login" element={<SurveyPage />} />
+    <Route path="/login" element={<Login />} />
   </Routes>
 );
 

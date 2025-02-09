@@ -42,7 +42,7 @@ const DeviceDetailPage = () => {
         {breadcrumbs}
       </Breadcrumbs>
       <DeviceDetail id={id} />
-      <Wrapper title="Danh sách biểu mẫu ">
+      <Wrapper title="Danh sách biểu mẫu " sx={{ mt: 2 }}>
         <TemplateCheckList deviceId={id} />
       </Wrapper>
     </div>

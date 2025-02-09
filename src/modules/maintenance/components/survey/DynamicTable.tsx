@@ -42,7 +42,7 @@ const DynamicForm: React.FC<Props> = ({ rowCheckLists, onChange }) => {
   // Thêm một card mới ngay sau card có chỉ số index
   const handleAddRowAt = (index: number) => {
     const newRow: CreateRowCheckListDto = {
-      name: "",
+      content: "",
       typeErrorId: "",
       code: "",
       templateCheckId: "",

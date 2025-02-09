@@ -1,3 +1,4 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TaskCheckList from "@modules/maintenance/components/taskCheck/TaskCheckList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
@@ -32,7 +33,7 @@ const TaskCheckListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      {page.component}
+      <Wrapper>{page.component}</Wrapper>
     </div>
   );
 };

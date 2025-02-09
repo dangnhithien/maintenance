@@ -1,4 +1,5 @@
 import Approval from "@modules/maintenance/components/approval/Approval";
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -28,7 +29,9 @@ const ApprovalPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <Approval />
+      <Wrapper>
+        <Approval />
+      </Wrapper>
     </div>
   );
 };

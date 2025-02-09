@@ -1,15 +1,19 @@
-import Wrapper from "@modules/maintenance/components/common/Wrapper";
-import ErrorDetailList from "@modules/maintenance/components/errorDetail/ErrorDetailList";
+import ProductListDetail from "@modules/maintenance/components/product/ProductListDetail";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 
-const TypeErrorListPage = () => {
+const ProductListDetailPage = () => {
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/error-detail">
+    <Link
+      key="1"
+      underline="none"
+      component={RouterLink}
+      to="/product-list-detail"
+    >
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách lỗi
+        Danh sách thiết bị
       </span>
     </Link>,
   ];
@@ -17,8 +21,8 @@ const TypeErrorListPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Danh sách lỗi</title>
-        <meta name="description" content="Danh sách các lỗi" />
+        <title>Danh sách thiết bị</title>
+        <meta name="description" content="Danh sách các thiết bị" />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -29,11 +33,9 @@ const TypeErrorListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <Wrapper>
-        <ErrorDetailList />
-      </Wrapper>
+      <ProductListDetail />
     </div>
   );
 };
 
-export default TypeErrorListPage;
+export default ProductListDetailPage;

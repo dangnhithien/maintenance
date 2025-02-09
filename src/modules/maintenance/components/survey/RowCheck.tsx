@@ -36,7 +36,7 @@ const RowCheck: React.FC<RowProps> = ({
   onAdd,
 }) => {
   return (
-    <Paper elevation={3} sx={{ px: 3, marginBottom: 2 }}>
+    <Paper sx={{ px: 3, marginBottom: 2 }}>
       {/* Row: Nội dung và nút xóa */}
       <Box
         display="flex"

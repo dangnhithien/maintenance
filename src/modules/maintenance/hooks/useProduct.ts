@@ -32,6 +32,13 @@ export const useProduct = (initialParams?: GetProductDto) => {
       queryKey: [KEY, newParams],
     });
   };
+  const getListProductDetail = async (newParams: GetProductDto) => {
+    return queryClient.fetchQuery({
+      queryKey: [KEY, "product-list-detail"],
+      queryFn: () =>
+        productApi.getListProductDetail(newParams).then((res) => res.result),
+    });
+  };
 
   // Create a new checklist
   const createProduct = useMutation({
@@ -77,6 +84,7 @@ export const useProduct = (initialParams?: GetProductDto) => {
     loading: isPending,
     error: isError ? error?.message : null,
     fetchProducts, // Now accepts params
+    getListProductDetail, // Returns
     createProduct: createProduct.mutateAsync,
     updateProduct: updateProduct.mutateAsync,
     deleteProduct: deleteProduct.mutateAsync,

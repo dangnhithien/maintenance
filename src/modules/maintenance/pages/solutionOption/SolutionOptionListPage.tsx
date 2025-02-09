@@ -1,3 +1,4 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import SolutionOptionList from "@modules/maintenance/components/soluitionOption/SolutionOptionList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
@@ -32,7 +33,7 @@ const SolutionOptionListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      {page.component}
+      <Wrapper>{page.component}</Wrapper>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TypeErrorList from "@modules/maintenance/components/typeError/TypeErrorList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
@@ -28,7 +29,9 @@ const TypeErrorListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <TypeErrorList />
+      <Wrapper>
+        <TypeErrorList />
+      </Wrapper>
     </div>
   );
 };

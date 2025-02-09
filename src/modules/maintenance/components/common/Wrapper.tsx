@@ -26,7 +26,12 @@ const Wrapper: React.FC<PropsWithChildren<Props>> = ({
       >
         {title && (
           <Box>
-            <Typography variant="h6" color="primary" fontWeight="bold">
+            <Typography
+              variant="h6"
+              color="primary"
+              fontWeight="bold"
+              fontSize={18}
+            >
               {title}
             </Typography>
           </Box>

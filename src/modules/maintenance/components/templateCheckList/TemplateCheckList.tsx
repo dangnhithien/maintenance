@@ -3,7 +3,7 @@ import { GetTemplateCheckListDto } from "@modules/maintenance/datas/templateChec
 import useTemplateCheckList from "@modules/maintenance/hooks/useTemplateCheckList";
 import { Add, Warning } from "@mui/icons-material";
 import RestoreIcon from "@mui/icons-material/Restore";
-import { Button, Divider, Grid2, Paper } from "@mui/material";
+import { Button, Divider, Grid2 } from "@mui/material";
 import {
   GridColDef,
   GridDeleteIcon,
@@ -184,18 +184,16 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
           </Grid2>
         </Grid2>
         <Grid2>
-          <Paper sx={{ p: 2 }}>
-            <PaginatedDataGrid
-              columns={columns}
-              rows={templateCheckLists}
-              totalCount={totalCount}
-              setParams={setParams}
-              onRowSelectionModelChange={(newRowSelectionModel) => {
-                setRowSelectionModel(newRowSelectionModel);
-              }}
-              loading={loading}
-            />
-          </Paper>
+          <PaginatedDataGrid
+            columns={columns}
+            rows={templateCheckLists}
+            totalCount={totalCount}
+            setParams={setParams}
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            loading={loading}
+          />
         </Grid2>
       </Grid2>
       <PopupConfirm

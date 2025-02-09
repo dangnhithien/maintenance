@@ -3,7 +3,7 @@ import { GetSolutionOptionDto } from "@modules/maintenance/datas/solutionOption/
 import useSolutionOption from "@modules/maintenance/hooks/useSolutionOption";
 import { Add, Warning } from "@mui/icons-material";
 import RestoreIcon from "@mui/icons-material/Restore";
-import { Button, Divider, Grid2, Paper } from "@mui/material";
+import { Button, Divider, Grid2 } from "@mui/material";
 import {
   GridColDef,
   GridDeleteIcon,
@@ -181,18 +181,16 @@ const SolutionOptionList = () => {
           </Grid2>
         </Grid2>
         <Grid2>
-          <Paper sx={{ p: 2 }}>
-            <PaginatedDataGrid
-              columns={columns}
-              rows={solutionOptions}
-              totalCount={totalCount}
-              setParams={setParams}
-              onRowSelectionModelChange={(newRowSelectionModel) => {
-                setRowSelectionModel(newRowSelectionModel);
-              }}
-              loading={loading}
-            />
-          </Paper>
+          <PaginatedDataGrid
+            columns={columns}
+            rows={solutionOptions}
+            totalCount={totalCount}
+            setParams={setParams}
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            loading={loading}
+          />
         </Grid2>
       </Grid2>
       <PopupConfirm

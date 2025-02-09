@@ -21,6 +21,13 @@ class ProductApi {
       params,
     });
   };
+  getListProductDetail = async (
+    params?: GetProductDto
+  ): Promise<ApiResponseWithList<ProductDto>> => {
+    return await axiosInstance.get(`${BASE_URL}/get-list-product-detail`, {
+      params,
+    });
+  };
   post = async (
     params?: CreateProductDto
   ): Promise<ApiResponseWithList<ProductDto>> => {

@@ -1,3 +1,4 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TemplateCheckList from "@modules/maintenance/components/templateCheckList/TemplateCheckList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
@@ -32,7 +33,7 @@ const TemplateCheckListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      {page.component}
+      <Wrapper>{page.component}</Wrapper>
     </div>
   );
 };

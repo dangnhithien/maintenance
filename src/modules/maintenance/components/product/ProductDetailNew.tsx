@@ -1,65 +1,89 @@
-import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
-import React from "react";
+import productApi from "@modules/maintenance/apis/productApi";
+import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
+import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import Approval from "../approval/Approval";
+import { useNotification } from "../common/Notistack";
+import Wrapper from "../common/Wrapper";
 import TaskCheckList from "../taskCheck/TaskCheckList";
 
-const mockDevice = {
-  name: "Industrial Pump Model X200",
-  status: "Active",
-  serialNumber: "SN-9876543210",
-  location: "Factory B - Section 3",
-  imageUrl:
-    "https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg",
-  inspectionHistory: [
-    { date: "01/02/2025", result: "Passed" },
-    { date: "15/01/2025", result: "Passed" },
-    { date: "05/01/2025", result: "Failed" },
-  ],
-  todayInspectionHistory: [
-    { time: "09:00 AM", result: "Passed" },
-    { time: "01:00 PM", result: "Pending" },
-  ],
-  pendingForms: [
-    { name: "Form A", date: "06/02/2025" },
-    { name: "Form B", date: "05/02/2025" },
-    { name: "Form C", date: "03/02/2025" },
-  ],
-};
+interface Props {
+  id?: string;
+}
+const ProductDetailNew: React.FC<Props> = ({ id }) => {
+  const [product, setProduct] = useState<ProductDto | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { notify } = useNotification();
 
-const DeviceDetailPageTest: React.FC = () => {
+  useEffect(() => {
+    if (id) {
+      productApi
+        .getById(id, { includeProperties: "Device" })
+        .then((res) => setProduct(res.result)) // Cập nhật chi tiết sản phẩm
+        .catch((err) => {
+          const { message } = unwrapError(err);
+          notify(message, "error");
+        })
+        .finally(() => setLoading(false));
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <Paper sx={{ p: 3, textAlign: "center" }}>
+        <CircularProgress />
+      </Paper>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Paper sx={{ p: 3, textAlign: "center" }}>
+        <Typography variant="body1" color="error">
+          Không tìm thấy sản phẩm.
+        </Typography>
+      </Paper>
+    );
+  }
   return (
-    <Box
-      display="flex"
-      p={4}
-      gap={1}
-      sx={{ fontFamily: "'Roboto', sans-serif" }}
-    >
+    <Box display="flex" gap={1}>
       {/* Sidebar */}
       <Box
         bgcolor="white"
         boxShadow={3}
-        borderRadius={4}
-        p={3}
+        borderRadius={1.5}
+        p={2}
         sx={{ width: 300, position: "sticky", top: 20, height: "fit-content" }}
       >
         <img
-          src={mockDevice.imageUrl}
+          src={
+            product?.imageUrl ||
+            "https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg"
+          }
           alt="Device"
           style={{
             width: "100%",
             height: 220,
             objectFit: "cover",
             borderRadius: 8,
-            marginBottom: 24,
+            marginBottom: 8,
           }}
         />
 
-        <Box textAlign="center" mb={3}>
+        <Box textAlign="center" mb={1}>
           <Chip
             label={
-              mockDevice.status === "Active" ? "HOẠT ĐỘNG" : "NGỪNG HOẠT ĐỘNG"
+              product.status === "Active" ? "HOẠT ĐỘNG" : "NGỪNG HOẠT ĐỘNG"
             }
-            color={mockDevice.status === "Active" ? "success" : "error"}
+            color={product.status === "Active" ? "success" : "error"}
             sx={{
               fontWeight: 600,
               fontSize: "0.75rem",
@@ -71,61 +95,55 @@ const DeviceDetailPageTest: React.FC = () => {
 
         <Typography
           variant="h6"
-          sx={{ fontWeight: 700, textAlign: "center", color: "#2d3748", mb: 3 }}
+          sx={{ fontWeight: 700, textAlign: "center", color: "#2d3748" }}
         >
-          {mockDevice.name}
+          {product.device?.name}
         </Typography>
 
         <Box>
-          <Typography variant="h6" color="primary" fontWeight="bold">
+          <Typography variant="body1" color="primary" fontWeight="bold">
             Thông tin
           </Typography>
-          <Stack p={2} spacing={1}>
-            <InfoItem label="Serial" value={mockDevice.serialNumber} />
-            <InfoItem label="Nhà cung cấp" value="VMS" />
-            <InfoItem label="Phiên bản" value="2002" />
-            <InfoItem label="Loại thiết bị" value="Máy in" />
+          <Stack px={2} py={1} spacing={1}>
+            <InfoItem label="Serial" value={product.serialNumber} />
+            <InfoItem label="Nhà cung cấp" value={product.supplier} />
+            <InfoItem label="Phiên bản" value={product.version} />
+            <InfoItem label="Loại thiết bị" value="" />
           </Stack>
 
-          <Typography variant="h6" color="primary" fontWeight="bold" mt={2}>
+          <Typography variant="body1" color="primary" fontWeight="bold">
             Lịch Bảo Trì
           </Typography>
-          <Stack p={2} spacing={1}>
-            <InfoItem label="Lần gần nhất" value="19/02/2025" />
-            <InfoItem label="Lần kế tiếp" value="19/02/2025" />
-            <InfoItem label="Đã bảo trì" value="8 lần" />
-            <InfoItem label="Chu kì" value="8 tuần" />
+          <Stack px={2} py={1} spacing={1}>
+            <InfoItem
+              label="Lần gần nhất"
+              value={product.lastMaintenanceDate?.toISOString()}
+            />
+            <InfoItem
+              label="Lần kế tiếp"
+              value={product.nextMaintenanceReminder?.toISOString()}
+            />
+            <InfoItem
+              label="Đã bảo trì"
+              value={product.maintenanceTimes?.toString()}
+            />
+            <InfoItem
+              label="Chu kì"
+              value={product.maintenanceCycle?.toString()}
+            />
           </Stack>
         </Box>
       </Box>
 
       {/* Main Content */}
       <Box flex={1} display="flex" flexDirection="column" gap={1}>
-        <Card sx={{ borderRadius: 3 }}>
-          <CardContent>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 700, mb: 2 }}
-              color="primary"
-            >
-              Lịch Sử Kiểm Tra
-            </Typography>
-            <TaskCheckList />
-          </CardContent>
-        </Card>
+        <Wrapper title="Phiếu chờ duyệt">
+          <Approval deviceId={id} />
+        </Wrapper>
 
-        <Card sx={{ borderRadius: 3 }}>
-          <CardContent>
-            <Typography
-              variant="h6"
-              sx={{ fontWeight: 700, mb: 2 }}
-              color="primary"
-            >
-              Biểu Mẫu Chờ Duyệt
-            </Typography>
-            <Approval />
-          </CardContent>
-        </Card>
+        <Wrapper title="Lịch sử quét">
+          <TaskCheckList productId={id} />
+        </Wrapper>
       </Box>
     </Box>
   );
@@ -142,4 +160,4 @@ const InfoItem = ({ label, value }: { label: string; value: string }) => (
   </Box>
 );
 
-export default DeviceDetailPageTest;
+export default ProductDetailNew;

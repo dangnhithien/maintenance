@@ -3,7 +3,7 @@ import { GetTypeDeviceDto } from "@modules/maintenance/datas/typeDevice/GetTypeD
 import useTypeDevice from "@modules/maintenance/hooks/useTypeDevice";
 import { Add, Warning } from "@mui/icons-material";
 import RestoreIcon from "@mui/icons-material/Restore";
-import { Button, Divider, Grid2, Paper } from "@mui/material";
+import { Box, Button, Divider, Grid2 } from "@mui/material";
 import {
   GridColDef,
   GridDeleteIcon,
@@ -157,7 +157,7 @@ const TypeDeviceList = () => {
           </Grid2>
         </Grid2>
         <Grid2>
-          <Paper sx={{ p: 2 }}>
+          <Box>
             <PaginatedDataGrid
               columns={columns}
               rows={typeDevices}
@@ -168,7 +168,7 @@ const TypeDeviceList = () => {
               }}
               loading={loading}
             />
-          </Paper>
+          </Box>
         </Grid2>
       </Grid2>
       <PopupConfirm

@@ -2,7 +2,7 @@ import PaginatedDataGrid from "@components/PaginationDatagrid";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
-import { Grid2, Paper } from "@mui/material";
+import { Box, Grid2 } from "@mui/material";
 import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,13 +11,17 @@ import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
 import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 
-const TaskCheckList = () => {
+interface Props {
+  productId?: string;
+}
+const TaskCheckList: React.FC<Props> = ({ productId }) => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
     includeProperties: "TemplateCheck",
     takeCount: 5,
+    productId: productId,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
@@ -35,7 +39,7 @@ const TaskCheckList = () => {
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
       field: "code",
-      headerName: "Mã",
+      headerName: "Mã",
       editable: false,
       sortable: false,
       flex: 1,
@@ -45,20 +49,31 @@ const TaskCheckList = () => {
         </Link>
       ),
     },
-
     {
-      field: "",
-      headerName: "Tên biểu mẫu ",
-      minWidth: 300,
+      field: "checkTime",
+      headerName: "Thời gian",
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.templateCheck?.name}
+          {params.row.checkTime}
         </Link>
       ),
     },
+    {
+      field: "createdBy",
+      headerName: "Người tạo",
+      editable: false,
+      sortable: false,
+      flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/task-check/detail/${params.row.id}`}>
+          {params.row.createdBy}
+        </Link>
+      ),
+    },
+
     {
       field: "taskCheckStatus",
       headerName: "Trạng thái",
@@ -68,20 +83,6 @@ const TaskCheckList = () => {
       renderCell: (params: any) => (
         <ChipTaskCheckStatus status={params.row.taskCheckStatus} />
       ),
-    },
-    {
-      field: "checkTime",
-      headerName: "Thời gian ",
-      editable: false,
-      sortable: false,
-      flex: 1,
-    },
-    {
-      field: "createdBy",
-      headerName: "Người tạo",
-      editable: false,
-      sortable: false,
-      flex: 1,
     },
   ];
 
@@ -181,7 +182,7 @@ const TaskCheckList = () => {
           </Grid2> */}
         </Grid2>
         <Grid2>
-          <Paper sx={{ p: 2 }}>
+          <Box>
             <PaginatedDataGrid
               columns={columns}
               rows={taskChecks}
@@ -192,7 +193,7 @@ const TaskCheckList = () => {
               }}
               loading={loading}
             />
-          </Paper>
+          </Box>
         </Grid2>
       </Grid2>
       <PopupConfirm

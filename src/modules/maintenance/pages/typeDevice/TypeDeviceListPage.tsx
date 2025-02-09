@@ -1,3 +1,4 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TypeDeviceList from "@modules/maintenance/components/typeDevice/TypeDeviceList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
@@ -28,7 +29,9 @@ const TypeDeviceListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <TypeDeviceList />
+      <Wrapper>
+        <TypeDeviceList />
+      </Wrapper>
     </div>
   );
 };

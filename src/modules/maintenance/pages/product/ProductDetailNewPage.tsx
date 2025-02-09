@@ -1,24 +1,33 @@
-import Wrapper from "@modules/maintenance/components/common/Wrapper";
-import ProductList from "@modules/maintenance/components/product/ProductList";
+import ProductDetailNew from "@modules/maintenance/components/product/ProductDetailNew";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
-const ProductListPage = () => {
+const ProductDetailPage = () => {
+  const { id } = useParams();
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/product">
+    <Link
+      key="1"
+      underline="none"
+      component={RouterLink}
+      to="/product-list-detail"
+    >
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
         Danh sách thiết bị
       </span>
     </Link>,
+
+    <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
+      Chi tiết
+    </span>,
   ];
 
   return (
     <div>
       <Helmet>
-        <title>Danh sách thiết bị</title>
-        <meta name="description" content="Danh sách các thiết bị" />
+        <title>Chi tiết</title>
+        <meta name="description" content="Chi tiết" />
       </Helmet>
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
@@ -29,11 +38,9 @@ const ProductListPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <Wrapper>
-        <ProductList />
-      </Wrapper>
+      <ProductDetailNew id={id} />
     </div>
   );
 };
 
-export default ProductListPage;
+export default ProductDetailPage;

@@ -5,4 +5,5 @@ export interface GetTaskCheckDto extends ApiRequest {
   templateCheckListId?: string;
   productId?: string;
   taskCheckStatus?: EnumStatusTaskCheck;
+  deviceId?: string;
 }

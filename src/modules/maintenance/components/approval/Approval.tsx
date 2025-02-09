@@ -3,7 +3,7 @@ import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusT
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
-import { Grid2, Paper } from "@mui/material";
+import { Grid2 } from "@mui/material";
 import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,8 +11,10 @@ import InputSearch from "../common/InputSearch";
 import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
 import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
-
-const Approval = () => {
+interface Props {
+  deviceId?: string;
+}
+const Approval: React.FC<Props> = ({ deviceId }) => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
@@ -20,6 +22,7 @@ const Approval = () => {
     includeProperties: "TemplateCheck",
     takeCount: 5,
     taskCheckStatus: EnumStatusTaskCheck.WAITING,
+    deviceId: deviceId || "",
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
@@ -191,18 +194,16 @@ const Approval = () => {
           </Grid2> */}
         </Grid2>
         <Grid2>
-          <Paper sx={{ p: 2 }}>
-            <PaginatedDataGrid
-              columns={columns}
-              rows={taskChecks}
-              totalCount={totalCount}
-              setParams={setParams}
-              onRowSelectionModelChange={(newRowSelectionModel) => {
-                setRowSelectionModel(newRowSelectionModel);
-              }}
-              loading={loading}
-            />
-          </Paper>
+          <PaginatedDataGrid
+            columns={columns}
+            rows={taskChecks}
+            totalCount={totalCount}
+            setParams={setParams}
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            loading={loading}
+          />
         </Grid2>
       </Grid2>
       <PopupConfirm

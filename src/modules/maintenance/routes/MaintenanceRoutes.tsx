@@ -1,8 +1,6 @@
 import SpinnerLoading from "@components/SpinerLoading";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import DeviceDetailPageTest from "../components/product/ProductDetailNew";
-import Test from "../components/product/ProductListNew";
 // Thay bằng đường dẫn đến component SpinnerLoading của bạn
 
 const DashBoardPage = React.lazy(
@@ -36,8 +34,14 @@ const ProductCreateUpdatePage = React.lazy(
 const ProductDetailPage = React.lazy(
   () => import("../pages/product/ProductDetailPage")
 );
+const ProductDetailNewPage = React.lazy(
+  () => import("../pages/product/ProductDetailNewPage")
+);
 const ProductListPage = React.lazy(
   () => import("../pages/product/ProductListPage")
+);
+const ProductListDetailPage = React.lazy(
+  () => import("../pages/product/ProductListDetailPage")
 );
 const SolutionOptionCreateUpdatePage = React.lazy(
   () => import("../pages/solutionOption/SolutionOptionCreateUpdatePage")
@@ -89,18 +93,11 @@ const MaintenanceRoutes = () => (
       path="/"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
-          <Test />
+          <DashBoardPage />
         </React.Suspense>
       }
     />
-    <Route
-      path="/1"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <DeviceDetailPageTest />
-        </React.Suspense>
-      }
-    />
+
     <Route
       path="/approval"
       element={
@@ -237,6 +234,14 @@ const MaintenanceRoutes = () => (
       }
     />
     <Route
+      path="/product-list-detail"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <ProductListDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
       path="/product/create"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
@@ -257,6 +262,14 @@ const MaintenanceRoutes = () => (
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <ProductDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/product/detail-new/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <ProductDetailNewPage />
         </React.Suspense>
       }
     />
