@@ -90,8 +90,8 @@ const MaintenanceRoutes = () => (
       path="/"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
-          {/* <DashBoardPage /> */}
-          <ProductListDetailPage />
+          <DashBoardPage />
+          {/* <ProductListDetailPage /> */}
         </React.Suspense>
       }
     />

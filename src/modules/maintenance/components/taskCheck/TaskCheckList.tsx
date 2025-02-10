@@ -22,6 +22,7 @@ const TaskCheckList: React.FC<Props> = ({ productId }) => {
     includeProperties: "TemplateCheck",
     takeCount: 5,
     productId: productId,
+    sortBy: "CreatedDate DESC",
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

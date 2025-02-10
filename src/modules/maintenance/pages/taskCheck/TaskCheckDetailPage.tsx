@@ -2,24 +2,13 @@ import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheck
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { Breadcrumbs, Container, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
+import { Link as RouterLink, useParams } from "react-router-dom";
 
 const TaskCheckDetailPage = () => {
   const { id } = useParams();
 
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    navigate(-1); // Trở lại trang trước đó
-  };
   const breadcrumbs = [
-    <Link
-      key="1"
-      underline="none"
-      component={RouterLink}
-      to=""
-      onClick={goBack}
-    >
+    <Link key="1" underline="none" component={RouterLink} to="/task-check">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
         Lịch sử quét
       </span>

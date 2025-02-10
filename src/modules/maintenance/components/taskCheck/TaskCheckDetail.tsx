@@ -108,19 +108,15 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
   return (
     <Grid2 container spacing={1}>
       <Paper sx={{ p: 2, width: "100%" }}>
-        <Typography variant="body1" fontWeight={"bold"} color="primary">
-          Thông tin thiết bị
-        </Typography>
+        <Grid2 container justifyContent={"space-between"}>
+          <Typography variant="body1" fontWeight={"bold"} color="primary">
+            Thông tin
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            #{taskCheck?.code}
+          </Typography>
+        </Grid2>
         <Grid2 container spacing={2} sx={{ marginTop: 2 }}>
-          <Grid2 size={3}>
-            <Stack direction="row" spacing={1}>
-              <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Mã
-              </Typography>
-              <Typography color="error">*</Typography>
-            </Stack>
-            <Typography>{taskCheck?.templateCheck?.code}</Typography>
-          </Grid2>
           <Grid2 size={3}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>

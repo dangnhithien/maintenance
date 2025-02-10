@@ -2,14 +2,14 @@ import productApi from "@modules/maintenance/apis/productApi";
 import { unwrapListReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { GetProductDto } from "@modules/maintenance/datas/product/GetProductDto";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
-import { Grid2 } from "@mui/material";
+import { Box, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
+import InputSearch from "../common/InputSearch";
 import ProductRowDetail from "./ProductRowDetail";
 
 const ProductListDetail = () => {
   const [params, setParams] = useState<GetProductDto>({
     includeProperties: "Device",
-    takeCount: 5,
   });
   const [products, setProducts] = useState<ProductDto[]>([]);
 
@@ -22,6 +22,13 @@ const ProductListDetail = () => {
 
   return (
     <>
+      <Box mb={2}>
+        <InputSearch
+          onSearch={(data) => {
+            setParams({ ...params, searchTerm: data });
+          }}
+        />
+      </Box>
       <Grid2 container spacing={1}>
         {products.map((item) => (
           <Grid2 key={item.id} size={12}>

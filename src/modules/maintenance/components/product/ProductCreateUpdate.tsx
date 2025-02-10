@@ -24,6 +24,7 @@ import DeviceSelect from "../common/select/DeviceSelect";
 const schema = yup.object({
   deviceId: yup.string().required("Type device is required"),
   serialNumber: yup.string().required("Type device is required"),
+  name: yup.string().max(255, " Must be under 255 characters"),
   note: yup.string().max(255, " Must be under 255 characters"),
   address: yup.string().max(255, " Must be under 255 characters"),
   // installationDate: yup.date().nullable(),
@@ -55,6 +56,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
       supplier: "",
       version: "",
       image: "",
+      name: "",
     },
     resolver: yupResolver(schema),
   });
@@ -125,7 +127,6 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   image={field.value}
                   onImageUpload={(binaryImage) => {
                     field.onChange(binaryImage);
-                    console.log(binaryImage);
                   }}
                 />
               )}
@@ -158,12 +159,34 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 )}
               />
             </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Tên thiết bị
+                </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
+              </Stack>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    size="small"
+                    error={!!errors.name}
+                    helperText={errors.name?.message}
+                  />
+                )}
+              />
+            </Grid2>
 
             <Grid2 size={4}>
               <Stack direction="row" spacing={1}>
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Ghi chú
                 </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
               </Stack>
               <Controller
                 name="note"
@@ -184,6 +207,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Địa chỉ
                 </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
               </Stack>
               <Controller
                 name="address"
@@ -204,6 +228,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Ngày lắp đặt
                 </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
               </Stack>
               <Controller
                 name="installationDate"
@@ -225,6 +250,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Chu kì
                 </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
               </Stack>
               <Controller
                 name="maintenanceCycle"
@@ -245,6 +271,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Nhà cung cấp
                 </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
               </Stack>
               <Controller
                 name="supplier"
@@ -265,6 +292,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>
                   Version
                 </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
               </Stack>
               <Controller
                 name="version"

@@ -7,42 +7,45 @@ import { Link } from "react-router-dom";
 
 const UntestedDevicesList = () => {
   const [params, setParams] = useState<GetProductDto>({
-    includeProperties: "Devices",
-    takeCount: 20,
+    includeProperties: "Device",
+    takeCount: 10,
   });
   const { products, error, loading, totalCount } = useProduct(params);
 
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
-      field: "code",
-      headerName: "Mã",
+      field: "serialNumber",
+      headerName: "Seri",
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.code}
+        <Link to={`/product/detail/${params.row.id}`}>
+          {params.row.serialNumber}
         </Link>
       ),
     },
 
     {
-      field: "",
+      field: "name",
       headerName: "Tên ",
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.divice?.name}
-        </Link>
+        <Link to={`/product/detail/${params.row.id}`}>{params.row.name}</Link>
       ),
     },
   ];
   return (
     <>
-      <StyledDataGrid rows={products} columns={columns} hideFooter />
+      <StyledDataGrid
+        rows={products}
+        columns={columns}
+        hideFooter
+        sx={{ height: 400 }}
+      />
     </>
   );
 };

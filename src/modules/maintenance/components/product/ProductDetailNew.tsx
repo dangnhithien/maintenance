@@ -133,6 +133,14 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
               value={product.maintenanceCycle?.toString() || "N/A"}
             />
           </Stack>
+          <Typography variant="body1" color="primary" fontWeight="bold">
+            Ghi chú
+          </Typography>
+          <Stack px={2} py={1} spacing={1}>
+            <Typography variant="caption" color="textSecondary">
+              {product.note}
+            </Typography>
+          </Stack>
         </Grid2>
       </Grid2>
 
@@ -159,7 +167,7 @@ const InfoItem = ({ label, value }: { label: string; value: string }) => (
     <Typography variant="body2" color="textSecondary">
       {label}:
     </Typography>
-    <Typography variant="body2" color="primary" fontWeight="500">
+    <Typography variant="body2" color="info" fontWeight="bold">
       {value}
     </Typography>
   </Box>

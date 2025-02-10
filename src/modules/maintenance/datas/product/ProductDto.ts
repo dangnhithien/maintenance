@@ -16,11 +16,12 @@ export interface ProductDto extends TrackingDataDto {
   lastMaintenanceDate: Date;
   nextMaintenanceReminder: Date;
   reminderAdvanceDays: string;
-  taskChecks: TaskCheckDto[];
+  taskChecks?: TaskCheckDto[];
   supplier: string;
   version: string;
   maintenanceTimes: number;
   maintenanceCycle: number;
   status: string;
   note?: string;
+  name: string;
 }

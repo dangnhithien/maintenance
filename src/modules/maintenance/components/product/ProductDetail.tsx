@@ -87,6 +87,70 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
               <Typography variant="body1">{product.device?.name}</Typography>
             </Grid2>
           </Grid2>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Địa chỉ</strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">{product.address}</Typography>
+            </Grid2>
+          </Grid2>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Ngày lắp đặt</strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">
+                <span>
+                  {product.installationDate &&
+                    new Date(product.installationDate).toLocaleDateString(
+                      "vi-VN",
+                      {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                      }
+                    )}
+                </span>
+              </Typography>
+            </Grid2>
+          </Grid2>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Chu kì </strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">
+                {product.maintenanceCycle}
+              </Typography>
+            </Grid2>
+          </Grid2>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Nhà cung cấp</strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">{product.supplier}</Typography>
+            </Grid2>
+          </Grid2>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Version</strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">{product.version}</Typography>
+            </Grid2>
+          </Grid2>
         </Grid2>
       </Grid2>
       <Box mt={3} textAlign="center">

@@ -3,6 +3,8 @@ export interface ApiRequest {
   isDeleted?: boolean;
   takeCount?: number;
   skipCount?: number;
-  sortBy?: number;
+  sortBy?: string;
   includeProperties?: string;
+  fromDate?: Date;
+  toDate?: Date;
 }

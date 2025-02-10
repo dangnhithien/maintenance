@@ -1,7 +1,6 @@
 import StyledDataGrid from "@components/StyledDataGrid";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import { Box } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -28,24 +27,23 @@ const WaitingTaskList = () => {
         </Link>
       ),
     },
+
     {
-      field: "",
-      headerName: "Tên biểu mẫu ",
+      field: "checkTime",
+      headerName: "Ngày tạo",
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.templateCheck?.name}
+          {params.row.checkTime &&
+            new Date(params.row.checkTime).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
         </Link>
       ),
-    },
-    {
-      field: "checkTime",
-      headerName: "Thời gian ",
-      editable: false,
-      sortable: false,
-      flex: 1,
     },
     {
       field: "createdBy",
@@ -53,6 +51,14 @@ const WaitingTaskList = () => {
       editable: false,
       sortable: false,
       flex: 1,
+    },
+    {
+      field: "",
+      headerName: "Thiết bị",
+      editable: false,
+      sortable: false,
+      flex: 1,
+      renderCell: (params: any) => <span>{params.row.product?.name}</span>,
     },
   ];
 
@@ -62,7 +68,7 @@ const WaitingTaskList = () => {
       <Box sx={{ width: "100%", height: "auto" }}>
         <StyledDataGrid
           sx={{
-            height: 350, // Chiều cao cố định cho bảng
+            height: 400, // Chiều cao cố định cho bảng
             width: "100%",
             "& .MuiDataGrid-cell": { padding: "8px" }, // Điều chỉnh padding trong các cell
           }}
@@ -70,19 +76,6 @@ const WaitingTaskList = () => {
           rows={taskChecks}
           hideFooter
         />
-      </Box>
-      <Box display="flex" justifyContent="center">
-        <Link
-          to="/approval"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            color: "#c3c3c3",
-          }}
-        >
-          Xem thêm <KeyboardDoubleArrowDownIcon fontSize="small" />
-        </Link>
       </Box>
     </>
   );

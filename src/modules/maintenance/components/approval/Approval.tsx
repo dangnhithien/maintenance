@@ -1,5 +1,4 @@
 import PaginatedDataGrid from "@components/PaginationDatagrid";
-import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusTaskCheck";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
@@ -21,7 +20,7 @@ const Approval: React.FC<Props> = ({ deviceId }) => {
   const [params, setParams] = useState<GetTaskCheckDto>({
     includeProperties: "TemplateCheck",
     takeCount: 5,
-    taskCheckStatus: EnumStatusTaskCheck.WAITING,
+    // taskCheckStatus: EnumStatusTaskCheck.WAITING,
     deviceId: deviceId || "",
   });
   const [rowSelectionModel, setRowSelectionModel] =

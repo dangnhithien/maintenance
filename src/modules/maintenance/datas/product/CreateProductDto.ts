@@ -10,4 +10,5 @@ export interface CreateProductDto {
   supplier?: string;
   version?: string;
   image?: string;
+  name?: string;
 }

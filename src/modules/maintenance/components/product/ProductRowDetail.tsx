@@ -1,4 +1,5 @@
 import ImageBase64 from "@components/ImageBase64";
+import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusTaskCheck";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import AppsIcon from "@mui/icons-material/Apps";
 import EventNoteIcon from "@mui/icons-material/EventNote";
@@ -16,6 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 interface Props {
   data: ProductDto;
 }
@@ -32,6 +34,11 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
           borderRight: "1px solid #ccc",
         }}
       >
+        <Box display={"flex"} justifyContent={"flex-end"}>
+          <Typography variant="caption" sx={{ color: "#c3c3c3" }}>
+            Seri: {data.serialNumber}
+          </Typography>
+        </Box>
         {/* <CardMedia
           component="img"
           sx={{
@@ -69,7 +76,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 fontWeight={"bold"}
                 color={"primary"}
               >
-                {data.device?.name}
+                {data.name}
               </Typography>
               <Tooltip title="xem chi tiết">
                 <Link to={`/product/detail-new/${data.id}`}>
@@ -88,42 +95,20 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 size={3}
                 sx={{ borderRight: "1px solid #ccc" }}
               >
-                <Typography variant="body2" fontWeight={"bold"}>
+                <Typography variant="body2" fontWeight="bold">
                   Thông tin máy
                 </Typography>
-                <Grid2 container direction={"column"} px={2}>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Seri
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.serialNumber}
-                    </Typography>
-                  </Grid2>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Nhà cung cấp
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.supplier}
-                    </Typography>
-                  </Grid2>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Version
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.version}
-                    </Typography>
-                  </Grid2>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Loại thiết bị
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {}
-                    </Typography>
-                  </Grid2>
+                <Grid2 container direction="column" px={2}>
+                  <InfoItem
+                    label="Seri"
+                    value={data.serialNumber?.toString() || ""}
+                  />
+                  <InfoItem label="Nhà cung cấp" value={data.supplier || ""} />
+                  <InfoItem label="Version" value={data.version || ""} />
+                  <InfoItem
+                    label="Loại thiết bị"
+                    value={data.device?.name || ""}
+                  />
                 </Grid2>
               </Grid2>
               <Grid2
@@ -133,42 +118,47 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 size={3}
                 sx={{ borderRight: "1px solid #ccc" }}
               >
-                <Typography variant="body2" fontWeight={"bold"}>
+                <Typography variant="body2" fontWeight="bold">
                   Thông tin bảo trì
                 </Typography>
-                <Grid2 container direction={"column"} px={2}>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Lần gần nhất
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.lastMaintenanceDate?.toISOString()}
-                    </Typography>
-                  </Grid2>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Lần kế tiếp
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.nextMaintenanceReminder?.toISOString()}
-                    </Typography>
-                  </Grid2>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Đã bảo trì
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.maintenanceTimes}
-                    </Typography>
-                  </Grid2>
-                  <Grid2 container direction="row" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                      Chu kì
-                    </Typography>
-                    <Typography variant="caption" color="info">
-                      {data.maintenanceCycle}
-                    </Typography>
-                  </Grid2>
+                <Grid2 container direction="column" px={2}>
+                  <InfoItem
+                    label="Lần gần nhất"
+                    value={
+                      data.lastMaintenanceDate
+                        ? new Date(data.lastMaintenanceDate).toLocaleDateString(
+                            "vi-VN",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "2-digit",
+                            }
+                          )
+                        : ""
+                    }
+                  />
+                  <InfoItem
+                    label="Lần kế tiếp"
+                    value={
+                      data.nextMaintenanceReminder
+                        ? new Date(
+                            data.nextMaintenanceReminder
+                          ).toLocaleDateString("vi-VN", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          })
+                        : ""
+                    }
+                  />
+                  <InfoItem
+                    label="Đã bảo trì"
+                    value={data.maintenanceTimes?.toString() || "0"}
+                  />
+                  <InfoItem
+                    label="Chu kì"
+                    value={data.maintenanceCycle?.toString() || ""}
+                  />
                 </Grid2>
               </Grid2>
               <Grid2
@@ -182,32 +172,71 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                   Bảo trì gần đây
                 </Typography>
                 <Grid2 container direction={"column"} px={2}>
-                  {data.taskChecks?.map((item, index) => {
-                    return (
-                      <Grid2
-                        container
-                        direction="row"
-                        spacing={1}
-                        alignItems={"center"}
-                        justifyContent={"space-between"}
-                      >
-                        <Grid2>
-                          <Typography variant="caption" color="text.secondary">
-                            {item.checkTime}
-                          </Typography>
-                        </Grid2>
+                  {!data.taskChecks || data.taskChecks.length == 0 ? (
+                    <Typography variant="caption" textAlign={"center"} mt={3}>
+                      Không có dữ liệu
+                    </Typography>
+                  ) : (
+                    data.taskChecks?.slice(0, 3).map((item, index) => {
+                      return (
+                        <Link
+                          to={"/task-check/detail/" + item.id}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Grid2
+                            container
+                            direction="row"
+                            alignItems={"center"}
+                            justifyContent={"space-between"}
+                            sx={{
+                              borderRadius: 1, // Rounded corners
+                              transition: "background-color 0.3s", // Smooth transition
+                              "&:hover": {
+                                backgroundColor: "#f0f0f0", // Light gray background on hover
+                                cursor: "pointer",
+                              },
+                            }}
+                          >
+                            <Grid2>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                <span>
+                                  {item.checkTime &&
+                                    new Date(item.checkTime).toLocaleDateString(
+                                      "vi-VN",
+                                      {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "2-digit",
+                                      }
+                                    )}
+                                </span>
+                              </Typography>
+                            </Grid2>
 
-                        <Grid2>
-                          <Typography variant="caption" color="text.secondary">
-                            {item.createdBy}
-                          </Typography>
-                        </Grid2>
-                        <Grid2>
-                          <Chip label={item.status} color="info" size="small" />
-                        </Grid2>
-                      </Grid2>
-                    );
-                  })}
+                            <Grid2>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {item.createdBy}
+                              </Typography>
+                            </Grid2>
+
+                            <Grid2>
+                              <ChipTaskCheckStatus
+                                status={
+                                  item.status || EnumStatusTaskCheck.CREATED
+                                }
+                              />
+                            </Grid2>
+                          </Grid2>
+                        </Link>
+                      );
+                    })
+                  )}
                 </Grid2>
               </Grid2>
               <Grid2 container direction="column" spacing={1} size={3}>
@@ -261,5 +290,15 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
     </Card>
   );
 };
+const InfoItem = ({ label, value }: { label: string; value: string }) => (
+  <Box display="flex">
+    <Typography variant="caption" color="textSecondary">
+      {label}:
+    </Typography>
+    <Typography variant="caption" color="info" fontWeight="bold">
+      {value}
+    </Typography>
+  </Box>
+);
 
 export default ProductRowDetail;
