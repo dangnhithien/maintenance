@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useNotification } from "@modules/maintenance/components/common/Notistack";
 import {
   Box,
   Button,
@@ -20,6 +21,7 @@ const schema = yup.object().shape({
 });
 
 const Login = () => {
+  const { notify } = useNotification();
   const {
     control,
     handleSubmit,
@@ -37,12 +39,12 @@ const Login = () => {
   const onSubmit = (data: any) => {
     login(data, {
       onSuccess: (data) => {
-        console.log("Login Successful:", data);
+        console.log("data", data);
+        notify("success", "success");
         window.location.href = "/";
       },
-      onError: (error) => {
-        console.error("Login Error:", error);
-      },
+    }).catch((error) => {
+      notify(error.message, "error");
     });
   };
 

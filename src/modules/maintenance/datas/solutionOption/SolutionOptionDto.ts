@@ -3,7 +3,7 @@ import { ErrorDetailDto } from "../errorDetail/ErrorDetailDto";
 export interface SolutionOptionDto {
   id: string;
   code: string;
-  name: string;
+  content: string;
   description?: string;
   errorDetailId: string;
   errorDetailCode: string;

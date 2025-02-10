@@ -1,6 +1,6 @@
 export interface CreateSolutionOptionDto {
   code: string;
-  name: string;
+  content: string;
   description?: string;
   errorDetailId: string;
 }

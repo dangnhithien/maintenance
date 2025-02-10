@@ -9,24 +9,20 @@ const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 
 class AuthApi {
   login = async (data: LoginDto) => {
-    try {
-      const response = await axios.post(
-        `${baseUrl}/api/Auth/login`,
-        {
-          username: data.userName,
-          password: data.password,
+    const response = await axios.post(
+      `${baseUrl}/api/Auth/login`,
+      {
+        username: data.userName,
+        password: data.password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.status === 200) {
-        return response.data;
       }
-    } catch (error) {
-      return error;
+    );
+    if (response.status === 200) {
+      return response.data;
     }
   };
   getUserInfo = async (

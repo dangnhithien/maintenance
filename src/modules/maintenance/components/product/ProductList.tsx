@@ -1,5 +1,6 @@
 import PaginatedDataGrid from "@components/PaginationDatagrid";
 import { GetProductDto } from "@modules/maintenance/datas/product/GetProductDto";
+import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import useProduct from "@modules/maintenance/hooks/useProduct";
 import { Add, Warning } from "@mui/icons-material";
 import RestoreIcon from "@mui/icons-material/Restore";
@@ -36,16 +37,18 @@ const ProductList = () => {
     totalCount,
   } = useProduct(params);
 
-  const columns: GridColDef[] = [
+  const columns: GridColDef<ProductDto>[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
-      field: "code",
+      field: "serialNumber",
       headerName: "Mã",
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/product/detail/${params.row.id}`}>{params.row.code}</Link>
+        <Link to={`/product/detail/${params.row.id}`}>
+          {params.row.serialNumber}
+        </Link>
       ),
     },
     {
@@ -62,12 +65,22 @@ const ProductList = () => {
     },
 
     {
-      field: "date",
+      field: "createdDate",
       headerName: "Ngày tạo",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <span>
+          {params.row.createdDate &&
+            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
+        </span>
+      ),
     },
   ];
 

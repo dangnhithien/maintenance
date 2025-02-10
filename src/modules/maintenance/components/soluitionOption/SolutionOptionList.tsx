@@ -51,14 +51,14 @@ const SolutionOptionList = () => {
       ),
     },
     {
-      field: "name",
+      field: "content",
       headerName: "Tên",
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/solution-option/create/${params.row.id}`}>
-          {params.row.name}
+        <Link to={`/solution-option/detail/${params.row.id}`}>
+          {params.row.content}
         </Link>
       ),
     },
@@ -69,19 +69,29 @@ const SolutionOptionList = () => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/solution-option/create/${params.row.id}`}>
+        <Link to={`/solution-option/detail/${params.row.id}`}>
           {params.row.errorDetail?.content}
         </Link>
       ),
     },
 
     {
-      field: "date",
+      field: "createdDate",
       headerName: "Ngày tạo",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <span>
+          {params.row.createdDate &&
+            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
+        </span>
+      ),
     },
   ];
 

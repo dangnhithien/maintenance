@@ -1,3 +1,4 @@
+import ImageBase64 from "@components/ImageBase64";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import AppsIcon from "@mui/icons-material/Apps";
 import EventNoteIcon from "@mui/icons-material/EventNote";
@@ -6,7 +7,6 @@ import {
   Box,
   Card,
   CardContent,
-  CardMedia,
   Chip,
   Divider,
   Grid2,
@@ -32,7 +32,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
           borderRight: "1px solid #ccc",
         }}
       >
-        <CardMedia
+        {/* <CardMedia
           component="img"
           sx={{
             width: 150,
@@ -41,11 +41,14 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
             padding: 1,
           }}
           image={
-            data.imageUrl ||
+            data.image ||
             "https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg"
           }
           alt={data.serialNumber}
-        />
+        /> */}
+        <Box pr={1}>
+          <ImageBase64 imageData={data.image || ""} width={150} height={150} />
+        </Box>
         {/* Trạng thái bên dưới hình ảnh */}
         <Chip label={"Hoạt động"} color="success" size="small" sx={{ mt: 1 }} />
       </Box>
@@ -213,8 +216,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 </Typography>
                 <Grid2 container direction={"column"} px={2}>
                   <Typography variant="caption" color="text.secondary">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Repellat, autem.
+                    {data.note}
                   </Typography>
                 </Grid2>
               </Grid2>
@@ -228,7 +230,18 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                   sx={{ fontSize: "16px", mt: "-1.5px !important" }}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  {data.installtionDate?.toISOString()}
+                  <span>
+                    {data.installationDate
+                      ? new Date(data.installationDate).toLocaleDateString(
+                          "vi-VN",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          }
+                        )
+                      : ""}
+                  </span>
                 </Typography>
               </Stack>
 

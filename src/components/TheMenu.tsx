@@ -185,7 +185,7 @@ const Navbar: React.FC = () => {
               }}
             >
               <IconButton onClick={handleAvatarMenuOpen} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User Avatar" src="" />
               </IconButton>
               <Menu
                 anchorEl={anchorElUser}

@@ -27,6 +27,11 @@ export const useAuth = (initialParams?: any) => {
 
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
+    onError: (error) => {
+      console.error("Failed to login:", error);
+      queryClient.setQueryData([KEY], null); // Set data to null if login fails
+    },
+    // Always refetch user info after login
   });
 
   // Logout

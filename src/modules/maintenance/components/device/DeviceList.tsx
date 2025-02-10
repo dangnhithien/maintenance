@@ -54,24 +54,34 @@ const DeviceList = () => {
     },
     {
       field: "",
-      headerName: "Thiết bị",
+      headerName: "Loại thiết bị",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/device/detail/${params.row.id}`}>
-          {params.row.device?.name}
+          {params.row.typeDevice?.name}
         </Link>
       ),
     },
     {
-      field: "date",
+      field: "createdDate",
       headerName: "Ngày tạo",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <span>
+          {params.row.createdDate &&
+            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
+        </span>
+      ),
     },
   ];
 

@@ -79,12 +79,22 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
       ),
     },
     {
-      field: "date",
+      field: "createdDate",
       headerName: "Ngày tạo",
       minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <span>
+          {params.row.createdDate &&
+            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
+        </span>
+      ),
     },
   ];
 

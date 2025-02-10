@@ -1,5 +1,6 @@
 import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
 
+import ImageBase64 from "@components/ImageBase64";
 import productApi from "@modules/maintenance/apis/productApi";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import {
@@ -57,25 +58,34 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
       <Typography variant="h6" color="primary" fontWeight="bold" mb={2}>
         Chi tiết
       </Typography>
-      <Grid2 container spacing={2}>
-        <Grid2 size={3} direction={"column"}>
-          <Grid2>
-            <Typography variant="body1">
-              <strong>Số seri</strong>
-            </Typography>
-          </Grid2>
-          <Grid2>
-            <Typography variant="body1">{product.serialNumber}</Typography>
-          </Grid2>
+      <Grid2 container direction={"row"} spacing={2}>
+        <Grid2>
+          <ImageBase64
+            imageData={product.image || ""}
+            width={200}
+            height={200}
+          />
         </Grid2>
-        <Grid2 size={3} direction={"column"}>
-          <Grid2>
-            <Typography variant="body1">
-              <strong>Tên</strong>
-            </Typography>
+        <Grid2 container spacing={2} flex={1}>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Số seri</strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">{product.serialNumber}</Typography>
+            </Grid2>
           </Grid2>
-          <Grid2>
-            <Typography variant="body1">{product.device?.name}</Typography>
+          <Grid2 size={3} direction={"column"}>
+            <Grid2>
+              <Typography variant="body1">
+                <strong>Tên</strong>
+              </Typography>
+            </Grid2>
+            <Grid2>
+              <Typography variant="body1">{product.device?.name}</Typography>
+            </Grid2>
           </Grid2>
         </Grid2>
       </Grid2>
@@ -84,7 +94,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
           variant="contained"
           color="primary"
           component={Link}
-          to={`/solution-option/create/${product.id}`}
+          to={`/product/create/${product.id}`}
         >
           Chỉnh sửa
         </Button>

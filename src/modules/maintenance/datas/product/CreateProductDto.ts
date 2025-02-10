@@ -3,5 +3,11 @@ export interface CreateProductDto {
   note?: string;
   qrCode?: string;
   deviceId: string;
-  imageQR: string;
+  imageQR?: string;
+  address?: string;
+  installationDate?: Date | null;
+  maintenanceCycle?: number;
+  supplier?: string;
+  version?: string;
+  image?: string;
 }

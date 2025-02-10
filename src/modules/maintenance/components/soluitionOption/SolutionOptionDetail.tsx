@@ -77,7 +77,7 @@ const SolutionOptionDetail: React.FC<Props> = ({ id }) => {
             </Typography>
           </Grid2>
           <Grid2>
-            <Typography variant="body1">{solutionOption.name}</Typography>
+            <Typography variant="body1">{solutionOption.content}</Typography>
           </Grid2>
         </Grid2>
         <Grid2 size={3} direction={"column"}>

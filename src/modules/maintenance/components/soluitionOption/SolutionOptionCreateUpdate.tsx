@@ -22,8 +22,8 @@ import ErrorDetailSelect from "../common/select/ErrorDetailSelect";
 
 // Định nghĩa schema validation với Yup
 const schema = yup.object({
-  code: yup.string().required("Name is required"),
-  name: yup.string().required("Code is required"),
+  code: yup.string().required("Code is required"),
+  content: yup.string().required("Name is required"),
   errorDetailId: yup.string().required("Type device is required"),
   description: yup
     .string()
@@ -45,7 +45,7 @@ const SolutionOptionCreateUpdate: React.FC<FormProps> = ({ id }) => {
   } = useForm<CreateSolutionOptionDto>({
     defaultValues: {
       code: "",
-      name: "",
+      content: "",
       description: "",
       errorDetailId: "",
     },
@@ -137,15 +137,15 @@ const SolutionOptionCreateUpdate: React.FC<FormProps> = ({ id }) => {
               <Typography color="error">*</Typography>
             </Stack>
             <Controller
-              name="name"
+              name="content"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   fullWidth
                   size="small"
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
+                  error={!!errors.content}
+                  helperText={errors.content?.message}
                 />
               )}
             />

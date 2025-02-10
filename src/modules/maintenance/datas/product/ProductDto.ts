@@ -4,9 +4,9 @@ import { TaskCheckDto } from "../taskCheck/TaskCheckDto";
 
 export interface ProductDto extends TrackingDataDto {
   id: string;
-  imageUrl?: string;
+  image?: string;
   address: string;
-  installtionDate?: Date;
+  installationDate?: Date;
   serialNumber: string;
   qrCode: string;
   deviceId: string;
@@ -22,4 +22,5 @@ export interface ProductDto extends TrackingDataDto {
   maintenanceTimes: number;
   maintenanceCycle: number;
   status: string;
+  note?: string;
 }

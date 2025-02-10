@@ -52,10 +52,7 @@ const SolutionOptionDetailPage = React.lazy(
 const SolutionOptionListPage = React.lazy(
   () => import("../pages/solutionOption/SolutionOptionListPage")
 );
-const ConfigSurveyPage = React.lazy(
-  () => import("../pages/survey/ConfigSurveyPage")
-);
-const SurveyPage = React.lazy(() => import("../pages/survey/SurveyPage"));
+
 const TaskCheckDetailPage = React.lazy(
   () => import("../pages/taskCheck/TaskCheckDetailPage")
 );
@@ -93,7 +90,8 @@ const MaintenanceRoutes = () => (
       path="/"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
-          <DashBoardPage />
+          {/* <DashBoardPage /> */}
+          <ProductListDetailPage />
         </React.Suspense>
       }
     />
@@ -136,22 +134,6 @@ const MaintenanceRoutes = () => (
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <TemplateCheckListCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/survey/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <SurveyPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/survey/config"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ConfigSurveyPage />
         </React.Suspense>
       }
     />

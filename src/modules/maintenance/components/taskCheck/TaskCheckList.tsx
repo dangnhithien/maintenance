@@ -51,16 +51,23 @@ const TaskCheckList: React.FC<Props> = ({ productId }) => {
     },
     {
       field: "checkTime",
-      headerName: "Thời gian",
+      headerName: "Ngày tạo",
+      minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.checkTime}
+          {params.row.checkTime &&
+            new Date(params.row.checkTime).toLocaleDateString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
         </Link>
       ),
     },
+
     {
       field: "createdBy",
       headerName: "Người tạo",

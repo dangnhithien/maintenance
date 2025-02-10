@@ -1,3 +1,4 @@
+import ImageBase64 from "@components/ImageBase64";
 import productApi from "@modules/maintenance/apis/productApi";
 import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
@@ -5,6 +6,7 @@ import {
   Box,
   Chip,
   CircularProgress,
+  Grid2,
   Paper,
   Stack,
   Typography,
@@ -53,32 +55,29 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
       </Paper>
     );
   }
-  return (
-    <Box display="flex" gap={1}>
-      {/* Sidebar */}
-      <Box
-        bgcolor="white"
-        boxShadow={3}
-        borderRadius={1.5}
-        p={2}
-        sx={{ width: 300, position: "sticky", top: 20, height: "fit-content" }}
-      >
-        <img
-          src={
-            product?.imageUrl ||
-            "https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg"
-          }
-          alt="Device"
-          style={{
-            width: "100%",
-            height: 220,
-            objectFit: "cover",
-            borderRadius: 8,
-            marginBottom: 8,
-          }}
-        />
 
-        <Box textAlign="center" mb={1}>
+  return (
+    <Grid2 container spacing={1} direction={"row"}>
+      {/* Sidebar */}
+      <Grid2
+        sx={{
+          bgcolor: "white",
+          boxShadow: 3,
+          borderRadius: 1.5,
+          p: 2,
+          width: 300,
+          position: "sticky",
+          top: 20,
+          alignSelf: "stretch", // Ensure the sidebar stretches with the content
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Grid2 mb={1}>
+          <ImageBase64 imageData={product.image || ""} height={"220px"} />
+        </Grid2>
+
+        <Grid2 textAlign="center" mb={1}>
           <Chip
             label={
               product.status === "Active" ? "HOẠT ĐỘNG" : "NGỪNG HOẠT ĐỘNG"
@@ -91,16 +90,18 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
               textTransform: "uppercase",
             }}
           />
-        </Box>
+        </Grid2>
 
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: 700, textAlign: "center", color: "#2d3748" }}
-        >
-          {product.device?.name}
-        </Typography>
+        <Grid2 container justifyContent={"center"}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 700, textAlign: "center", color: "#2d3748" }}
+          >
+            {product.device?.name}
+          </Typography>
+        </Grid2>
 
-        <Box>
+        <Grid2>
           <Typography variant="body1" color="primary" fontWeight="bold">
             Thông tin
           </Typography>
@@ -117,35 +118,39 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
           <Stack px={2} py={1} spacing={1}>
             <InfoItem
               label="Lần gần nhất"
-              value={product.lastMaintenanceDate?.toISOString()}
+              value={product.lastMaintenanceDate?.toISOString() || "N/A"}
             />
             <InfoItem
               label="Lần kế tiếp"
-              value={product.nextMaintenanceReminder?.toISOString()}
+              value={product.nextMaintenanceReminder?.toISOString() || "N/A"}
             />
             <InfoItem
               label="Đã bảo trì"
-              value={product.maintenanceTimes?.toString()}
+              value={product.maintenanceTimes?.toString() || "0"}
             />
             <InfoItem
               label="Chu kì"
-              value={product.maintenanceCycle?.toString()}
+              value={product.maintenanceCycle?.toString() || "N/A"}
             />
           </Stack>
-        </Box>
-      </Box>
+        </Grid2>
+      </Grid2>
 
       {/* Main Content */}
-      <Box flex={1} display="flex" flexDirection="column" gap={1}>
-        <Wrapper title="Phiếu chờ duyệt">
-          <Approval deviceId={id} />
-        </Wrapper>
+      <Grid2 container direction={"column"} flex={1} gap={1}>
+        <Grid2>
+          <Wrapper title="Phiếu chờ duyệt">
+            <Approval deviceId={id} />
+          </Wrapper>
+        </Grid2>
 
-        <Wrapper title="Lịch sử quét">
-          <TaskCheckList productId={id} />
-        </Wrapper>
-      </Box>
-    </Box>
+        <Grid2>
+          <Wrapper title="Lịch sử quét">
+            <TaskCheckList productId={id} />
+          </Wrapper>
+        </Grid2>
+      </Grid2>
+    </Grid2>
   );
 };
 
