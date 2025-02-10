@@ -1,7 +1,11 @@
 import { ReactECharts } from "@components/ReactChart";
 import StyledDataGrid from "@components/StyledDataGrid";
 import overviewApi from "@modules/maintenance/apis/overviewApi";
-import { unwrapListReponse } from "@modules/maintenance/datas/comon/ApiResponse";
+import {
+  unwrapListReponse,
+  unwrapObjectReponse,
+} from "@modules/maintenance/datas/comon/ApiResponse";
+import { OverviewKeyMetric } from "@modules/maintenance/datas/overview/OverviewKeyMetrics";
 import { OverviewProductDto } from "@modules/maintenance/datas/overview/OverviewProductDto";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
@@ -41,6 +45,8 @@ const Dashboard: React.FC = () => {
   const [overViewProduct, setOverViewProduct] = useState<OverviewProductDto[]>(
     []
   );
+  const [overViewKeyMetric, setOverViewKeyMetric] =
+    useState<OverviewKeyMetric>();
   const { taskChecks } = useTaskCheck(params);
 
   useEffect(() => {
@@ -49,6 +55,16 @@ const Dashboard: React.FC = () => {
       .then(unwrapListReponse)
       .then((data) => {
         setOverViewProduct(data);
+      })
+      .catch((error) => {});
+  }, []);
+
+  useEffect(() => {
+    overviewApi
+      .getKeyMetric()
+      .then(unwrapObjectReponse)
+      .then((data) => {
+        setOverViewKeyMetric(data);
       })
       .catch((error) => {});
   }, []);
@@ -191,7 +207,7 @@ const Dashboard: React.FC = () => {
                   textAlign={"center"}
                   fontWeight={"bold"}
                 >
-                  50
+                  {overViewKeyMetric?.totalProduct}
                 </Typography>
                 <Typography variant="caption">Thiết bị</Typography>
               </Stack>
@@ -202,7 +218,7 @@ const Dashboard: React.FC = () => {
                   textAlign={"center"}
                   fontWeight={"bold"}
                 >
-                  10
+                  {overViewKeyMetric?.totalUser}
                 </Typography>
                 <Typography variant="caption">Nhân viên</Typography>
               </Stack>
@@ -213,7 +229,7 @@ const Dashboard: React.FC = () => {
                   textAlign={"center"}
                   fontWeight={"bold"}
                 >
-                  20
+                  {overViewKeyMetric?.totalTemplate}
                 </Typography>
                 <Typography variant="caption">Biểu mẫu</Typography>
               </Stack>

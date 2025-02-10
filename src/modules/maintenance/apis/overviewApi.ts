@@ -1,5 +1,9 @@
 import { ApiRequest } from "../datas/comon/ApiRequest";
-import { ApiResponseWithList } from "../datas/comon/ApiResponse";
+import {
+  ApiResponseWithList,
+  ApiResponseWithObject,
+} from "../datas/comon/ApiResponse";
+import { OverviewKeyMetric } from "../datas/overview/OverviewKeyMetrics";
 import { OverviewProductDto } from "../datas/overview/OverviewProductDto";
 import axiosInstance from "./axiosInstance";
 
@@ -18,6 +22,13 @@ class OverviewApi {
         params,
       }
     );
+  };
+  getKeyMetric = async (
+    params?: ApiRequest
+  ): Promise<ApiResponseWithObject<OverviewKeyMetric>> => {
+    return await axiosInstance.get(`${BASE_URL}/key-metrics`, {
+      params,
+    });
   };
 }
 
