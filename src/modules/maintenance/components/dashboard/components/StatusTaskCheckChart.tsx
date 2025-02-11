@@ -9,7 +9,7 @@ const StatusTaskCheckChart = () => {
   const [data, setData] = useState<OverviewStatusTaskCheckDto>();
   useEffect(() => {
     overviewApi
-      .getStatusTaskCheck()
+      .getStatusTaskCheck({ fromDate: new Date(), toDate: new Date() })
       .then(unwrapObjectReponse)
       .then((data) => {
         setData(data);
