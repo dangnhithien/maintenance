@@ -249,7 +249,7 @@ const Dashboard: React.FC = () => {
           </Grid2>
 
           <Grid2 container direction={"column"} size={6}>
-            <Wrapper title="Phiếu chờ  duyệt">
+            <Wrapper title="Phiếu khảo sát">
               <StatusTaskCheckChart />
             </Wrapper>
           </Grid2>
