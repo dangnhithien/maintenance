@@ -1,7 +1,24 @@
 import { ReactECharts } from "@components/ReactChart";
+import overviewApi from "@modules/maintenance/apis/overviewApi";
+import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
+import { OverviewStatusTaskCheckDto } from "@modules/maintenance/datas/overview/OverviewStatusTaskCheckDto";
 import { EChartsOption } from "echarts";
+import { useEffect, useState } from "react";
 
 const StatusTaskCheckChart = () => {
+  const [data, setData] = useState<OverviewStatusTaskCheckDto>();
+  useEffect(() => {
+    overviewApi
+      .getStatusTaskCheck()
+      .then(unwrapObjectReponse)
+      .then((data) => {
+        setData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const option: EChartsOption = {
     tooltip: {
       trigger: "item",
@@ -12,7 +29,7 @@ const StatusTaskCheckChart = () => {
     },
     series: [
       {
-        name: "Danh sách thiết bị",
+        name: "Phiếu khảo sát",
         type: "pie",
         radius: ["40%", "70%"],
         avoidLabelOverlap: false,
@@ -20,18 +37,34 @@ const StatusTaskCheckChart = () => {
           show: false,
           position: "center",
         },
-
         data: [
-          { value: 1048, name: "Đã tạo" },
-          { value: 735, name: "Chờ duyệt" },
-          { value: 1048, name: "Đã duyệt" },
-          { value: 735, name: "Từ chối" },
+          {
+            value: data?.totalTaskCreated,
+            name: "Đã tạo",
+            itemStyle: { color: "#2196F3" }, // Màu xanh dương
+          },
+          {
+            value: data?.totalTaskWaiting,
+            name: "Chờ duyệt",
+            itemStyle: { color: "#FFC107" }, // Màu cam
+          },
+          {
+            value: data?.totalTaskApproved,
+            name: "Đã duyệt",
+            itemStyle: { color: "#4CAF50" }, // Màu xanh lá
+          },
+          {
+            value: data?.totalTaskRejected,
+            name: "Từ chối",
+            itemStyle: { color: "#F44336" }, // Màu đỏ
+          },
         ],
       },
     ],
   };
+
   return (
-    <ReactECharts option={option} style={{ width: "100%", height: "400px" }} />
+    <ReactECharts option={option} style={{ width: "100%", height: "350px" }} />
   );
 };
 

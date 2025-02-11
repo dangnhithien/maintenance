@@ -118,11 +118,32 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
           <Stack px={2} py={1} spacing={1}>
             <InfoItem
               label="Lần gần nhất"
-              value={product.lastMaintenanceDate?.toISOString() || "N/A"}
+              value={
+                product.lastMaintenanceDate
+                  ? new Date(product.lastMaintenanceDate).toLocaleDateString(
+                      "vi-VN",
+                      {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "2-digit",
+                      }
+                    )
+                  : ""
+              }
             />
             <InfoItem
               label="Lần kế tiếp"
-              value={product.nextMaintenanceReminder?.toISOString() || "N/A"}
+              value={
+                product.nextMaintenanceReminder
+                  ? new Date(
+                      product.nextMaintenanceReminder
+                    ).toLocaleDateString("vi-VN", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                    })
+                  : ""
+              }
             />
             <InfoItem
               label="Đã bảo trì"

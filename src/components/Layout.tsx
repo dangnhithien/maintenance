@@ -7,6 +7,7 @@ const TheLayout: React.FC<PropsWithChildren> = ({ children }) => {
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <TheMenu />
       <Box
+        id="layoutContainer"
         sx={{
           p: 2, // Padding for the content
 

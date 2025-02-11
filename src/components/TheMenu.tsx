@@ -172,7 +172,7 @@ const Navbar: React.FC = () => {
               color="inherit"
               sx={{ textTransform: "none" }}
             >
-              Danh sách duyệt
+              Danh sách chờ duyệt
             </Button>
           </Grid2>
 

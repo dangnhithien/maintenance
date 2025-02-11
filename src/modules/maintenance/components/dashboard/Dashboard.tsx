@@ -5,7 +5,7 @@ import {
   unwrapListReponse,
   unwrapObjectReponse,
 } from "@modules/maintenance/datas/comon/ApiResponse";
-import { OverviewKeyMetric } from "@modules/maintenance/datas/overview/OverviewKeyMetrics";
+import { OverviewKeyMetricDto } from "@modules/maintenance/datas/overview/OverviewKeyMetricsDto";
 import { OverviewProductDto } from "@modules/maintenance/datas/overview/OverviewProductDto";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
@@ -24,29 +24,26 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   color: theme.palette.text.primary,
 }));
+
 function getDateRange(): { fromDate: Date; toDate: Date } {
   const toDate = new Date();
   const fromDate = new Date();
-
-  // Subtract 7 days from the current date
+  // Trừ 7 ngày kể từ ngày hiện tại
   fromDate.setDate(toDate.getDate() - 7);
-
-  return {
-    fromDate,
-    toDate,
-  };
+  return { fromDate, toDate };
 }
 
 const Dashboard: React.FC = () => {
   const [params, setParams] = useState<GetTaskCheckDto>({
     includeProperties: "TemplateCheck,Product",
-    takeCount: 50,
+    takeCount: 20,
+    sortBy: "CreatedDate DESC",
   });
   const [overViewProduct, setOverViewProduct] = useState<OverviewProductDto[]>(
     []
   );
   const [overViewKeyMetric, setOverViewKeyMetric] =
-    useState<OverviewKeyMetric>();
+    useState<OverviewKeyMetricDto>();
   const { taskChecks } = useTaskCheck(params);
 
   useEffect(() => {
@@ -70,32 +67,6 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const columns: GridColDef[] = [
-    // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
-    // {
-    //   field: "code",
-    //   headerName: "Mã",
-    //   editable: false,
-    //   sortable: false,
-    //   flex: 1,
-    //   renderCell: (params: any) => (
-    //     <Link to={`/task-check/detail/${params.row.id}`}>
-    //       {params.row.code}
-    //     </Link>
-    //   ),
-    // },
-
-    // {
-    //   field: "",
-    //   headerName: "Tên biểu mẫu ",
-    //   editable: false,
-    //   sortable: false,
-    //   flex: 1,
-    //   renderCell: (params: any) => (
-    //     <Link to={`/task-check/detail/${params.row.id}`}>
-    //       {params.row.templateCheck?.name}
-    //     </Link>
-    //   ),
-    // },
     {
       field: "checkTime",
       headerName: "Ngày tạo",
@@ -105,10 +76,13 @@ const Dashboard: React.FC = () => {
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
           {params.row.checkTime &&
-            new Date(params.row.checkTime).toLocaleDateString("vi-VN", {
+            new Date(params.row.checkTime).toLocaleString("vi-VN", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              // second: "2-digit", // Bỏ comment nếu muốn hiển thị giây
             })}
         </Link>
       ),
@@ -129,6 +103,8 @@ const Dashboard: React.FC = () => {
       renderCell: (params: any) => <span>{params.row.product?.name}</span>,
     },
   ];
+
+  // Cập nhật option biểu đồ: thêm một yAxis thứ hai và series line hiển thị tỉ lệ lỗi
   const option: EChartsOption = {
     xAxis: {
       type: "category",
@@ -140,41 +116,69 @@ const Dashboard: React.FC = () => {
         })
       ),
     },
-    yAxis: {
-      type: "value",
-    },
+    yAxis: [
+      {
+        type: "value",
+        name: "Số lượng",
+      },
+      {
+        type: "value",
+        name: "Tỉ lệ lỗi (%)",
+        min: 0,
+        max: 100,
+        position: "right",
+        axisLabel: {
+          formatter: "{value} %",
+        },
+      },
+    ],
     series: [
       {
         name: "Số lượng máy được kiểm tra",
         type: "bar",
-        stack: "total", // Để chồng các cột lên nhau.
+        stack: "total", // chồng các cột lên nhau
         data: overViewProduct.map((e) => e.totalChecked),
+        itemStyle: { color: "#2196F3" }, // Màu xanh dương
       },
       {
         name: "Số lượng máy gặp lỗi",
         type: "bar",
-        stack: "total", // Để chồng các cột lên nhau
+        stack: "total", // chồng các cột lên nhau
         data: overViewProduct.map((e) => e.totalErrors),
+        itemStyle: { color: "#F44336" }, // Màu đỏ
+      },
+      {
+        name: "Tỉ lệ lỗi (%)",
+        type: "line",
+        yAxisIndex: 1, // dùng trục thứ 2
+        data: overViewProduct.map((e) =>
+          e.totalChecked
+            ? +((e.totalErrors / e.totalChecked) * 100).toFixed(1)
+            : 0
+        ),
+        itemStyle: { color: "#F44336" },
       },
     ],
     tooltip: {
       trigger: "axis",
       axisPointer: {
-        type: "shadow", // Hiển thị tooltip khi di chuột trên trục
+        type: "shadow", // hiển thị tooltip theo dạng shadow
       },
       formatter: function (params: any) {
-        // Làm tròn các giá trị hiển thị trong tooltip
         return params
           .map((param: any) => {
-            return `${param.seriesName}: ${param.value.toFixed(1)}`;
+            if (param.seriesName === "Tỉ lệ lỗi (%)") {
+              return `${param.seriesName}: ${param.value}%`;
+            }
+            return `${param.seriesName}: ${param.value}`;
           })
           .join("<br/>");
       },
     },
     grid: {
-      left: 16,
+      left: 36,
       top: 8,
-      right: 16,
+      right: 50,
       bottom: 24,
     },
   };
@@ -182,9 +186,9 @@ const Dashboard: React.FC = () => {
   return (
     <Grid2 container size={12} spacing={1}>
       <Grid2 container spacing={1} size={8}>
-        {/* Chart */}
+        {/* Biểu đồ */}
         <Grid2 size={12}>
-          <Wrapper title={"Theo dõi hoạt động kiểm tra "}>
+          <Wrapper title={"Bảo trì thiết bị"}>
             <ReactECharts
               option={option}
               style={{ height: 200, width: "100%" }}
@@ -233,18 +237,6 @@ const Dashboard: React.FC = () => {
                 </Typography>
                 <Typography variant="caption">Biểu mẫu</Typography>
               </Stack>
-              {/* <Stack  direction={"column"}>
-                <Typography variant="h5" color="primary">
-                  50
-                </Typography>
-                <Typography variant="caption">Thiết bị</Typography>
-              </Stack>
-              <Stack  direction={"column"}>
-                <Typography variant="h5" color="primary">
-                  50
-                </Typography>
-                <Typography variant="caption">Thiết bị</Typography>
-              </Stack> */}
             </Grid2>
           </Paper>
         </Grid2>
@@ -257,7 +249,7 @@ const Dashboard: React.FC = () => {
           </Grid2>
 
           <Grid2 container direction={"column"} size={6}>
-            <Wrapper title="Phiếu cần duyệt">
+            <Wrapper title="Phiếu chờ  duyệt">
               <StatusTaskCheckChart />
             </Wrapper>
           </Grid2>

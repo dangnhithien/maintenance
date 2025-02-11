@@ -1,4 +1,4 @@
-export interface OverviewKeyMetric {
+export interface OverviewKeyMetricDto {
   totalProduct: number;
   totalUser: number;
   totalTemplate: number;

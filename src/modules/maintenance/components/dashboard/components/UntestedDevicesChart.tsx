@@ -1,7 +1,24 @@
 import { ReactECharts } from "@components/ReactChart";
+import overviewApi from "@modules/maintenance/apis/overviewApi";
+import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
+import { OverviewStatusCheckProductDto } from "@modules/maintenance/datas/overview/OverviewStatusCheckProductDto";
 import { EChartsOption } from "echarts";
+import { useEffect, useState } from "react";
 
 const UntestedDevicesChart = () => {
+  const [data, setData] = useState<OverviewStatusCheckProductDto>();
+  useEffect(() => {
+    overviewApi
+      .getStatusProduct()
+      .then(unwrapObjectReponse)
+      .then((data) => {
+        setData(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   const option: EChartsOption = {
     tooltip: {
       trigger: "item",
@@ -20,16 +37,24 @@ const UntestedDevicesChart = () => {
           show: false,
           position: "center",
         },
-
         data: [
-          { value: 1048, name: "Đã kiểm tra" },
-          { value: 735, name: "Chưa kiểm tra" },
+          {
+            value: data?.totalCheckedProduct,
+            name: "Đã kiểm tra",
+            itemStyle: { color: "#4CAF50" }, // Màu xanh lá
+          },
+          {
+            value: data?.totalUnCheckedProduct,
+            name: "Chưa kiểm tra",
+            itemStyle: { color: "#9E9E9E" }, // Màu xám
+          },
         ],
       },
     ],
   };
+
   return (
-    <ReactECharts option={option} style={{ width: "100%", height: "400px" }} />
+    <ReactECharts option={option} style={{ width: "100%", height: "350px" }} />
   );
 };
 
