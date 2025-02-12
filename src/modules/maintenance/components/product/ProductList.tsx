@@ -58,9 +58,7 @@ const ProductList = () => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/product/detail/${params.row.id}`}>
-          {params.row.device?.name}
-        </Link>
+        <Link to={`/product/detail/${params.row.id}`}>{params.row.name}</Link>
       ),
     },
 

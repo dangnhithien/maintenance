@@ -84,7 +84,7 @@ const ProductDetail: React.FC<Props> = ({ id }) => {
               </Typography>
             </Grid2>
             <Grid2>
-              <Typography variant="body1">{product.device?.name}</Typography>
+              <Typography variant="body1">{product.name}</Typography>
             </Grid2>
           </Grid2>
           <Grid2 size={3} direction={"column"}>
