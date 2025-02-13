@@ -74,11 +74,15 @@ const TaskCheckList: React.FC<Props> = ({ productId }) => {
       headerName: "Người tạo",
       editable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.createdBy}
-        </Link>
+        <span>
+          {params.row.createdBy || params.row.createdBy == "undifined"
+            ? "Admin"
+            : params.row.createdBy}
+        </span>
       ),
     },
 

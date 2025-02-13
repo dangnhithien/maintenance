@@ -36,7 +36,7 @@ function getDateRange(): { fromDate: Date; toDate: Date } {
 const Dashboard: React.FC = () => {
   const [params, setParams] = useState<GetTaskCheckDto>({
     includeProperties: "TemplateCheck,Product",
-    takeCount: 20,
+    takeCount: 24,
     sortBy: "CreatedDate DESC",
   });
   const [overViewProduct, setOverViewProduct] = useState<OverviewProductDto[]>(
@@ -72,6 +72,8 @@ const Dashboard: React.FC = () => {
       headerName: "Ngày tạo",
       editable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
@@ -91,14 +93,25 @@ const Dashboard: React.FC = () => {
       field: "createdBy",
       headerName: "Người tạo",
       editable: false,
+      align: "center",
+      headerAlign: "center",
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <span>
+          {params.row.createdBy || params.row.createdBy == "undifined"
+            ? "Admin"
+            : params.row.createdBy}
+        </span>
+      ),
     },
     {
       field: "",
       headerName: "Thiết bị",
       editable: false,
       sortable: false,
+      align: "center",
+      headerAlign: "center",
       flex: 1,
       renderCell: (params: any) => <span>{params.row.product?.name}</span>,
     },

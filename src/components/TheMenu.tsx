@@ -1,4 +1,5 @@
 import useAuth from "@modules/login/hooks/useAuth";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Avatar, Grid2 } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
@@ -8,7 +9,6 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
 const Navbar: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -99,13 +99,37 @@ const Navbar: React.FC = () => {
               gap: 2,
             }}
           >
+            <Button
+              component={Link}
+              to="/product-list-detail"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Danh sách thiết bị
+            </Button>
+            <Button
+              component={Link}
+              to="/task-check"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Lịch sử quét
+            </Button>
+            <Button
+              component={Link}
+              to="/approval"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Danh sách chờ duyệt
+            </Button>
             {/* Dropdown menu button */}
             <Button
               color="inherit"
-              sx={{ textTransform: "none" }}
               onClick={handleClick}
+              endIcon={<KeyboardArrowDownIcon />}
             >
-              Danh mục
+              Cấu hình
             </Button>
             <Menu
               anchorEl={anchorEl}
@@ -150,30 +174,6 @@ const Navbar: React.FC = () => {
                 Giải pháp
               </MenuItem>
             </Menu>
-            <Button
-              component={Link}
-              to="/product-list-detail"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Thiết bị
-            </Button>
-            <Button
-              component={Link}
-              to="/task-check"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Lịch sử quét
-            </Button>
-            <Button
-              component={Link}
-              to="/approval"
-              color="inherit"
-              sx={{ textTransform: "none" }}
-            >
-              Danh sách chờ duyệt
-            </Button>
           </Grid2>
 
           {/* Avatar section */}

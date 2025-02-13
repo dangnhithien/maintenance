@@ -24,7 +24,7 @@ interface Props {
 const ProductRowDetail: React.FC<Props> = ({ data }) => {
   if (!data) return <></>;
   return (
-    <Card sx={{ display: "flex", width: "100%", p: 1 }}>
+    <Card sx={{ display: "flex", width: "100%", p: 1 }} variant="outlined">
       {/* Hiển thị hình ảnh bên trái */}
       <Box
         sx={{

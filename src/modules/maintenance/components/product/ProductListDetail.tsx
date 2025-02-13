@@ -4,6 +4,7 @@ import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import { Box, Grid2, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import InputSearch from "../common/InputSearch";
+import Wrapper from "../common/Wrapper";
 import ProductRowDetail from "./ProductRowDetail";
 
 const ProductListDetail = () => {
@@ -84,7 +85,7 @@ const ProductListDetail = () => {
   }, [isLoading, hasMore]);
 
   return (
-    <>
+    <Wrapper>
       <Box mb={2}>
         <Stack
           direction="row"
@@ -102,7 +103,12 @@ const ProductListDetail = () => {
           </Typography>
         </Stack>
       </Box>
-      <Grid2 container spacing={1}>
+      {products.length === 0 && (
+        <Typography variant="body1" textAlign={"center"} height={100}>
+          No products
+        </Typography>
+      )}
+      <Grid2 container spacing={2}>
         {products.map((item) => (
           <Grid2 key={item.id} size={12}>
             <ProductRowDetail data={item} />
@@ -110,7 +116,7 @@ const ProductListDetail = () => {
         ))}
       </Grid2>
       {isLoading && <div>Loading...</div>}
-    </>
+    </Wrapper>
   );
 };
 
