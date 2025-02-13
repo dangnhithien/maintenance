@@ -2,7 +2,6 @@ import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCh
 import {
   Box,
   Checkbox,
-  Divider,
   FormControlLabel,
   FormGroup,
   Grid2,
@@ -50,15 +49,15 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <Paper sx={{ px: 2, py: 2 }}>
+    <Paper variant="outlined" sx={{ px: 2, py: 2 }}>
       {/* Tiêu đề: Hiển thị tên checklist */}
-      <Box display="flex" alignItems="center" mb={2} pt={1}>
+      <Box display="flex" alignItems="center" mb={1} pt={1}>
         <Typography variant="subtitle1" fontWeight="bold" color="primary">
           {data?.rowCheckContent}
         </Typography>
       </Box>
       {/* Phần checkbox */}
-      <Box sx={{ px: 2, mb: 2 }}>
+      <Box sx={{ px: 1, mb: 1 }}>
         <FormGroup>
           <FormControlLabel
             control={
@@ -95,14 +94,18 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
       </Box>
       {/* Phần ghi chú */}
       <Box sx={{ px: 2, mb: 2 }}>
-        <Typography variant="body2">
-          <strong>Ghi chú:</strong>
-          <Typography component="span" variant="body2" color="textDisabled">
+        <Typography variant="body2" color="textSecondary">
+          Ghi chú:
+          <Typography
+            component="span"
+            variant="body2"
+            color="black"
+            sx={{ ml: 1 }}
+          >
             {data?.note}
           </Typography>
         </Typography>
       </Box>
-      <Divider sx={{ width: "100%", mt: 2 }} />
     </Paper>
   );
 };
