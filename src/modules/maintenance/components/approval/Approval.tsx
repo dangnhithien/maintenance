@@ -23,6 +23,7 @@ const Approval: React.FC<Props> = ({ deviceId }) => {
     takeCount: 5,
     taskCheckStatus: EnumStatusTaskCheck.WAITING,
     deviceId: deviceId || "",
+    sortBy: "CreatedDate DESC",
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
@@ -83,10 +84,23 @@ const Approval: React.FC<Props> = ({ deviceId }) => {
     },
     {
       field: "checkTime",
-      headerName: "Thời gian ",
+      headerName: "Ngày tạo",
       editable: false,
       sortable: false,
       flex: 1,
+      renderCell: (params: any) => (
+        <>
+          {params.row.checkTime &&
+            new Date(params.row.checkTime).toLocaleString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              // second: "2-digit", // Bỏ comment nếu muốn hiển thị giây
+            })}
+        </>
+      ),
     },
 
     {

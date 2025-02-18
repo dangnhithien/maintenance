@@ -12,13 +12,15 @@ import {
   Paper,
   TextField,
 } from "@mui/material";
+
 import React from "react";
 import TypeErrorSelect from "../common/select/TypeErrorSelect";
 
 // Row Component – hiển thị dạng card, không có số thứ tự
 interface RowProps {
   index: number;
-  row: CreateRowCheckListDto;
+  row: CreateRowCheckListDto; // Sử dụng interface mới
+  // Tham số field kiểu "keyof CreateRowCheckListDto" để đảm bảo an toàn
   onInputChange: (
     index: number,
     field: keyof CreateRowCheckListDto,
@@ -36,31 +38,23 @@ const RowCheck: React.FC<RowProps> = ({
   onAdd,
 }) => {
   return (
-    <Paper variant="outlined" sx={{ px: 3, marginBottom: 2 }}>
-      {/* Row: Nội dung và nút xóa */}
+    <Paper variant="outlined" sx={{ px: 3, mb: 2 }}>
       <Box
         display="flex"
         alignItems="center"
-        marginBottom={1}
-        pt={1.5}
-        justifyContent={"space-between"}
+        justifyContent="space-between"
+        mt={1}
       >
         <TextField
+          placeholder="Nhập câu hỏi khảo sát ..."
           value={row.content || ""}
           onChange={(e) => onInputChange(index, "content", e.target.value)}
           variant="outlined"
           fullWidth
           size="small"
           color="primary"
-          placeholder="Nhập câu hỏi khảo sát ..."
-          inputProps={{
-            style: {
-              fontSize: 14,
-              paddingTop: 8,
-              paddingBottom: 8,
-            },
-          }}
           sx={{
+            // Ẩn border MUI cho gọn, tuỳ ý
             "& .MuiOutlinedInput-root": {
               "& fieldset": { border: "none" },
               "&:hover fieldset": { border: "none" },
@@ -72,6 +66,7 @@ const RowCheck: React.FC<RowProps> = ({
         />
         <Box minWidth={150} ml={2}>
           <TypeErrorSelect
+            // Dữ liệu theo interface
             id={row.typeErrorId}
             onChange={(val) =>
               onInputChange(index, "typeErrorId", val?.id || "")
@@ -79,13 +74,15 @@ const RowCheck: React.FC<RowProps> = ({
           />
         </Box>
       </Box>
-      <Box sx={{ px: 3 }}>
+
+      {/* Row 3: Các checkbox minh hoạ "Bình thường / Bất thường" */}
+      <Box sx={{ px: 3, mt: 1 }}>
         <FormGroup>
           <FormControlLabel
             control={
               <Checkbox
                 sx={{
-                  padding: "6px",
+                  p: "6px",
                   "& .MuiSvgIcon-root": { fontSize: 20 },
                 }}
               />
@@ -94,12 +91,12 @@ const RowCheck: React.FC<RowProps> = ({
             disabled
             sx={{ "& .MuiFormControlLabel-label": { fontSize: 14 } }}
           />
-          <Grid2 container direction={"row"} spacing={1} alignItems="center">
+          <Grid2 container direction="row" spacing={1} alignItems="center">
             <FormControlLabel
               control={
                 <Checkbox
                   sx={{
-                    padding: "6px",
+                    p: "6px",
                     "& .MuiSvgIcon-root": { fontSize: 20 },
                   }}
                 />
@@ -111,23 +108,35 @@ const RowCheck: React.FC<RowProps> = ({
           </Grid2>
         </FormGroup>
       </Box>
-      <Divider sx={{ width: "100%", mt: 1.5 }} />
-      <Box
-        display="flex"
-        alignItems="center"
-        marginBottom={1}
-        justifyContent={"flex-end"}
-      >
-        <Box display="flex" justifyContent="flex-end">
-          <IconButton onClick={() => onAdd(index)} sx={{ padding: "6px" }}>
-            <Add fontSize="medium" />
-          </IconButton>
-          <IconButton onClick={() => onDelete(index)} sx={{ padding: "6px" }}>
-            <DeleteIcon fontSize="medium" />
-          </IconButton>
-        </Box>
+
+      {/* Tuỳ chọn: nếu muốn hiển thị dropdownValues, note,... thì code thêm */}
+      {/* Row 4: Ghi chú, dropdownValues,... (VD) */}
+      {/* 
+      <Box mt={1}>
+        <TextField
+          label="Note"
+          value={row.note || ""}
+          onChange={(e) => onInputChange(index, "note", e.target.value)}
+          variant="outlined"
+          size="small"
+          multiline
+          fullWidth
+        />
+      </Box>
+      */}
+
+      <Divider sx={{ width: "100%", mt: 2 }} />
+      {/* Row 5: Nút thêm/xoá */}
+      <Box display="flex" justifyContent="flex-end" alignItems="center" py={1}>
+        <IconButton onClick={() => onAdd(index)} sx={{ p: "6px" }}>
+          <Add fontSize="medium" />
+        </IconButton>
+        <IconButton onClick={() => onDelete(index)} sx={{ p: "6px" }}>
+          <DeleteIcon fontSize="medium" />
+        </IconButton>
       </Box>
     </Paper>
   );
 };
+
 export default RowCheck;

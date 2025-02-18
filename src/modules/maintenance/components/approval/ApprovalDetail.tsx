@@ -3,12 +3,16 @@ import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusT
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Box, Button, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useNotification } from "../common/Notistack";
 interface Props {
   id?: string;
 }
 const ApprovalDetail: React.FC<Props> = ({ id }) => {
   const [note, setNote] = useState("");
+  const { notify } = useNotification();
   const { updateTaskCheck } = useTaskCheck();
+  const navigate = useNavigate();
 
   const handleApprove = (e: React.FormEvent) => {
     if (!id) return;
@@ -16,7 +20,13 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
       .approveStatus(id, {
         taskCheckStatus: EnumStatusTaskCheck.APPROVED,
       })
-      .catch(() => {});
+      .then(() => {
+        notify("Duyệt thành công", "success");
+        navigate("/approval");
+      })
+      .catch(() => {
+        notify("Duyệt không thành công", "error");
+      });
   };
 
   const handleReject = (e: React.FormEvent) => {
@@ -25,7 +35,13 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
       .approveStatus(id, {
         taskCheckStatus: EnumStatusTaskCheck.REJECTED,
       })
-      .catch(() => {});
+      .then(() => {
+        notify("Đã từ chối", "error");
+        navigate("/approval");
+      })
+      .catch(() => {
+        notify("Duyệt không thành công", "error");
+      });
   };
 
   return (

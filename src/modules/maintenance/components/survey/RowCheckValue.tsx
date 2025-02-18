@@ -1,13 +1,7 @@
 import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCheckValueDto";
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Grid2,
-  Paper,
-  Typography,
-} from "@mui/material";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Box, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
 interface Props {
@@ -25,88 +19,109 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
       setCheckedTrue(!checkedTrue);
       if (checkedFalse) {
         setCheckedFalse(false);
-        setSelectedReason(""); // Reset lý do nếu "Bình thường" được chọn
+        setSelectedReason("");
       }
-      setNote(""); // Reset ghi chú khi "Bình thường" được chọn/ bỏ chọn
+      setNote("");
     } else if (value === "false") {
       setCheckedFalse(!checkedFalse);
       if (checkedTrue) {
         setCheckedTrue(false);
       }
       if (!checkedFalse) {
-        setNote(""); // Reset ghi chú chỉ khi chuyển từ chưa chọn sang chọn
-        setSelectedReason(""); // Reset lý do khi "Bất thường" được chọn lần đầu
+        setNote("");
+        setSelectedReason("");
       }
     }
   };
 
-  const handleNoteChange = (event: any) => {
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNote(event.target.value);
   };
 
-  const handleReasonChange = (event: any) => {
+  const handleReasonChange = (
+    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+  ) => {
     setSelectedReason(event.target.value);
   };
 
   return (
-    <Paper variant="outlined" sx={{ px: 2, py: 2 }}>
-      {/* Tiêu đề: Hiển thị tên checklist */}
-      <Box display="flex" alignItems="center" mb={1} pt={1}>
-        <Typography variant="subtitle1" fontWeight="bold" color="primary">
-          {data?.rowCheckContent}
-        </Typography>
-      </Box>
-      {/* Phần checkbox */}
-      <Box sx={{ px: 1, mb: 1 }}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                sx={{
-                  p: 1,
-                  "& .MuiSvgIcon-root": { fontSize: 24 },
-                }}
-              />
-            }
-            label="Bình thường"
-            sx={{ "& .MuiFormControlLabel-label": { fontSize: 16 } }}
-            disabled
-          />
-          <Grid2 container direction="row" spacing={2} alignItems="center">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  sx={{
-                    p: 1,
-                    "& .MuiSvgIcon-root": { fontSize: 24 },
-                  }}
-                />
-              }
-              label="Bất thường"
-              sx={{ "& .MuiFormControlLabel-label": { fontSize: 16 } }}
-              disabled
-            />
-            <Typography variant="body2" color="error">
-              {data.errorDetailContent}
-            </Typography>
-          </Grid2>
-        </FormGroup>
-      </Box>
-      {/* Phần ghi chú */}
-      <Box sx={{ px: 2, mb: 2 }}>
-        <Typography variant="body2" color="textSecondary">
-          Ghi chú:
+    <Box
+      sx={{
+        p: 1,
+        borderRadius: 1,
+        backgroundColor: data.isPassed ? "#eafaf1" : "#fdecea",
+        transition: "all 0.3s ease",
+      }}
+    >
+      {/* Stack để xếp icon (bên trái) và phần text (bên phải) theo chiều ngang */}
+      <Stack direction="row" spacing={2} alignItems="center">
+        {/* Box chứa icon */}
+        <Box
+          sx={{
+            width: 30,
+            height: 30,
+            borderRadius: "5px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          {data.isPassed ? (
+            <CheckCircleOutlineIcon sx={{ color: "#28a745", fontSize: 24 }} />
+          ) : (
+            <HighlightOffIcon sx={{ color: "#dc3545", fontSize: 24 }} />
+          )}
+        </Box>
+
+        {/* Box chứa phần text: 
+            - flex: 1 để chiếm hết chiều ngang còn lại
+            - justifyContent dựa vào isPassed để căn giữa hoặc căn trái
+        */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {/* Tiêu đề */}
           <Typography
-            component="span"
-            variant="body2"
-            color="black"
-            sx={{ ml: 1 }}
+            variant="caption"
+            sx={{
+              fontWeight: 500,
+              fontSize: "15px",
+            }}
           >
-            {data?.note}
+            {data?.rowCheckContent}
           </Typography>
-        </Typography>
-      </Box>
-    </Paper>
+
+          {/* Nếu có lỗi thì hiển thị thêm chi tiết lỗi và ghi chú */}
+          {!data.isPassed && (
+            <>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "error.main",
+                  fontStyle: "italic",
+                }}
+              >
+                {data?.errorDetailContent}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
+                Ghi chú: {data?.note}
+              </Typography>
+            </>
+          )}
+        </Box>
+      </Stack>
+    </Box>
   );
 };
 
