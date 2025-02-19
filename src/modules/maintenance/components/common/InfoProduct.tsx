@@ -13,7 +13,7 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
         boxShadow: 3,
         borderRadius: 1.5,
         p: 2,
-        width: 300,
+        width: 350,
         position: "sticky",
         top: 20,
         alignSelf: "stretch", // Ensure the sidebar stretches with the content
@@ -27,8 +27,8 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
 
       <Grid2 textAlign="center" mb={1}>
         <Chip
-          label={product.status === "Active" ? "HOẠT ĐỘNG" : "NGỪNG HOẠT ĐỘNG"}
-          color={product.status === "Active" ? "success" : "error"}
+          label={product.status === "Active" ? "NGỪNG HOẠT ĐỘNG" : "HOẠT ĐỘNG"}
+          color={product.status === "Active" ? "error" : "success"}
           sx={{
             fontWeight: 600,
             fontSize: "0.75rem",
@@ -114,8 +114,8 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
   );
 };
 const InfoItem = ({ label, value }: { label: string; value: string }) => (
-  <Box display="flex" justifyContent="space-between">
-    <Typography variant="body2" color="textSecondary">
+  <Box display="flex" justifyContent="flex-start">
+    <Typography variant="body2" color="textSecondary" noWrap width={100}>
       {label}:
     </Typography>
     <Typography variant="body2" color="info" fontWeight="bold">

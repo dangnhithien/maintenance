@@ -1,3 +1,4 @@
+import { EnumTypeValue } from "../enum/EnumTypeValue";
 import { RowCheckListDto } from "../rowCheckList/RowCheckListDto";
 
 export interface RowCheckValueDto {
@@ -21,4 +22,13 @@ export interface RowCheckValueDto {
   solutionOption?: any | null;
   rowCheckList?: RowCheckListDto;
   note?: string;
+  rowCheck: null;
+  order: number;
+  value: string;
+  typeValue: EnumTypeValue;
+  isHeader: boolean;
+  parentId: string;
+  dropdownValues?: {
+    [key: string]: string;
+  };
 }

@@ -45,7 +45,8 @@ const QuestionComponent: React.FC<QuestionProps> = ({
     return (
       <Card
         sx={{
-          mb: 2,
+          mt: 3,
+          mb: 1,
           border: question.content.trim() === "" ? "1px solid red" : "none",
         }}
         onClick={() => setTargetQuestionId(question.code)}

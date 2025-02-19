@@ -12,6 +12,7 @@ import TaskCheckList from "../taskCheck/TaskCheckList";
 interface Props {
   id?: string;
 }
+
 const ProductDetailNew: React.FC<Props> = ({ id }) => {
   const [product, setProduct] = useState<ProductDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,19 +50,29 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
   }
 
   return (
-    <Grid2 container spacing={1} direction={"row"}>
-      <InfoProduct product={product} />
+    <Grid2 container spacing={1} direction="row" sx={{ height: "100%" }}>
+      {/* Cột bên trái: Thông tin sản phẩm */}
+      <Grid2 sx={{ display: "flex" }}>
+        <InfoProduct product={product} />
+      </Grid2>
 
-      {/* Main Content */}
-      <Grid2 container direction={"column"} flex={1} gap={1}>
+      {/* Cột bên phải: Nội dung chính */}
+      <Grid2
+        size={6}
+        container
+        direction="column"
+        gap={1}
+        flex={1}
+        sx={{ display: "flex" }}
+      >
         <Grid2>
-          <Wrapper title="Phiếu chờ duyệt">
+          <Wrapper title="Phiếu chờ duyệt" sx={{ width: "100%" }}>
             <Approval deviceId={id} />
           </Wrapper>
         </Grid2>
 
-        <Grid2>
-          <Wrapper title="Lịch sử quét">
+        <Grid2 sx={{ flex: 1 }}>
+          <Wrapper title="Lịch sử quét" sx={{ width: "100%", height: "100%" }}>
             <TaskCheckList productId={id} />
           </Wrapper>
         </Grid2>

@@ -2,7 +2,7 @@ import ApprovalDetail from "@modules/maintenance/components/approval/ApprovalDet
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Container, Link } from "@mui/material";
+import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
@@ -36,12 +36,11 @@ const ApprovalDetailPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <Container>
-        <TaskCheckDetail id={id} />
-        <Wrapper sx={{ mt: 1 }}>
-          <ApprovalDetail id={id} />
-        </Wrapper>
-      </Container>
+
+      <TaskCheckDetail id={id} />
+      <Wrapper sx={{ mt: 1 }}>
+        <ApprovalDetail id={id} />
+      </Wrapper>
     </div>
   );
 };

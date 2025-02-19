@@ -54,10 +54,10 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
           alt={data.serialNumber}
         /> */}
         <Box pr={1}>
-          <ImageBase64 imageData={data.image || ""} width={150} height={150} />
+          <ImageBase64 imageData={data.image || ""} width={200} height={150} />
         </Box>
         {/* Trạng thái bên dưới hình ảnh */}
-        <Chip label={"Hoạt động"} color="success" size="small" sx={{ mt: 1 }} />
+        <Chip label={"Hoạt động"} color="success" size="small" sx={{ mt: 2 }} />
       </Box>
       {/* Nội dung chính của Card */}
       <CardContent sx={{ flex: "1 0 auto", px: 2, py: 1, mb: "-24px" }}>
@@ -76,7 +76,12 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 fontWeight={"bold"}
                 color={"primary"}
               >
-                {data.name}
+                <Link
+                  to={`/product/detail-new/${data.id}`}
+                  style={{ color: "#002f77" }}
+                >
+                  {data.name}
+                </Link>
               </Typography>
               <Tooltip title="xem chi tiết">
                 <Link to={`/product/detail-new/${data.id}`}>
@@ -92,7 +97,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 container
                 direction="column"
                 spacing={1}
-                size={3}
+                size={4}
                 sx={{ borderRight: "1px solid #ccc" }}
               >
                 <Typography variant="body2" fontWeight="bold">
@@ -239,7 +244,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                   )}
                 </Grid2>
               </Grid2>
-              <Grid2 container direction="column" spacing={1} size={3}>
+              <Grid2 container direction="column" spacing={1} size={2}>
                 <Typography variant="body2" fontWeight={"bold"}>
                   Ghi chú
                 </Typography>

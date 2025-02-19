@@ -9,7 +9,7 @@ import ProductRowDetail from "./ProductRowDetail";
 
 const ProductListDetail = () => {
   // Số phần tử trên mỗi trang
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 8;
 
   // Các tham số filter ban đầu
   const [params, setParams] = useState<GetProductDto>({

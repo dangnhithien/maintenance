@@ -1,6 +1,6 @@
 import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Container, Link } from "@mui/material";
+import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
@@ -35,9 +35,8 @@ const TaskCheckDetailPage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <Container>
-        <TaskCheckDetail id={id} />
-      </Container>
+
+      <TaskCheckDetail id={id} />
     </div>
   );
 };
