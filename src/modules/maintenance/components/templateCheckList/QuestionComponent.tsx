@@ -66,6 +66,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   "Tiêu đề không được để trống"
                 }
                 size="small"
+                autoFocus
               />
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
@@ -101,8 +102,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
     requiresAnswers &&
     (!question.dropdownValues ||
       Object.keys(question.dropdownValues).length === 0);
-  // const isTypeErrorIdEmpty = question.typeErrorId.trim() === "";
-  const hasError = isContentEmpty || isAnswerMissing; // || isTypeErrorIdEmpty;
+  const hasError = isContentEmpty || isAnswerMissing;
 
   // Chuyển đổi dropdownValues thành mảng để hiển thị
   const answers = question.dropdownValues
@@ -132,6 +132,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
               helperText={isContentEmpty && "Câu hỏi không được để trống"}
               size="small"
               sx={{ mb: 2 }}
+              autoFocus
             />
 
             <Grid2 container direction={"row"} mb={2} spacing={2}>
@@ -147,22 +148,10 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   }
                 >
                   <MenuItem value={EnumTypeValue.TEXT}>Văn bản</MenuItem>
-                  {/* <MenuItem value={EnumTypeValue.RADIO}>Một lựa chọn</MenuItem> */}
-                  {/* <MenuItem value={EnumTypeValue.CHECKBOX}>
-                    Nhiều lựa chọn
-                  </MenuItem> */}
                   <MenuItem value={EnumTypeValue.NUMBER}>Số</MenuItem>
                   <MenuItem value={EnumTypeValue.DROPDOWN}>Danh sách</MenuItem>
                 </TextField>
               </Grid2>
-              {/* <Grid2 size={6}>
-                <TypeErrorSelect
-                  id={question.typeErrorId}
-                  onChange={(val) => {
-                    updateQuestion(question.code, "typeErrorId", val?.id);
-                  }}
-                />
-              </Grid2> */}
             </Grid2>
           </>
         ) : (

@@ -339,7 +339,14 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      }}
+    >
       <Grid2 container spacing={2} sx={{ mb: 2, p: 2 }} component={Paper}>
         <Grid2 size={3}>
           <Stack direction="row" spacing={1}>
