@@ -87,7 +87,9 @@ const ErrorDetailSelect: React.FC<AsyncPaginateSelectProps> = ({
       }}
       debounceTimeout={400}
       menuPortalTarget={document.body}
-      styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+      styles={{
+        menuPortal: (base: any) => ({ ...base, zIndex: 5 }),
+      }}
       placeholder="Lỗi..."
     />
   );

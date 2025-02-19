@@ -5,6 +5,7 @@ import {
 import { CreateRowCheckListDto } from "../datas/rowCheckList/CreateRowCheckListDto";
 import { GetRowCheckListDto } from "../datas/rowCheckList/GetRowCheckListDto";
 import { RowCheckListDto } from "../datas/rowCheckList/RowCheckListDto";
+import { UpdateRowCheckListDto } from "../datas/rowCheckList/UpdateRowCheckListDto";
 import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
@@ -22,7 +23,7 @@ class RowCheckListApi {
   };
   post = async (
     params?: CreateRowCheckListDto
-  ): Promise<ApiResponseWithList<RowCheckListDto>> => {
+  ): Promise<ApiResponseWithObject<RowCheckListDto>> => {
     return await axiosInstance.post(BASE_URL, params);
   };
   getById = async (
@@ -32,7 +33,7 @@ class RowCheckListApi {
   };
   update = async (
     id: string,
-    params: CreateRowCheckListDto
+    params: UpdateRowCheckListDto
   ): Promise<ApiResponseWithList<RowCheckListDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
   };
