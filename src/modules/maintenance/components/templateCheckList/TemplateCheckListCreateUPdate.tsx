@@ -214,16 +214,16 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   // Hàm validate: yêu cầu phải có ít nhất một header và các câu hỏi không được để trống
   const validateQuestions = () => {
     let valid = true;
-    const hasHeader = questions.some((q) => q.isHeader);
-    if (!hasHeader) {
-      valid = false;
-      setLocalErrors((prev) => ({
-        ...prev,
-        header: "Vui lòng tạo ít nhất một Header để nhóm câu hỏi.",
-      }));
-    } else {
-      setLocalErrors((prev) => ({ ...prev, header: "" }));
-    }
+    // const hasHeader = questions.some((q) => q.isHeader);
+    // if (!hasHeader) {
+    //   valid = false;
+    //   setLocalErrors((prev) => ({
+    //     ...prev,
+    //     header: "Vui lòng tạo ít nhất một Header để nhóm câu hỏi.",
+    //   }));
+    // } else {
+    //   setLocalErrors((prev) => ({ ...prev, header: "" }));
+    // }
     questions.forEach((q) => {
       // Nếu là header thì chỉ cần content
       if (q.isHeader) {
@@ -465,7 +465,11 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           {localErrors.questions}
         </Typography>
       )}
-
+      {/* {localErrors.header && (
+        <Typography color="error" sx={{ mt: 1 }}>
+          {localErrors.header}
+        </Typography>
+      )} */}
       <Button
         variant="contained"
         color="primary"
@@ -477,11 +481,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       <Button variant="contained" onClick={addQuestion} sx={{ mt: 2, ml: 2 }}>
         Thêm câu hỏi
       </Button>
-      {localErrors.header && (
-        <Typography color="error" sx={{ mt: 1 }}>
-          {localErrors.header}
-        </Typography>
-      )}
+
       <Button
         type="submit"
         color="success"
