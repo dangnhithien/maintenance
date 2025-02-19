@@ -34,7 +34,7 @@ class RowCheckListApi {
   update = async (
     id: string,
     params: UpdateRowCheckListDto
-  ): Promise<ApiResponseWithList<RowCheckListDto>> => {
+  ): Promise<ApiResponseWithObject<RowCheckListDto>> => {
     return await axiosInstance.put(`${BASE_URL}/${id}`, params);
   };
   restore = async (

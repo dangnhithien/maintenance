@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ErrorDetailSelect from "../common/select/ErrorDetailSelect";
+import TypeErrorSelect from "../common/select/TypeErrorSelect";
 
 interface QuestionProps {
   question: CreateRowCheckListDto;
@@ -148,22 +148,19 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   }
                 >
                   <MenuItem value={EnumTypeValue.TEXT}>Văn bản</MenuItem>
-                  <MenuItem value={EnumTypeValue.RADIO}>Một lựa chọn</MenuItem>
-                  <MenuItem value={EnumTypeValue.CHECKBOX}>
+                  {/* <MenuItem value={EnumTypeValue.RADIO}>Một lựa chọn</MenuItem> */}
+                  {/* <MenuItem value={EnumTypeValue.CHECKBOX}>
                     Nhiều lựa chọn
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem value={EnumTypeValue.NUMBER}>Số</MenuItem>
                   <MenuItem value={EnumTypeValue.DROPDOWN}>Danh sách</MenuItem>
                 </TextField>
               </Grid2>
               <Grid2 size={6}>
-                <ErrorDetailSelect
+                <TypeErrorSelect
+                  id={question.typeErrorId}
                   onChange={(val) => {
-                    updateQuestion(
-                      question.code,
-                      "typeErrorId",
-                      val?.typeErrorId
-                    );
+                    updateQuestion(question.code, "typeErrorId", val?.id);
                   }}
                 />
               </Grid2>
@@ -262,7 +259,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
           <TextField type="number" fullWidth size="small" sx={{ mt: 1 }} />
         )}
         {question.typeValue === EnumTypeValue.DROPDOWN && (
-          <TextField select fullWidth size="small" sx={{ mt: 1 }}>
+          <TextField select fullWidth size="small" sx={{ mt: 1 }} value={""}>
             {answers.length > 0 ? (
               answers.map(([answerId, answerText]) => (
                 <MenuItem key={answerId} value={answerText}>
