@@ -267,7 +267,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           // Cập nhật câu hỏi đã có
           const updateResponse = await rowCheckListApi.update(row.id, {
             content: row.content,
-            typeErrorId: row.typeErrorId,
+            typeErrorId: undefined,
             typeValue: row.typeValue,
             dropdownValues: row.dropdownValues,
           });
@@ -281,10 +281,11 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
               templateCheckId: id,
               parentId: parentId === "" ? undefined : parentId,
               typeValue: row.isHeader ? EnumTypeValue.TEXT : row.typeValue,
-              typeErrorId:
-                row.typeErrorId === ""
-                  ? "285daf35-9c80-4201-8fe2-ea3ffd9fc32e"
-                  : row.typeErrorId,
+              typeErrorId: undefined,
+              // typeErrorId:
+              //   row.typeErrorId === ""
+              //     ? "285daf35-9c80-4201-8fe2-ea3ffd9fc32e"
+              //     : row.typeErrorId,
             })
             .then(unwrapObjectReponse);
           if (row.isHeader) {
@@ -311,10 +312,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
             templateCheckId: checklistRes.id,
             parentId: parentId === "" ? undefined : parentId,
             typeValue: row.isHeader ? EnumTypeValue.TEXT : row.typeValue,
-            typeErrorId:
-              row.typeErrorId === ""
-                ? "285daf35-9c80-4201-8fe2-ea3ffd9fc32e"
-                : row.typeErrorId,
+            typeErrorId: undefined,
           })
           .then(unwrapObjectReponse);
         if (row.isHeader) parentId = newRow.id;

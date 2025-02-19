@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import TypeErrorSelect from "../common/select/TypeErrorSelect";
 
 interface QuestionProps {
   question: CreateRowCheckListDto;
@@ -102,8 +101,8 @@ const QuestionComponent: React.FC<QuestionProps> = ({
     requiresAnswers &&
     (!question.dropdownValues ||
       Object.keys(question.dropdownValues).length === 0);
-  const isTypeErrorIdEmpty = question.typeErrorId.trim() === "";
-  const hasError = isContentEmpty || isAnswerMissing || isTypeErrorIdEmpty;
+  // const isTypeErrorIdEmpty = question.typeErrorId.trim() === "";
+  const hasError = isContentEmpty || isAnswerMissing; // || isTypeErrorIdEmpty;
 
   // Chuyển đổi dropdownValues thành mảng để hiển thị
   const answers = question.dropdownValues
@@ -136,7 +135,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
             />
 
             <Grid2 container direction={"row"} mb={2} spacing={2}>
-              <Grid2 size={6}>
+              <Grid2 size={12}>
                 <TextField
                   size="small"
                   select
@@ -156,14 +155,14 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   <MenuItem value={EnumTypeValue.DROPDOWN}>Danh sách</MenuItem>
                 </TextField>
               </Grid2>
-              <Grid2 size={6}>
+              {/* <Grid2 size={6}>
                 <TypeErrorSelect
                   id={question.typeErrorId}
                   onChange={(val) => {
                     updateQuestion(question.code, "typeErrorId", val?.id);
                   }}
                 />
-              </Grid2>
+              </Grid2> */}
             </Grid2>
           </>
         ) : (
