@@ -88,7 +88,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           notify(message, "error");
         });
       rowCheckListApi
-        .get({ templateCheckId: id })
+        .get({ templateCheckId: id, sortBy: "Order ASC" })
         .then(unwrapListReponse)
         .then((res) => {
           setQuestions(res as CreateRowCheckListDto[]);
@@ -110,6 +110,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       typeValue: EnumTypeValue.TEXT, // mặc định là văn bản
       dropdownValues: {},
       isHeader: true,
+      order: getNextOrder(),
     };
     setQuestions([...questions, newHeader]);
   };
@@ -124,6 +125,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       typeValue: EnumTypeValue.TEXT, // mặc định là văn bản
       dropdownValues: {},
       isHeader: false,
+      order: getNextOrder(),
     };
     setQuestions([...questions, newQuestion]);
   };
@@ -327,6 +329,13 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
     //   const { message } = unwrapError(err);
     //   notify(message, "error");
     // }
+  };
+  const getNextOrder = () => {
+    const currentMaxOrder = questions.reduce(
+      (max, q) => Math.max(max, q.order || 0),
+      0
+    );
+    return currentMaxOrder + 1;
   };
 
   return (

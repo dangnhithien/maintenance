@@ -14,4 +14,5 @@ export interface CreateRowCheckListDto {
   };
   isHeader?: boolean;
   parentId?: string;
+  order?: number;
 }
