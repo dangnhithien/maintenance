@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
 import DeviceSelect from "../common/select/DeviceSelect";
@@ -67,6 +68,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       deviceId: "",
     },
   });
+  const navigate = useNavigate();
 
   // Quản lý danh sách câu hỏi và danh sách câu hỏi bị xóa (chỉ khi update)
   const [questions, setQuestions] = useState<CreateRowCheckListDto[]>([]);
@@ -319,6 +321,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       }
 
       notify("success", "success");
+      navigate("/template-check-list");
     }
     // } catch (err) {
     //   const { message } = unwrapError(err);
