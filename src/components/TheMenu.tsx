@@ -1,3 +1,4 @@
+import LOGOVMS from "@assets/images/logo-vms.svg";
 import useAuth from "@modules/login/hooks/useAuth";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Avatar, Grid2 } from "@mui/material";
@@ -61,11 +62,7 @@ const Navbar: React.FC = () => {
               marginRight: "25px",
             }}
           >
-            <img
-              src="http://report.vmsco.com.vn/assets/logo-vms-Byn70t6I.webp"
-              alt="Logo"
-              style={{ height: "40px" }}
-            />
+            <img src={LOGOVMS} alt="Logo" style={{ height: "40px" }} />
 
             {/* White triangle separator */}
             <div
