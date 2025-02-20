@@ -12,9 +12,10 @@ import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
 import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 interface Props {
-  deviceId?: string;
+  productId?: string;
 }
-const Approval: React.FC<Props> = ({ deviceId }) => {
+const Approval: React.FC<Props> = ({ productId }) => {
+  console.log("deviceId", productId);
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
@@ -22,7 +23,7 @@ const Approval: React.FC<Props> = ({ deviceId }) => {
     includeProperties: "TemplateCheck",
     takeCount: 5,
     taskCheckStatus: EnumStatusTaskCheck.WAITING,
-    deviceId: deviceId || "",
+    productId: productId || undefined,
     sortBy: "CreatedDate DESC",
   });
   const [rowSelectionModel, setRowSelectionModel] =

@@ -4,12 +4,13 @@ import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import { Box, Grid2, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import InputSearch from "../common/InputSearch";
+import DeviceSelect from "../common/select/DeviceSelect";
 import Wrapper from "../common/Wrapper";
 import ProductRowDetail from "./ProductRowDetail";
 
 const ProductListDetail = () => {
   // Số phần tử trên mỗi trang
-  const PAGE_SIZE = 8;
+  const PAGE_SIZE = 5;
 
   // Các tham số filter ban đầu
   const [params, setParams] = useState<GetProductDto>({
@@ -92,12 +93,21 @@ const ProductListDetail = () => {
           justifyContent="space-between"
           alignItems={"center"}
         >
-          <InputSearch
-            onSearch={(data) => {
-              // Khi tìm kiếm, cập nhật searchTerm (và các tham số khác nếu cần)
-              setParams((prev) => ({ ...prev, searchTerm: data }));
-            }}
-          />
+          <Stack direction={"row"} spacing={2} alignItems={"center"}>
+            <Stack width={230}>
+              <DeviceSelect
+                onChange={(data) =>
+                  setParams((prev) => ({ ...prev, deviceId: data }))
+                }
+              />
+            </Stack>
+            <InputSearch
+              onSearch={(data) => {
+                // Khi tìm kiếm, cập nhật searchTerm (và các tham số khác nếu cần)
+                setParams((prev) => ({ ...prev, searchTerm: data }));
+              }}
+            />
+          </Stack>
           <Typography variant="body1" fontWeight={"bold"} color="primary">
             {totalCount} thiết bị
           </Typography>

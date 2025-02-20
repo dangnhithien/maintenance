@@ -67,7 +67,7 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
       >
         <Grid2>
           <Wrapper title="Phiếu chờ duyệt" sx={{ width: "100%" }}>
-            <Approval deviceId={id} />
+            <Approval productId={id} />
           </Wrapper>
         </Grid2>
 

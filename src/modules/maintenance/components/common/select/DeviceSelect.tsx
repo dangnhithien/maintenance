@@ -44,8 +44,8 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
 
     const paramsObj: GetDeviceDto = {
       searchTerm: search,
-      takeCount: 10,
-      skipCount: (page - 1) * 10,
+      takeCount: 20,
+      skipCount: (page - 1) * 20,
     };
 
     try {
@@ -84,7 +84,7 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
       menuPortalTarget={document.body}
       styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
       isDisabled={disabled}
-      placeholder="Thiết bị..."
+      placeholder="Nhóm thiết bị..."
     />
   );
 };
