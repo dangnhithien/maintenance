@@ -1,4 +1,4 @@
-import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
+import { unwrapError } from "@datas/comon/ApiResponse";
 
 import errorDetailApi from "@modules/maintenance/apis/errorDetailApi";
 import { ErrorDetailDto } from "@modules/maintenance/datas/errorDetail/ErrorDetailDto";

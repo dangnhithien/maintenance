@@ -1,10 +1,7 @@
 import ImageUpload from "@components/ImageUpload";
+import { unwrapError, unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import productApi from "@modules/maintenance/apis/productApi";
-import {
-  unwrapError,
-  unwrapObjectReponse,
-} from "@modules/maintenance/datas/comon/ApiResponse";
 import { CreateProductDto } from "@modules/maintenance/datas/product/CreateProductDto";
 import {
   Button,
@@ -20,19 +17,15 @@ import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
 import DeviceSelect from "../common/select/DeviceSelect";
 
-// Cập nhật schema validation: imageQR là string
+// Updated schema: removed validations for note and address
 const schema = yup.object({
   deviceId: yup.string().required("Type device is required"),
   serialNumber: yup.string().required("Type device is required"),
-  name: yup.string().max(255, " Must be under 255 characters"),
-  note: yup.string().max(255, " Must be under 255 characters"),
-  address: yup.string().max(255, " Must be under 255 characters"),
-  // installationDate: yup.date().nullable(),
-  // maintenanceCycle: yup
-  //   .number()
-  //   .max(255, "Description must be under 255 characters"),
-  // supplier: yup.string().max(255, " Must be under 255 characters"),
-  // image: yup.string(),
+  name: yup.string().max(255, "Must be under 255 characters"),
+  // note and address validations removed
+  maintenanceCycle: yup.number(), // if needed, add validation here
+  supplier: yup.string().max(255, "Must be under 255 characters"),
+  image: yup.string(),
 });
 
 interface FormProps {
@@ -116,7 +109,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid2 container direction={"row"} mt={2} spacing={1}>
-          {/* Cập nhật trường imageQR: sử dụng input file và chuyển đổi file thành chuỗi */}
+          {/* Image upload */}
           <Grid2 mt={2}>
             <Controller
               name="image"
@@ -196,8 +189,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                     {...field}
                     fullWidth
                     size="small"
-                    error={!!errors.note}
-                    helperText={errors.note?.message}
+                    // No validation message as validation for note is removed
                   />
                 )}
               />
@@ -217,8 +209,7 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                     {...field}
                     fullWidth
                     size="small"
-                    error={!!errors.address}
-                    helperText={errors.address?.message}
+                    // No validation message as validation for address is removed
                   />
                 )}
               />
@@ -308,7 +299,6 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                 )}
               />
             </Grid2>
-
             <Grid2 size={4}>
               <Stack direction="row" spacing={1}>
                 <Typography variant="body2" color="primary" fontWeight={"bold"}>

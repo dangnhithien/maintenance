@@ -1,4 +1,4 @@
-import { TrackingDataDto } from "../comon/TrackingDataDto";
+import { TrackingDataDto } from "../../../../datas/comon/TrackingDataDto";
 import { EnumStatusTaskCheck } from "../enum/EnumStatusTaskCheck";
 import { ProductDto } from "../product/ProductDto";
 import { TemplateCheckListDto } from "../templateCheckList/TemplateCheckListDto";

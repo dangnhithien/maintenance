@@ -1,15 +1,16 @@
-import { ApiRequest } from "../datas/comon/ApiRequest";
+import axiosInstance from "../../../apis/axiosInstance";
+import { ApiRequest } from "../../../datas/comon/ApiRequest";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
-} from "../datas/comon/ApiResponse";
+} from "../../../datas/comon/ApiResponse";
+import { OverviewTaskCheck } from "../components/taskCheck/components/TaskcheckOverview";
 import { GetDeviceDto } from "../datas/device/GetDeviceDto";
 import {
   CreateTaskCheckDto,
   UpdateTaskCheckDto,
 } from "../datas/taskCheck/CreateTaskCheckDto";
 import { TaskCheckDto } from "../datas/taskCheck/TaskCheckDto";
-import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 
@@ -21,6 +22,13 @@ class TaskCheckApi {
     params?: GetDeviceDto
   ): Promise<ApiResponseWithList<TaskCheckDto>> => {
     return await axiosInstance.get(BASE_URL, {
+      params,
+    });
+  };
+  getOverviewTaskCheck = async (
+    params?: GetDeviceDto
+  ): Promise<ApiResponseWithObject<OverviewTaskCheck>> => {
+    return await axiosInstance.get(BASE_URL + "/get-overview-task-check", {
       params,
     });
   };

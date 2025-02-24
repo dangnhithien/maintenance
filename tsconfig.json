@@ -20,9 +20,11 @@
       "@pages/*": ["src/pages/*"], // Alias cho thư mục pages
       "@utils/*": ["src/utils/*"], // Alias cho thư mục utils
       "@assets/*": ["src/assets/*"], // Alias cho thư mục assets
-      "@modules/*": ["src/modules/*"] // Alias cho thư mục assets
+      "@modules/*": ["src/modules/*"], // Alias cho thư mục assets
+      "@apis/*": ["src/apis/*"], // Alias cho thư mục assets
+      "@datas/*": ["src/datas/*"] // Alias cho thư mục assets
     }
   },
-  "include": ["src/**/*"],// Bao gồm thư mục src
+  "include": ["src/**/*"], // Bao gồm thư mục src
   "exclude": ["node_modules", "dist"] // Loại trừ node_modules và dist
 }

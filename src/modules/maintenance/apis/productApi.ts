@@ -1,12 +1,12 @@
-import { ApiRequest } from "../datas/comon/ApiRequest";
+import axiosInstance from "../../../apis/axiosInstance";
+import { ApiRequest } from "../../../datas/comon/ApiRequest";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
-} from "../datas/comon/ApiResponse";
+} from "../../../datas/comon/ApiResponse";
 import { CreateProductDto } from "../datas/product/CreateProductDto";
 import { GetProductDto } from "../datas/product/GetProductDto";
 import { ProductDto } from "../datas/product/ProductDto";
-import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 
@@ -20,6 +20,26 @@ class ProductApi {
     return await axiosInstance.get(BASE_URL, {
       params,
     });
+  };
+  getMaintenanceReminder = async (
+    params?: GetProductDto
+  ): Promise<ApiResponseWithList<ProductDto>> => {
+    return await axiosInstance.get(
+      BASE_URL + "/get-product-status-maintain-list",
+      {
+        params,
+      }
+    );
+  };
+  getProductStatusCreateTask = async (
+    params?: GetProductDto
+  ): Promise<ApiResponseWithList<ProductDto>> => {
+    return await axiosInstance.get(
+      BASE_URL + "/get-product-status-create-task",
+      {
+        params,
+      }
+    );
   };
   getListProductDetail = async (
     params?: GetProductDto

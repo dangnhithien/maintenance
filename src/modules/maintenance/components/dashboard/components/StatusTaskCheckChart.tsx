@@ -1,6 +1,6 @@
 import { ReactECharts } from "@components/ReactChart";
+import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import overviewApi from "@modules/maintenance/apis/overviewApi";
-import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { OverviewStatusTaskCheckDto } from "@modules/maintenance/datas/overview/OverviewStatusTaskCheckDto";
 import { EChartsOption } from "echarts";
 import { useEffect, useState } from "react";
@@ -38,11 +38,6 @@ const StatusTaskCheckChart = () => {
           position: "center",
         },
         data: [
-          {
-            value: data?.totalTaskCreated,
-            name: "Đã tạo",
-            itemStyle: { color: "#2196F3" }, // Màu xanh dương
-          },
           {
             value: data?.totalTaskWaiting,
             name: "Chờ duyệt",

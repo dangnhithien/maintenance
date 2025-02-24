@@ -1,13 +1,13 @@
-import { ApiRequest } from "../datas/comon/ApiRequest";
+import axiosInstance from "../../../apis/axiosInstance";
+import { ApiRequest } from "../../../datas/comon/ApiRequest";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
-} from "../datas/comon/ApiResponse";
+} from "../../../datas/comon/ApiResponse";
 import { OverviewKeyMetricDto } from "../datas/overview/OverviewKeyMetricsDto";
 import { OverviewProductDto } from "../datas/overview/OverviewProductDto";
 import { OverviewStatusCheckProductDto } from "../datas/overview/OverviewStatusCheckProductDto";
 import { OverviewStatusTaskCheckDto } from "../datas/overview/OverviewStatusTaskCheckDto";
-import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 

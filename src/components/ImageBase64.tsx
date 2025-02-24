@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { SxProps, Theme } from "@mui/material/styles";
 import React from "react";
 
 interface ImageDisplayProps {
@@ -9,6 +10,8 @@ interface ImageDisplayProps {
   height?: string | number;
   // Cho phép chỉ định MIME type nếu cần (mặc định là image/jpeg)
   mimeType?: string;
+  // Cho phép truyền style tùy chỉnh cho ảnh
+  sx?: SxProps<Theme>;
 }
 
 const ImageBase64: React.FC<ImageDisplayProps> = ({
@@ -17,8 +20,9 @@ const ImageBase64: React.FC<ImageDisplayProps> = ({
   width = "100%",
   height = "auto",
   mimeType = "image/jpeg",
+  sx,
 }) => {
-  // Kiểm tra nếu imageData rỗng hoặc không có dữ liệu, hiển thị thông báo
+  // Nếu imageData rỗng, hiển thị hình placeholder
   if (!imageData) {
     return (
       <Box>
@@ -28,13 +32,13 @@ const ImageBase64: React.FC<ImageDisplayProps> = ({
           alt={alt}
           width={width}
           height={height}
-          sx={{ objectFit: "contain", borderRadius: 1 }}
+          sx={{ objectFit: "contain", borderRadius: 1, ...sx }}
         />
       </Box>
     );
   }
 
-  // Tạo data URL bằng cách nối MIME type và chuỗi Base64
+  // Tạo data URL từ MIME type và chuỗi Base64
   const src = `data:${mimeType};base64,${imageData}`;
 
   return (
@@ -45,7 +49,7 @@ const ImageBase64: React.FC<ImageDisplayProps> = ({
         alt={alt}
         width={width}
         height={height}
-        sx={{ objectFit: "contain", borderRadius: 1 }}
+        sx={{ objectFit: "contain", borderRadius: 1, ...sx }}
       />
     </Box>
   );

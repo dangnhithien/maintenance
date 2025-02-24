@@ -1,13 +1,12 @@
 import { EnumStatusTaskCheck } from "../enum/EnumStatusTaskCheck";
-import { TemplateCheckListDto } from "../templateCheckList/TemplateCheckListDto";
 
 export interface CreateTaskCheckDto {
-  code: string;
-  checkTime: string;
+  name?: string;
+  note?: string;
+  templateCheckId: string;
   productId: string;
-  templateCheckListId: string;
-  templateCheckList?: TemplateCheckListDto;
-  taskChekStatus?: EnumStatusTaskCheck;
+  assigneeId: string;
+  scheduledTime: string;
 }
 export interface UpdateTaskCheckDto {
   taskCheckStatus: EnumStatusTaskCheck;

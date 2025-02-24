@@ -1,283 +1,221 @@
 import { ReactECharts } from "@components/ReactChart";
-import StyledDataGrid from "@components/StyledDataGrid";
-import overviewApi from "@modules/maintenance/apis/overviewApi";
-import {
-  unwrapListReponse,
-  unwrapObjectReponse,
-} from "@modules/maintenance/datas/comon/ApiResponse";
-import { OverviewKeyMetricDto } from "@modules/maintenance/datas/overview/OverviewKeyMetricsDto";
-import { OverviewProductDto } from "@modules/maintenance/datas/overview/OverviewProductDto";
-import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
-import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
+import OverviewUserTask from "@modules/user/components/user/OverviewUserTask";
 import { Grid2, Paper, Typography } from "@mui/material";
-import { Stack, styled } from "@mui/system";
-import { GridColDef } from "@mui/x-data-grid";
-import { EChartsOption } from "echarts";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import * as echarts from "echarts";
+
+import overviewApi from "@modules/maintenance/apis/overviewApi";
 import Wrapper from "../common/Wrapper";
-import StatusTaskCheckChart from "./components/StatusTaskCheckChart";
-import UntestedDevicesChart from "./components/UntestedDevicesChart";
+import ProductWithoutTask from "../product/ProductWithoutTasks";
+import TaskCheckOverview from "../taskCheck/components/TaskcheckOverview";
 
-// Tạo component Paper được style để dùng cho các block
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  color: theme.palette.text.primary,
-}));
+import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
+import { OverviewKeyMetricDto } from "@modules/maintenance/datas/overview/OverviewKeyMetricsDto";
+import { useEffect, useState } from "react";
 
-function getDateRange(): { fromDate: Date; toDate: Date } {
-  const toDate = new Date();
-  const fromDate = new Date();
-  // Trừ 7 ngày kể từ ngày hiện tại
-  fromDate.setDate(toDate.getDate() - 7);
-  return { fromDate, toDate };
-}
-
-const Dashboard: React.FC = () => {
-  const [params, setParams] = useState<GetTaskCheckDto>({
-    includeProperties: "TemplateCheck,Product",
-    takeCount: 24,
-    sortBy: "CreatedDate DESC",
-  });
-  const [overViewProduct, setOverViewProduct] = useState<OverviewProductDto[]>(
-    []
-  );
-  const [overViewKeyMetric, setOverViewKeyMetric] =
-    useState<OverviewKeyMetricDto>();
-  const { taskChecks } = useTaskCheck(params);
-
-  useEffect(() => {
-    overviewApi
-      .get(getDateRange())
-      .then(unwrapListReponse)
-      .then((data) => {
-        setOverViewProduct(data);
-      })
-      .catch((error) => {});
-  }, []);
-
+const MaintainedDevicesLineChart: React.FC = () => {
+  const [keyMetric, setKeyMetric] = useState<OverviewKeyMetricDto>();
   useEffect(() => {
     overviewApi
       .getKeyMetric()
       .then(unwrapObjectReponse)
-      .then((data) => {
-        setOverViewKeyMetric(data);
-      })
-      .catch((error) => {});
+      .then((res) => setKeyMetric(res));
   }, []);
+  // Dữ liệu metric
 
-  const columns: GridColDef[] = [
-    {
-      field: "checkTime",
-      headerName: "Ngày tạo",
-      editable: false,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.checkTime &&
-            new Date(params.row.checkTime).toLocaleString("vi-VN", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              // second: "2-digit", // Bỏ comment nếu muốn hiển thị giây
-            })}
-        </Link>
-      ),
-    },
-    {
-      field: "createdBy",
-      headerName: "Người tạo",
-      editable: false,
-      align: "center",
-      headerAlign: "center",
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <span>
-          {params.row.createdBy || params.row.createdBy == "undifined"
-            ? "Admin"
-            : params.row.createdBy}
-        </span>
-      ),
-    },
-    {
-      field: "",
-      headerName: "Thiết bị",
-      editable: false,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      flex: 1,
-      renderCell: (params: any) => <span>{params.row.product?.name}</span>,
-    },
+  // Dữ liệu và cấu hình biểu đồ đường (line chart)
+  const lineChartLabels = [
+    "2025-02-15",
+    "2025-02-16",
+    "2025-02-17",
+    "2025-02-18",
+    "2025-02-19",
+    "2025-02-20",
+    "2025-02-21",
   ];
+  const lineChartData = [3, 5, 2, 8, 4, 6, 7];
 
-  // Cập nhật option biểu đồ: thêm một yAxis thứ hai và series line hiển thị tỉ lệ lỗi
-  const option: EChartsOption = {
-    xAxis: {
-      type: "category",
-      data: overViewProduct.map((e) =>
-        new Date(e.checkedDate).toLocaleDateString("vi-VN", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })
-      ),
+  const lineOption: echarts.EChartsOption = {
+    tooltip: { trigger: "axis" },
+    xAxis: { type: "category", data: lineChartLabels },
+    yAxis: { type: "value" },
+    visualMap: {
+      show: false,
+      dimension: 0,
+      pieces: [
+        { gt: 0, lte: 4, color: "#6C63FF" },
+        { gt: 4, color: "red" },
+      ],
     },
-    yAxis: [
-      {
-        type: "value",
-        name: "Số lượng",
-      },
-      {
-        type: "value",
-        name: "Tỉ lệ lỗi (%)",
-        min: 0,
-        max: 100,
-        position: "right",
-        axisLabel: {
-          formatter: "{value} %",
-        },
-      },
-    ],
     series: [
       {
-        name: "Số lượng máy được kiểm tra",
-        type: "bar",
-        stack: "total", // chồng các cột lên nhau
-        data: overViewProduct.map((e) => e.totalChecked),
-        itemStyle: { color: "#2196F3" }, // Màu xanh dương
-      },
-      {
-        name: "Số lượng máy gặp lỗi",
-        type: "bar",
-        stack: "total", // chồng các cột lên nhau
-        data: overViewProduct.map((e) => e.totalErrors),
-        itemStyle: { color: "#F44336" }, // Màu đỏ
-      },
-      {
-        name: "Tỉ lệ lỗi (%)",
+        name: "Số thiết bị bảo trì",
         type: "line",
-        yAxisIndex: 1, // dùng trục thứ 2
-        data: overViewProduct.map((e) =>
-          e.totalChecked
-            ? +((e.totalErrors / e.totalChecked) * 100).toFixed(1)
-            : 0
-        ),
-        itemStyle: { color: "#F44336" },
+        data: lineChartData,
+        smooth: true,
       },
     ],
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "shadow", // hiển thị tooltip theo dạng shadow
-      },
-      formatter: function (params: any) {
-        return params
-          .map((param: any) => {
-            if (param.seriesName === "Tỉ lệ lỗi (%)") {
-              return `${param.seriesName}: ${param.value}%`;
-            }
-            return `${param.seriesName}: ${param.value}`;
-          })
-          .join("<br/>");
-      },
-    },
-    grid: {
-      left: 36,
-      top: 8,
-      right: 50,
-      bottom: 24,
+    Grid2: {
+      top: "16px",
+      left: "16px",
+      right: "16px",
+      bottom: "16px",
+      containLabel: true,
     },
   };
 
-  return (
-    <Grid2 container size={12} spacing={1}>
-      <Grid2 container spacing={1} size={8}>
-        {/* Biểu đồ */}
-        <Grid2 size={12}>
-          <Wrapper title={"Bảo trì thiết bị"}>
-            <ReactECharts
-              option={option}
-              style={{ height: 200, width: "100%" }}
-            />
-          </Wrapper>
-        </Grid2>
+  // Dữ liệu và cấu hình biểu đồ tròn (pie chart) cho trạng thái các task
+  const taskStatusData = [
+    { value: 40, name: "Đã hoàn thành" },
+    { value: 25, name: "Đang tiến hành" },
+    { value: 35, name: "Chưa bắt đầu" },
+  ];
 
-        <Grid2 container spacing={1} size={12}>
-          <Paper sx={{ p: 2, width: "100%" }}>
-            <Grid2
-              container
-              spacing={2}
-              size={12}
-              justifyContent={"space-around"}
+  const pieOption: echarts.EChartsOption = {
+    tooltip: { trigger: "item" },
+    legend: {
+      orient: "vertical",
+      left: "left",
+    },
+    series: [
+      {
+        name: "Trạng thái task",
+        type: "pie",
+        radius: "50%",
+        data: taskStatusData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: "rgba(0, 0, 0, 0.5)",
+          },
+        },
+      },
+    ],
+  };
+
+  // Danh sách các thiết bị chưa được tạo task
+  const devicesWithoutTask = [
+    "Thiết bị A",
+    "Thiết bị B",
+    "Thiết bị C",
+    "Thiết bị D",
+  ];
+
+  // Danh sách các nhân viên cần thực hiện task
+  const employeesWithTask = [
+    "Nhân viên 1",
+    "Nhân viên 2",
+    "Nhân viên 3",
+    "Nhân viên 4",
+  ];
+
+  // Định nghĩa style chung cho Paper (card)
+  const cardPaperStyle = {
+    p: 3,
+    width: "100%",
+    height: "100%",
+    boxShadow: 3,
+    borderRadius: 4,
+  };
+
+  return (
+    <Grid2 container spacing={2}>
+      {/* Block Metric */}
+
+      <Grid2 size={12} container spacing={2} justifyContent={"center"}>
+        <Grid2 size={{ md: 2, xs: 12 }}>
+          <Paper sx={cardPaperStyle}>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#555", fontWeight: 500 }}
             >
-              <Stack direction={"column"} justifyContent={"center"}>
-                <Typography
-                  variant="h5"
-                  color="primary"
-                  textAlign={"center"}
-                  fontWeight={"bold"}
-                >
-                  {overViewKeyMetric?.totalProduct}
-                </Typography>
-                <Typography variant="caption">Thiết bị</Typography>
-              </Stack>
-              <Stack direction={"column"}>
-                <Typography
-                  variant="h5"
-                  color="primary"
-                  textAlign={"center"}
-                  fontWeight={"bold"}
-                >
-                  {overViewKeyMetric?.totalUser}
-                </Typography>
-                <Typography variant="caption">Nhân viên</Typography>
-              </Stack>
-              <Stack direction={"column"} justifyContent={"center"}>
-                <Typography
-                  variant="h5"
-                  color="primary"
-                  textAlign={"center"}
-                  fontWeight={"bold"}
-                >
-                  {overViewKeyMetric?.totalTemplate}
-                </Typography>
-                <Typography variant="caption">Biểu mẫu</Typography>
-              </Stack>
-            </Grid2>
+              Tổng số thiết bị
+            </Typography>
+            <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
+              {keyMetric?.totalProduct}
+            </Typography>
           </Paper>
         </Grid2>
-
-        <Grid2 container spacing={1} size={12}>
-          <Grid2 container direction={"column"} size={6}>
-            <Wrapper title="Thiết bị ">
-              <UntestedDevicesChart />
-            </Wrapper>
-          </Grid2>
-
-          <Grid2 container direction={"column"} size={6}>
-            <Wrapper title="Phiếu khảo sát">
-              <StatusTaskCheckChart />
-            </Wrapper>
-          </Grid2>
+        <Grid2 size={{ md: 2, xs: 12 }}>
+          <Paper sx={cardPaperStyle}>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#555", fontWeight: 500 }}
+            >
+              Tổng số nhân viên
+            </Typography>
+            <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
+              {keyMetric?.totalUser}
+            </Typography>
+          </Paper>
+        </Grid2>
+        <Grid2 size={{ md: 2, xs: 12 }}>
+          <Paper sx={cardPaperStyle}>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#555", fontWeight: 500 }}
+            >
+              Tổng số khách hàng
+            </Typography>
+            <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
+              {keyMetric?.totalCustomer}
+            </Typography>
+          </Paper>
+        </Grid2>
+        <Grid2 size={{ md: 2, xs: 12 }}>
+          <Paper sx={cardPaperStyle}>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#555", fontWeight: 500 }}
+            >
+              Tổng số task
+            </Typography>
+            <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
+              {keyMetric?.totalTemplate}
+            </Typography>
+          </Paper>
+        </Grid2>
+        <Grid2 size={{ md: 2, xs: 12 }}>
+          <Paper sx={cardPaperStyle}>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#555", fontWeight: 500 }}
+            >
+              Số lượng RFID
+            </Typography>
+            <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
+              {keyMetric?.totalRFID}
+            </Typography>
+          </Paper>
         </Grid2>
       </Grid2>
 
-      <Grid2 container size={4}>
-        <Grid2 size={12} height={"100%"}>
-          <Wrapper title="Lịch sử quét trong ngày">
-            <StyledDataGrid rows={taskChecks} columns={columns} hideFooter />
-          </Wrapper>
-        </Grid2>
+      {/* Block Biểu đồ */}
+      <Grid2 size={{ xs: 12, md: 6 }}>
+        <Wrapper title="Bảo trì thiết bị">
+          <ReactECharts
+            option={lineOption}
+            style={{ height: "300px", width: "100%" }}
+          />
+        </Wrapper>
+      </Grid2>
+      <Grid2 size={{ xs: 12, md: 6 }}>
+        <TaskCheckOverview />
+      </Grid2>
+
+      {/* Block Danh sách */}
+      <Grid2 size={{ xs: 12, md: 6 }}>
+        <Wrapper title="Danh sách thiết bị chưa được tạo task">
+          <ProductWithoutTask />
+        </Wrapper>
+      </Grid2>
+      <Grid2 size={{ xs: 12, md: 6 }}>
+        <Wrapper title="Danh sách nhân viên cần thực hiện task">
+          <OverviewUserTask />
+        </Wrapper>
       </Grid2>
     </Grid2>
   );
 };
 
-export default Dashboard;
+export default MaintainedDevicesLineChart;

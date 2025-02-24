@@ -1,5 +1,5 @@
+import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import errorDetailApi from "@modules/maintenance/apis/errorDetailApi";
-import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { ErrorDetailDto } from "@modules/maintenance/datas/errorDetail/ErrorDetailDto";
 import { GetErrorDetailDto } from "@modules/maintenance/datas/errorDetail/GetErrorDetailDto";
 

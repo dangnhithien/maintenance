@@ -16,12 +16,16 @@ import InputSearch from "../common/InputSearch";
 import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
 import TrashButton from "../common/TrashButton";
-
-const ProductList = () => {
+interface Props {
+  isPage?: boolean;
+  param?: GetProductDto;
+}
+const ProductList: React.FC<Props> = ({ param, isPage = true }) => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetProductDto>({
+    ...param,
     includeProperties: "Device",
     takeCount: 5,
   });
@@ -41,7 +45,7 @@ const ProductList = () => {
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
       field: "serialNumber",
-      headerName: "Mã",
+      headerName: "Seri",
       editable: false,
       sortable: false,
       flex: 1,
@@ -65,7 +69,7 @@ const ProductList = () => {
     {
       field: "createdDate",
       headerName: "Ngày tạo",
-      minWidth: 300,
+
       editable: false,
       sortable: false,
       flex: 1,
@@ -137,45 +141,47 @@ const ProductList = () => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          <Grid2 container spacing={1}>
-            <Button
-              variant="contained"
-              color="success"
-              component={Link}
-              to={"/product/create"}
-              size="small"
-            >
-              <Add />
-            </Button>
-            {rowSelectionModel.length > 0 && (
+          {isPage && (
+            <Grid2 container spacing={1}>
               <Button
                 variant="contained"
-                color="error"
-                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
+                color="success"
+                component={Link}
+                to={"/product/create"}
                 size="small"
               >
-                <GridDeleteIcon />
+                <Add />
               </Button>
-            )}
-            {rowSelectionModel.length > 0 && params.isDeleted && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={restore}
-                size="small"
-              >
-                <RestoreIcon />
-              </Button>
-            )}
+              {rowSelectionModel.length > 0 && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={params.isDeleted ? onHardDelete : onSoftDelete}
+                  size="small"
+                >
+                  <GridDeleteIcon />
+                </Button>
+              )}
+              {rowSelectionModel.length > 0 && params.isDeleted && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={restore}
+                  size="small"
+                >
+                  <RestoreIcon />
+                </Button>
+              )}
 
-            <Divider draggable={false} orientation="vertical" flexItem />
+              <Divider draggable={false} orientation="vertical" flexItem />
 
-            <TrashButton
-              onClick={(isDeleted) =>
-                setParams({ ...params, isDeleted: isDeleted })
-              }
-            />
-          </Grid2>
+              <TrashButton
+                onClick={(isDeleted) =>
+                  setParams({ ...params, isDeleted: isDeleted })
+                }
+              />
+            </Grid2>
+          )}
         </Grid2>
         <Grid2>
           <PaginatedDataGrid

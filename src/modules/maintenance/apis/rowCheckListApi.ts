@@ -1,12 +1,12 @@
+import axiosInstance from "../../../apis/axiosInstance";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
-} from "../datas/comon/ApiResponse";
+} from "../../../datas/comon/ApiResponse";
 import { CreateRowCheckListDto } from "../datas/rowCheckList/CreateRowCheckListDto";
 import { GetRowCheckListDto } from "../datas/rowCheckList/GetRowCheckListDto";
 import { RowCheckListDto } from "../datas/rowCheckList/RowCheckListDto";
 import { UpdateRowCheckListDto } from "../datas/rowCheckList/UpdateRowCheckListDto";
-import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 

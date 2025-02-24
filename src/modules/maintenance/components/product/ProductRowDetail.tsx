@@ -108,10 +108,10 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                     label="Seri"
                     value={data.serialNumber?.toString() || ""}
                   />
-                  <InfoItem label="Nhà cung cấp" value={data.supplier || ""} />
-                  <InfoItem label="Version" value={data.version || ""} />
+                  {/* <InfoItem label="Nhà cung cấp" value={data.supplier || ""} /> */}
+                  {/* <InfoItem label="Version" value={data.version || ""} /> */}
                   <InfoItem
-                    label="Loại thiết bị"
+                    label="Nhóm thiết bị"
                     value={data.device?.name || ""}
                   />
                 </Grid2>
@@ -158,11 +158,13 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                   />
                   <InfoItem
                     label="Đã bảo trì"
-                    value={data.maintenanceTimes?.toString() || "0"}
+                    value={(data.maintenanceTimes?.toString() || "0") + " lần"}
                   />
                   <InfoItem
                     label="Chu kì"
-                    value={data.maintenanceCycle?.toString() || ""}
+                    value={
+                      data.maintenanceCycle?.toString() + " ngày" || " 0 ngày"
+                    }
                   />
                 </Grid2>
               </Grid2>
@@ -297,7 +299,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
 };
 const InfoItem = ({ label, value }: { label: string; value: string }) => (
   <Box display="flex">
-    <Typography variant="caption" color="textSecondary">
+    <Typography variant="caption" color="textSecondary" mr={1}>
       {label}:
     </Typography>
     <Typography variant="caption" color="info" fontWeight="bold">

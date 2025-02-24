@@ -1,12 +1,12 @@
-import { ApiRequest } from "../datas/comon/ApiRequest";
+import axiosInstance from "../../../apis/axiosInstance";
+import { ApiRequest } from "../../../datas/comon/ApiRequest";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
-} from "../datas/comon/ApiResponse";
+} from "../../../datas/comon/ApiResponse";
 import { GetDeviceDto } from "../datas/device/GetDeviceDto";
 import { CreateSolutionOptionDto } from "../datas/solutionOption/CreateSolutionOptionDto";
 import { SolutionOptionDto } from "../datas/solutionOption/SolutionOptionDto";
-import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 

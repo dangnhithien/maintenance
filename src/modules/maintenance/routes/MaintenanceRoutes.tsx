@@ -1,10 +1,20 @@
 import SpinnerLoading from "@components/SpinerLoading";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+
 // Thay bằng đường dẫn đến component SpinnerLoading của bạn
 
 const DashBoardPage = React.lazy(
   () => import("../pages/dashBoard/DashBoardPage")
+);
+const AdminAssigneePage = React.lazy(
+  () => import("../pages/taskCheck/AdminAssigneePage")
+);
+const CustomerListPage = React.lazy(
+  () => import("../pages/customer/CustomerListPage")
+);
+const CustomerDetailPage = React.lazy(
+  () => import("../pages/customer/CustomerDetailPage")
 );
 const ApprovalPage = React.lazy(() => import("../pages/approval/ApprovalPage"));
 const ApprovalDetailPage = React.lazy(
@@ -372,6 +382,30 @@ const MaintenanceRoutes = () => (
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <TaskCheckDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/customer"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CustomerListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/customer/detail/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CustomerDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/assignee"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <AdminAssigneePage />
         </React.Suspense>
       }
     />

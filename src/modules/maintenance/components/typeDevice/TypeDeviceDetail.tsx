@@ -1,5 +1,5 @@
+import { unwrapError } from "@datas/comon/ApiResponse";
 import typeDeviceApi from "@modules/maintenance/apis/typeDeviceApi";
-import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
 import { TypeDeviceDto } from "@modules/maintenance/datas/typeDevice/TypeDeviceDto";
 import {
   Box,

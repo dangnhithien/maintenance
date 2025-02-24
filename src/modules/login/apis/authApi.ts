@@ -1,9 +1,10 @@
-import axiosInstance from "@modules/maintenance/apis/axiosInstance";
-import { ApiRequest } from "@modules/maintenance/datas/comon/ApiRequest";
-import { ApiResponseWithObject } from "@modules/maintenance/datas/comon/ApiResponse";
+import { ApiResponseWithObject } from "@datas/comon/ApiResponse";
 import axios from "axios";
+import { ApiRequest } from "src/datas/comon/ApiRequest";
+
+import axiosInstance from "../../../apis/axiosInstance";
+import { UserDto } from "../../user/datas/user/UserDto";
 import { LoginDto } from "../datas/LoginDto";
-import { UserDto } from "../datas/UserDto";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 

@@ -102,7 +102,15 @@ const Navbar: React.FC = () => {
               color="inherit"
               sx={{ textTransform: "none" }}
             >
-              Danh sách thiết bị
+              Quản lí thiết bị
+            </Button>
+            <Button
+              component={Link}
+              to="/assignee"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Tạo task
             </Button>
             <Button
               component={Link}
@@ -110,16 +118,16 @@ const Navbar: React.FC = () => {
               color="inherit"
               sx={{ textTransform: "none" }}
             >
-              Lịch sử quét
+              Danh sách task
             </Button>
-            <Button
+            {/* <Button
               component={Link}
               to="/approval"
               color="inherit"
               sx={{ textTransform: "none" }}
             >
               Danh sách chờ duyệt
-            </Button>
+            </Button> */}
             {/* Dropdown menu button */}
             <Button
               color="inherit"
@@ -153,7 +161,7 @@ const Navbar: React.FC = () => {
               >
                 Danh sách biểu mẫu
               </MenuItem>
-              <MenuItem onClick={handleClose} component={Link} to="/type-error">
+              {/* <MenuItem onClick={handleClose} component={Link} to="/type-error">
                 Loại lỗi
               </MenuItem>
               <MenuItem
@@ -162,13 +170,19 @@ const Navbar: React.FC = () => {
                 to="/error-detail"
               >
                 Danh mục lỗi
-              </MenuItem>
-              <MenuItem
+              </MenuItem> */}
+              {/* <MenuItem
                 onClick={handleClose}
                 component={Link}
                 to="/solution-option"
               >
                 Giải pháp
+              </MenuItem> */}
+              <MenuItem onClick={handleClose} component={Link} to="/user">
+                Nhân viên
+              </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/customer">
+                Khách hàng
               </MenuItem>
             </Menu>
           </Grid2>

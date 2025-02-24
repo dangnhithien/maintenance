@@ -1,3 +1,3 @@
-import { DeletedBaseDto } from "../comon/DeletedBaseDto";
+import { DeletedBaseDto } from "../../../../datas/comon/DeletedBaseDto";
 
 export interface DeleteDeviceDto extends DeletedBaseDto {}

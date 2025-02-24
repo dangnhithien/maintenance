@@ -10,15 +10,17 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
     <Grid2
       sx={{
         bgcolor: "white",
-        boxShadow: 3,
-        borderRadius: 1.5,
-        p: 2,
-        width: 350,
+
+        width: 450,
         position: "sticky",
         top: 20,
         alignSelf: "stretch", // Ensure the sidebar stretches with the content
         display: "flex",
         flexDirection: "column",
+        p: 3,
+        boxShadow: 3,
+        borderRadius: 4,
+        height: "100%",
       }}
     >
       <Grid2 mb={1}>
@@ -54,8 +56,9 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
         <Stack px={2} py={1} spacing={1}>
           <InfoItem label="Serial" value={product.serialNumber || ""} />
           <InfoItem label="Nhà cung cấp" value={product.supplier || ""} />
-          <InfoItem label="Phiên bản" value={product.version || ""} />
-          <InfoItem label="Loại thiết bị" value={product.device?.name || ""} />
+          <InfoItem label="Khách hàng" value={product.customer?.name || ""} />
+          {/* <InfoItem label="Phiên bản" value={product.version || ""} /> */}
+          <InfoItem label="Nhóm thiết bị" value={product.device?.name || ""} />
         </Stack>
 
         <Typography variant="body1" color="primary" fontWeight="bold">
@@ -101,9 +104,9 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
             value={product.maintenanceCycle?.toString() || "N/A"}
           />
         </Stack>
-        <Typography variant="body1" color="primary" fontWeight="bold">
+        {/* <Typography variant="body1" color="primary" fontWeight="bold">
           Ghi chú
-        </Typography>
+        </Typography> */}
         <Stack px={2} py={1} spacing={1}>
           <Typography variant="caption" color="textSecondary">
             {product.note}

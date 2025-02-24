@@ -1,11 +1,11 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import rowCheckListApi from "@modules/maintenance/apis/rowCheckListApi";
-import templateCheckListApi from "@modules/maintenance/apis/templateCheckListApi";
 import {
   unwrapError,
   unwrapListReponse,
   unwrapObjectReponse,
-} from "@modules/maintenance/datas/comon/ApiResponse";
+} from "@datas/comon/ApiResponse";
+import { yupResolver } from "@hookform/resolvers/yup";
+import rowCheckListApi from "@modules/maintenance/apis/rowCheckListApi";
+import templateCheckListApi from "@modules/maintenance/apis/templateCheckListApi";
 import { EnumTypeValue } from "@modules/maintenance/datas/enum/EnumTypeValue";
 import { CreateRowCheckListDto } from "@modules/maintenance/datas/rowCheckList/CreateRowCheckListDto";
 import { CreateTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/CreateTemplateCheckListDto";
@@ -415,7 +415,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
         <Grid2 size={3}>
           <Stack direction="row" spacing={1}>
             <Typography variant="body2" color="primary" fontWeight={"bold"}>
-              Thiết bị
+              Nhóm thiết bị
             </Typography>
             <Typography color="error">*</Typography>
           </Stack>

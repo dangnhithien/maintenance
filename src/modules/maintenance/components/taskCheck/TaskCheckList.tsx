@@ -12,16 +12,16 @@ import PopupConfirm from "../common/PopupConfirm";
 import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 
 interface Props {
-  productId?: string;
+  param?: GetTaskCheckDto;
 }
-const TaskCheckList: React.FC<Props> = ({ productId }) => {
+const TaskCheckList: React.FC<Props> = ({ param }) => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
+    ...param,
     includeProperties: "TemplateCheck",
     takeCount: 5,
-    productId: productId,
     sortBy: "CreatedDate DESC",
   });
   const [rowSelectionModel, setRowSelectionModel] =
@@ -51,9 +51,20 @@ const TaskCheckList: React.FC<Props> = ({ productId }) => {
       ),
     },
     {
+      field: "name",
+      headerName: "Tên phiếu ",
+      editable: false,
+      sortable: false,
+      flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/task-check/detail/${params.row.id}`}>
+          {params.row.templateCheck.name}
+        </Link>
+      ),
+    },
+    {
       field: "checkTime",
       headerName: "Ngày tạo",
-      minWidth: 300,
       editable: false,
       sortable: false,
       flex: 1,

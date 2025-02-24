@@ -2,8 +2,8 @@ import { CreateTemplateCheckListDto } from "@modules/maintenance/datas/templateC
 import { DeleteTemplateCheckDto } from "@modules/maintenance/datas/templateCheckList/DeleteTemplateCheckDto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { ApiRequest } from "../../../datas/comon/ApiRequest";
 import templateCheckListApi from "../apis/templateCheckListApi";
-import { ApiRequest } from "../datas/comon/ApiRequest";
 import { GetTemplateCheckListDto } from "../datas/templateCheckList/GetTemplateCheckListDto";
 
 const KEY = "templateChecks";

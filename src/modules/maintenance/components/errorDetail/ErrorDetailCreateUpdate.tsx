@@ -1,9 +1,6 @@
+import { unwrapError, unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import errorDetailApi from "@modules/maintenance/apis/errorDetailApi";
-import {
-  unwrapError,
-  unwrapObjectReponse,
-} from "@modules/maintenance/datas/comon/ApiResponse";
 import { CreateErrorDetailDto } from "@modules/maintenance/datas/errorDetail/CreateErrorDetailDto";
 import {
   Button,

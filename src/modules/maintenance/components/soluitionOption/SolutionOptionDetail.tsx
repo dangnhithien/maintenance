@@ -1,4 +1,4 @@
-import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
+import { unwrapError } from "@datas/comon/ApiResponse";
 
 import solutionOptionApi from "@modules/maintenance/apis/solutionOptionApi";
 import { SolutionOptionDto } from "@modules/maintenance/datas/solutionOption/SolutionOptionDto";

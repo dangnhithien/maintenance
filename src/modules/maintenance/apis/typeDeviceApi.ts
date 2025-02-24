@@ -1,11 +1,11 @@
+import axiosInstance from "../../../apis/axiosInstance";
 import {
   ApiResponseWithList,
   ApiResponseWithObject,
-} from "../datas/comon/ApiResponse";
+} from "../../../datas/comon/ApiResponse";
 import { GetDeviceDto } from "../datas/device/GetDeviceDto";
 import { CreateTypeDeviceDto } from "../datas/typeDevice/CreateTypeDeviceDto";
 import { TypeDeviceDto } from "../datas/typeDevice/TypeDeviceDto";
-import axiosInstance from "./axiosInstance";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
 

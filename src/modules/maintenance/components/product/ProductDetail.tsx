@@ -1,4 +1,4 @@
-import { unwrapError } from "@modules/maintenance/datas/comon/ApiResponse";
+import { unwrapError } from "@datas/comon/ApiResponse";
 
 import ImageBase64 from "@components/ImageBase64";
 import productApi from "@modules/maintenance/apis/productApi";

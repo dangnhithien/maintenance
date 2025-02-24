@@ -1,5 +1,5 @@
+import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import deviceApi from "@modules/maintenance/apis/deviceApi";
-import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { DeviceDto } from "@modules/maintenance/datas/device/DeviceDto";
 import { GetDeviceDto } from "@modules/maintenance/datas/device/GetDeviceDto";
 import React, { useEffect, useState } from "react";

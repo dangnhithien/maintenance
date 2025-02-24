@@ -5,7 +5,7 @@ import { Breadcrumbs, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 const page = {
-  title: "Lịch sử quét ",
+  title: "Quản lí task",
   url: "/template-check-list",
   component: <TaskCheckList />,
 };

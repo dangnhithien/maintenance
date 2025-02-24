@@ -7,4 +7,6 @@ export interface ApiRequest {
   includeProperties?: string;
   fromDate?: Date;
   toDate?: Date;
+  fromTime?: Date;
+  toTime?: Date;
 }

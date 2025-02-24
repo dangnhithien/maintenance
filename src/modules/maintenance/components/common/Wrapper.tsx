@@ -15,7 +15,16 @@ const Wrapper: React.FC<PropsWithChildren<Props>> = ({
   sx,
 }) => {
   return (
-    <Paper sx={{ p: 2, width: "100%", height: "100%", ...sx }}>
+    <Paper
+      sx={{
+        p: 3,
+        width: "100%",
+        height: "100%",
+        boxShadow: 3,
+        borderRadius: 4,
+        ...sx,
+      }}
+    >
       <Box
         sx={{
           display: "flex",

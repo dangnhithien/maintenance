@@ -1,4 +1,4 @@
-import { ApiRequest } from "../comon/ApiRequest";
+import { ApiRequest } from "../../../../datas/comon/ApiRequest";
 import { EnumStatusTaskCheck } from "../enum/EnumStatusTaskCheck";
 
 export interface GetTaskCheckDto extends ApiRequest {
@@ -6,4 +6,6 @@ export interface GetTaskCheckDto extends ApiRequest {
   productId?: string;
   taskCheckStatus?: EnumStatusTaskCheck;
   deviceId?: string;
+  customerId?: string;
+  AssigneeId?: string;
 }

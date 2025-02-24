@@ -43,7 +43,7 @@ const ProductDetailPage = () => {
       </Breadcrumbs>
       <ProductDetail id={id} />
       <Wrapper title="Lịch sử quét" sx={{ mt: 2 }}>
-        <TaskCheckList productId={id} />
+        <TaskCheckList param={{ productId: id }} />
       </Wrapper>
     </div>
   );

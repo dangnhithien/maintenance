@@ -1,5 +1,5 @@
+import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import typeErrorApi from "@modules/maintenance/apis/typeErrorApi";
-import { unwrapObjectReponse } from "@modules/maintenance/datas/comon/ApiResponse";
 import { GetTypeErrorDto } from "@modules/maintenance/datas/typeError/GetTypeErrorDto";
 import { TypeErrorDto } from "@modules/maintenance/datas/typeError/TypeErrorDto";
 
