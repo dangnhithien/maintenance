@@ -1,5 +1,4 @@
 import { ReactECharts } from "@components/ReactChart";
-import OverviewUserTask from "@modules/user/components/user/OverviewUserTask";
 import { Grid2, Paper, TextField, Typography } from "@mui/material";
 import * as echarts from "echarts";
 
@@ -19,7 +18,6 @@ const MaintainedDevicesLineChart: React.FC = () => {
       .then((res) => setKeyMetric(res));
   }, []);
 
-  // Dữ liệu cho biểu đồ đường
   const lineChartLabels = [
     "2025-02-15",
     "2025-02-16",
@@ -29,30 +27,61 @@ const MaintainedDevicesLineChart: React.FC = () => {
     "2025-02-20",
     "2025-02-21",
   ];
+
+  // Dữ liệu thực tế số thiết bị mà nhân viên đã làm
   const lineChartData = [3, 5, 2, 8, 4, 6, 7];
+
+  // Dữ liệu hệ thống tạo ra yêu cầu bảo trì
+  const lineChartSystemData = [4, 6, 3, 7, 5, 7, 8];
+
+  // Tính toán sự chênh lệch giữa 2 dữ liệu
+  const lineChartDifference = lineChartData.map(
+    (value, index) => value - lineChartSystemData[index]
+  );
 
   const lineOption: echarts.EChartsOption = {
     tooltip: { trigger: "axis" },
-    xAxis: { type: "category", data: lineChartLabels },
-    yAxis: { type: "value" },
-    visualMap: {
-      show: false,
-      dimension: 0,
-      pieces: [
-        { gt: 0, lte: 4, color: "#6C63FF" },
-        { gt: 4, color: "red" },
+    legend: {
+      data: [
+        "Số thiết bị đã bảo trì",
+        "Số thiết bị yêu cầu bảo trì",
+        "Chênh lệch",
       ],
     },
+    xAxis: { type: "category", data: lineChartLabels },
+    yAxis: { type: "value" },
+
     series: [
       {
-        name: "Số thiết bị bảo trì",
+        name: "Số thiết bị đã bảo trì",
         type: "line",
         data: lineChartData,
         smooth: true,
       },
+      {
+        name: "Số thiết bị yêu cầu bảo trì",
+        type: "line",
+        data: lineChartSystemData,
+        smooth: true,
+        lineStyle: {
+          type: "dashed", // Đường kẻ nét đứt
+        },
+      },
+      {
+        name: "Chênh lệch",
+        type: "line",
+        data: lineChartDifference,
+        smooth: true,
+        lineStyle: {
+          type: "dotted", // Đường kẻ chấm để dễ phân biệt
+        },
+        itemStyle: {
+          color: "red", // Màu đỏ để dễ nhìn thấy sự chênh lệch
+        },
+      },
     ],
     grid: {
-      top: "16px",
+      top: "32px",
       left: "16px",
       right: "16px",
       bottom: "16px",
@@ -88,6 +117,56 @@ const MaintainedDevicesLineChart: React.FC = () => {
         },
       },
     ],
+  };
+  const data: any = [
+    { name: "Nguyễn Văn A", assigned: 10, completed: 8 },
+    { name: "Trần Thị B", assigned: 12, completed: 9 },
+    { name: "Lê Văn C", assigned: 15, completed: 12 },
+    { name: "Phạm Thị D", assigned: 9, completed: 7 },
+    { name: "Hoàng Văn E", assigned: 14, completed: 10 },
+  ];
+  const barOption: echarts.EChartsOption = {
+    tooltip: {
+      trigger: "axis",
+    },
+    legend: {
+      data: ["Công việc được giao", "Công việc đã hoàn thành"],
+      top: 0,
+    },
+    xAxis: {
+      type: "category",
+      data: data.map((employee: any) => employee.name),
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Công việc được giao",
+        type: "bar",
+        data: data.map((employee: any) => employee.assigned),
+        barWidth: "30%", // Giảm chiều rộng của cột
+        itemStyle: {
+          color: "#749fdf", // Màu sáng hơn
+        },
+      },
+      {
+        name: "Công việc đã hoàn thành",
+        type: "bar",
+        data: data.map((employee: any) => employee.completed),
+        barWidth: "30%", // Giảm chiều rộng của cột
+        itemStyle: {
+          color: "#aee8a1", // Màu sáng hơn
+        },
+      },
+    ],
+    grid: {
+      top: "40px",
+      left: "16px",
+      right: "16px",
+      bottom: "16px",
+      containLabel: true,
+    },
   };
 
   // Style dùng chung cho Paper (card)
@@ -137,10 +216,10 @@ const MaintainedDevicesLineChart: React.FC = () => {
             <Grid2 size={{ xs: 12, md: 6 }} height="100%">
               <Paper sx={cardPaperStyle}>
                 <Typography
-                  variant="subtitle2"
+                  variant="caption"
                   sx={{ color: "#555", fontWeight: 500 }}
                 >
-                  Tổng số thiết bị
+                  Tổng số thiết bị trong hệ thống
                 </Typography>
                 <Typography
                   variant="h5"
@@ -149,10 +228,12 @@ const MaintainedDevicesLineChart: React.FC = () => {
                   {keyMetric?.totalProduct}
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="overline"
                   sx={{ mt: 2 }}
                   color="success"
                   fontWeight={"bold"}
+                  mr={0.5}
+                  fontSize={14}
                 >
                   120
                 </Typography>
@@ -164,7 +245,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
             <Grid2 size={{ xs: 12, md: 6 }} height="100%">
               <Paper sx={cardPaperStyle}>
                 <Typography
-                  variant="subtitle2"
+                  variant="caption"
                   sx={{ color: "#555", fontWeight: 500 }}
                 >
                   Tổng số nhân viên
@@ -176,22 +257,24 @@ const MaintainedDevicesLineChart: React.FC = () => {
                   {keyMetric?.totalUser}
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="overline"
                   sx={{ mt: 2 }}
                   color="success"
                   fontWeight={"bold"}
+                  mr={0.5}
+                  fontSize={14}
                 >
                   80
                 </Typography>
                 <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  nhân viên đang trực ca
+                  nhân viên có task trong hôm nay
                 </Typography>
               </Paper>
             </Grid2>
             <Grid2 size={{ xs: 12, md: 6 }} height="100%">
               <Paper sx={cardPaperStyle}>
                 <Typography
-                  variant="subtitle2"
+                  variant="caption"
                   sx={{ color: "#555", fontWeight: 500 }}
                 >
                   Tổng số khách hàng
@@ -203,10 +286,12 @@ const MaintainedDevicesLineChart: React.FC = () => {
                   {keyMetric?.totalCustomer}
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="overline"
                   sx={{ mt: 2 }}
                   color="success"
                   fontWeight={"bold"}
+                  mr={0.5}
+                  fontSize={14}
                 >
                   100
                 </Typography>
@@ -218,7 +303,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
             <Grid2 size={{ xs: 12, md: 6 }} height="100%">
               <Paper sx={cardPaperStyle}>
                 <Typography
-                  variant="subtitle2"
+                  variant="caption"
                   sx={{ color: "#555", fontWeight: 500 }}
                 >
                   Tổng số task
@@ -227,13 +312,15 @@ const MaintainedDevicesLineChart: React.FC = () => {
                   variant="h5"
                   sx={{ color: "#333", fontWeight: "bold" }}
                 >
-                  {keyMetric?.totalTemplate}
+                  {/* {keyMetric?.totalTemplate} */}50
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="overline"
                   sx={{ mt: 2 }}
                   color="success"
                   fontWeight={"bold"}
+                  mr={0.5}
+                  fontSize={14}
                 >
                   15
                 </Typography>
@@ -242,22 +329,89 @@ const MaintainedDevicesLineChart: React.FC = () => {
                 </Typography>
               </Paper>
             </Grid2>
+            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
+              <Paper sx={cardPaperStyle}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: "#555", fontWeight: 500 }}
+                >
+                  Tổng số thiết bị cần bảo trì
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ color: "#333", fontWeight: "bold" }}
+                >
+                  {/* {keyMetric?.totalTemplate} */} 50
+                </Typography>
+                <Typography
+                  variant="overline"
+                  sx={{ mt: 2 }}
+                  color="success"
+                  fontWeight={"bold"}
+                  mr={0.5}
+                  fontSize={14}
+                >
+                  15
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
+                  thiết bị đã được bảo trì
+                </Typography>
+              </Paper>
+            </Grid2>
+            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
+              <Paper sx={cardPaperStyle}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: "#555", fontWeight: 500 }}
+                >
+                  Tổng số task cần duyệt
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ color: "#333", fontWeight: "bold" }}
+                >
+                  {/* {keyMetric?.totalTemplate} */} 30
+                </Typography>
+                <Typography
+                  variant="overline"
+                  sx={{ mt: 2 }}
+                  color="success"
+                  fontWeight={"bold"}
+                  mr={0.5}
+                  fontSize={14}
+                >
+                  15
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
+                  task đã được duyệt
+                </Typography>
+              </Paper>
+            </Grid2>
           </Grid2>
         </Grid2>
-        <Grid2 size={{ xs: 12, md: 8 }}>
-          <Wrapper title="Bảo trì thiết bị">
+        <Grid2 size={{ xs: 12, md: 8 }} height={"100%"}>
+          <Wrapper title="Theo dõi bảo trì thiết bị" sx={{ height: "100%" }}>
             <ReactECharts
               option={lineOption}
-              style={{ height: "250px", width: "100%" }}
+              style={{ height: "350px", width: "100%" }}
             />
           </Wrapper>
         </Grid2>
       </Grid2>
 
+      <Grid2 size={{ xs: 12, md: 12 }}>
+        <Wrapper title="Theo dõi công việc bảo trì">
+          <ReactECharts
+            option={barOption}
+            style={{ height: "300px", width: "100%" }}
+          />
+        </Wrapper>
+      </Grid2>
+
       {/* Hàng 2: Danh sách và Pie Chart */}
       <Grid2 size={12} container spacing={2}>
         <Grid2 size={{ xs: 12, md: 8 }}>
-          <Wrapper title="Danh sách thiết bị chưa được tạo task">
+          <Wrapper title="Danh sách task cần duyệt">
             <ProductWithoutTask />
           </Wrapper>
         </Grid2>
@@ -271,13 +425,13 @@ const MaintainedDevicesLineChart: React.FC = () => {
         </Grid2>
       </Grid2>
       {/* Hàng 3: Danh sách và Pie Chart */}
-      <Grid2 size={12} container spacing={2}>
+      {/* <Grid2 size={12} container spacing={2}>
         <Grid2 size={12}>
           <Wrapper title="Danh sách nhân viên cần thực hiện task">
             <OverviewUserTask />
           </Wrapper>
         </Grid2>
-      </Grid2>
+      </Grid2> */}
     </Grid2>
   );
 };

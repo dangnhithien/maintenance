@@ -58,7 +58,7 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.templateCheck.name}
+          {params.row.templateCheck?.name}
         </Link>
       ),
     },
