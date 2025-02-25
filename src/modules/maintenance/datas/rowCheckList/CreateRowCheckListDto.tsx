@@ -1,8 +1,6 @@
 import { EnumTypeValue } from "../enum/EnumTypeValue";
 
 export interface CreateRowCheckListDto {
-  id?: string;
-  code: string;
   content: string;
   description?: string;
   typeErrorId?: string;
@@ -14,5 +12,5 @@ export interface CreateRowCheckListDto {
   };
   isHeader?: boolean;
   parentId?: string;
-  order?: number;
+  order: number;
 }

@@ -120,14 +120,30 @@ const Navbar: React.FC = () => {
             >
               Danh sách task
             </Button>
-            {/* <Button
+            <Button
+              component={Link}
+              to="/customer"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Khách hàng
+            </Button>
+            <Button
+              component={Link}
+              to="/user"
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              Nhân viên
+            </Button>
+            <Button
               component={Link}
               to="/approval"
               color="inherit"
               sx={{ textTransform: "none" }}
             >
               Danh sách chờ duyệt
-            </Button> */}
+            </Button>
             {/* Dropdown menu button */}
             <Button
               color="inherit"
@@ -178,12 +194,12 @@ const Navbar: React.FC = () => {
               >
                 Giải pháp
               </MenuItem> */}
-              <MenuItem onClick={handleClose} component={Link} to="/user">
+              {/* <MenuItem onClick={handleClose} component={Link} to="/user">
                 Nhân viên
               </MenuItem>
               <MenuItem onClick={handleClose} component={Link} to="/customer">
                 Khách hàng
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </Grid2>
 

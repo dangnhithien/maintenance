@@ -1,10 +1,10 @@
 export enum EnumTypeValue {
-  TEXT = "String",
-  NUMBER = "Number",
+  TEXT = 2,
+  NUMBER = 0,
   SELECT = "Select",
   RADIO = "Radio",
   CHECKBOX = "Checkbox",
   DATE = "Date",
-  BOOLEAN = "Boolean",
-  DROPDOWN = "Dropdown",
+  BOOLEAN = 1,
+  DROPDOWN = 3,
 }

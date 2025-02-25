@@ -18,16 +18,16 @@ import {
 interface QuestionProps {
   question: CreateRowCheckListDto;
   updateQuestion: (
-    code: string,
+    order: number,
     key: keyof CreateRowCheckListDto,
     value: any
   ) => void;
-  addAnswer: (questionCode: string) => void;
-  updateAnswer: (questionCode: string, answerId: string, text: string) => void;
-  removeAnswer: (questionCode: string, answerId: string) => void;
-  removeQuestion: (questionCode: string) => void;
-  setTargetQuestionId: (id: string | null) => void;
-  targetQuestionId: string | null;
+  addAnswer: (questionOrder: number) => void;
+  updateAnswer: (questionOrder: number, answerId: string, text: string) => void;
+  removeAnswer: (questionOrder: number, answerId: string) => void;
+  removeQuestion: (questionOrder: number) => void;
+  setTargetQuestionId: (id: number | null) => void;
+  targetQuestionId: number | null;
 }
 
 const QuestionComponent: React.FC<QuestionProps> = ({
@@ -49,17 +49,17 @@ const QuestionComponent: React.FC<QuestionProps> = ({
           mb: 1,
           border: question.content.trim() === "" ? "1px solid red" : "none",
         }}
-        onClick={() => setTargetQuestionId(question.code)}
+        onClick={() => setTargetQuestionId(question.order)}
       >
         <CardContent sx={{ p: 2, pb: 2 }}>
-          {targetQuestionId === question.code ? (
+          {targetQuestionId === question.order ? (
             <>
               <TextField
                 fullWidth
                 label="Tiêu đề"
                 value={question.content}
                 onChange={(e) =>
-                  updateQuestion(question.code, "content", e.target.value)
+                  updateQuestion(question.order, "content", e.target.value)
                 }
                 error={question.content.trim() === ""}
                 helperText={
@@ -72,7 +72,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
                   color="error"
-                  onClick={() => removeQuestion(question.code)}
+                  onClick={() => removeQuestion(question.order)}
                   size="small"
                 >
                   Xóa câu hỏi
@@ -105,7 +105,6 @@ const QuestionComponent: React.FC<QuestionProps> = ({
       Object.keys(question.dropdownValues).length === 0);
   const hasError = isContentEmpty || isAnswerMissing;
 
-  // Chuyển đổi dropdownValues thành mảng để hiển thị
   const answers = question.dropdownValues
     ? Object.entries(question.dropdownValues)
     : [];
@@ -117,17 +116,17 @@ const QuestionComponent: React.FC<QuestionProps> = ({
         p: 1,
         border: hasError ? "1px solid red" : "none",
       }}
-      onClick={() => setTargetQuestionId(question.code)}
+      onClick={() => setTargetQuestionId(question.order)}
     >
       <CardContent sx={{ p: 3 }}>
-        {targetQuestionId === question.code ? (
+        {targetQuestionId === question.order ? (
           <>
             <TextField
               fullWidth
               label="Câu hỏi"
               value={question.content}
               onChange={(e) =>
-                updateQuestion(question.code, "content", e.target.value)
+                updateQuestion(question.order, "content", e.target.value)
               }
               error={isContentEmpty}
               helperText={isContentEmpty && "Câu hỏi không được để trống"}
@@ -135,7 +134,6 @@ const QuestionComponent: React.FC<QuestionProps> = ({
               sx={{ mb: 2 }}
               autoFocus
             />
-
             <Grid2 container direction={"row"} mb={2} spacing={2}>
               <Grid2 size={12}>
                 <TextField
@@ -145,7 +143,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   label="Loại câu hỏi"
                   value={question.typeValue}
                   onChange={(e) =>
-                    updateQuestion(question.code, "typeValue", e.target.value)
+                    updateQuestion(question.order, "typeValue", e.target.value)
                   }
                 >
                   <MenuItem value={EnumTypeValue.TEXT}>Văn bản</MenuItem>
@@ -164,8 +162,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
             {question.content || "Nhấn để nhập câu hỏi..."}
           </Typography>
         )}
-
-        {targetQuestionId === question.code &&
+        {targetQuestionId === question.order &&
           question.typeValue !== EnumTypeValue.TEXT &&
           question.typeValue !== EnumTypeValue.NUMBER && (
             <Box sx={{ ml: 1 }}>
@@ -182,13 +179,13 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                     fullWidth
                     value={answerText}
                     onChange={(e) =>
-                      updateAnswer(question.code, answerId, e.target.value)
+                      updateAnswer(question.order, answerId, e.target.value)
                     }
                     size="small"
                   />
                   <Button
                     color="error"
-                    onClick={() => removeAnswer(question.code, answerId)}
+                    onClick={() => removeAnswer(question.order, answerId)}
                     size="small"
                     sx={{ ml: 1 }}
                   >
@@ -196,7 +193,7 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   </Button>
                 </Box>
               ))}
-              <Button onClick={() => addAnswer(question.code)} size="small">
+              <Button onClick={() => addAnswer(question.order)} size="small">
                 Thêm câu trả lời
               </Button>
               {isAnswerMissing && (
@@ -206,7 +203,6 @@ const QuestionComponent: React.FC<QuestionProps> = ({
               )}
             </Box>
           )}
-
         {question.typeValue === EnumTypeValue.RADIO && (
           <RadioGroup sx={{ flexDirection: "column", ml: 1 }}>
             {answers.length > 0 ? (
@@ -260,12 +256,11 @@ const QuestionComponent: React.FC<QuestionProps> = ({
             )}
           </TextField>
         )}
-
-        {targetQuestionId === question.code && (
+        {targetQuestionId === question.order && (
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
             <Button
               color="error"
-              onClick={() => removeQuestion(question.code)}
+              onClick={() => removeQuestion(question.order)}
               size="small"
             >
               Xóa câu hỏi

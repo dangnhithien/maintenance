@@ -1,4 +1,5 @@
 import { DeviceDto } from "../device/DeviceDto";
+import { RowCheckListDto } from "../rowCheckList/RowCheckListDto";
 
 export interface TemplateCheckListDto {
   id: string;
@@ -8,4 +9,5 @@ export interface TemplateCheckListDto {
   deviceId: string;
   deviceCode: string;
   device: DeviceDto;
+  rowChecks?: RowCheckListDto[];
 }

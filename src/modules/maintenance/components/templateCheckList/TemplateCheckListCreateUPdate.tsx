@@ -1,10 +1,5 @@
-import {
-  unwrapError,
-  unwrapListReponse,
-  unwrapObjectReponse,
-} from "@datas/comon/ApiResponse";
+import { unwrapError, unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import { yupResolver } from "@hookform/resolvers/yup";
-import rowCheckListApi from "@modules/maintenance/apis/rowCheckListApi";
 import templateCheckListApi from "@modules/maintenance/apis/templateCheckListApi";
 import { EnumTypeValue } from "@modules/maintenance/datas/enum/EnumTypeValue";
 import { CreateRowCheckListDto } from "@modules/maintenance/datas/rowCheckList/CreateRowCheckListDto";
@@ -26,7 +21,6 @@ import { useNotification } from "../common/Notistack";
 import DeviceSelect from "../common/select/DeviceSelect";
 import QuestionComponent from "./QuestionComponent";
 
-// Cập nhật đường dẫn phù hợp
 const schema = yup.object({
   code: yup.string().required("Mã là bắt buộc"),
   name: yup.string().required("Nội dung là bắt buộc"),
@@ -53,7 +47,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
     totalCount,
   } = useTemplateCheckList();
   const { notify } = useNotification();
-  // Sử dụng hook form cho các trường chính của form
+
   const {
     control,
     handleSubmit,
@@ -70,10 +64,10 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   });
   const navigate = useNavigate();
 
-  // Quản lý danh sách câu hỏi và danh sách câu hỏi bị xóa (chỉ khi update)
+  // Sử dụng order làm định danh => targetQuestionId là number|null
   const [questions, setQuestions] = useState<CreateRowCheckListDto[]>([]);
   const [deletedQuestions, setDeletedQuestions] = useState<string[]>([]);
-  const [targetQuestionId, setTargetQuestionId] = useState<string | null>(null);
+  const [targetQuestionId, setTargetQuestionId] = useState<number | null>(null);
   const [localErrors, setLocalErrors] = useState<{ [key: string]: string }>({});
   const answerIdRef = useRef(0);
 
@@ -81,33 +75,31 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
     if (id) {
       getChecklistById(id, { includeProperties: "Device" })
         .then((res) => {
-          reset(res as CreateTemplateCheckListDto); // Reset form với dữ liệu từ API
+          reset(res as CreateTemplateCheckListDto);
+          const checklist = res.rowChecks ? [...res.rowChecks] : [];
+          setQuestions(checklist as CreateRowCheckListDto[]);
         })
         .catch((err) => {
           const { message } = unwrapError(err);
           notify(message, "error");
         });
-      rowCheckListApi
-        .get({ templateCheckId: id, sortBy: "Order ASC" })
-        .then(unwrapListReponse)
-        .then((res) => {
-          setQuestions(res as CreateRowCheckListDto[]);
-        })
-        .catch((err) => {
-          const { message } = unwrapError(err);
-          // notify(message, "error");
-        });
     }
   }, []);
 
-  // Hàm thêm header: isHeader = true, chỉ cần nhập tiêu đề (content)
+  const getNextOrder = () => {
+    const currentMaxOrder = questions.reduce(
+      (max, q) => Math.max(max, q.order || 0),
+      0
+    );
+    return currentMaxOrder + 1;
+  };
+
   const addHeader = () => {
     const newHeader: CreateRowCheckListDto = {
-      code: Date.now().toString(),
       content: "",
-      typeErrorId: "", // không bắt buộc cho header nếu chỉ nhập tiêu đề
+      typeErrorId: "",
       templateCheckId: id || "",
-      typeValue: EnumTypeValue.TEXT, // mặc định là văn bản
+      typeValue: EnumTypeValue.TEXT,
       dropdownValues: {},
       isHeader: true,
       order: getNextOrder(),
@@ -115,14 +107,12 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
     setQuestions([...questions, newHeader]);
   };
 
-  // Hàm thêm câu hỏi (không phải header)
   const addQuestion = () => {
     const newQuestion: CreateRowCheckListDto = {
-      code: Date.now().toString(),
       content: "",
-      typeErrorId: "default", // giá trị mặc định, thay đổi nếu cần
+      typeErrorId: "default",
       templateCheckId: id || "",
-      typeValue: EnumTypeValue.TEXT, // mặc định là văn bản
+      typeValue: EnumTypeValue.TEXT,
       dropdownValues: {},
       isHeader: false,
       order: getNextOrder(),
@@ -131,19 +121,19 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   };
 
   const updateQuestion = (
-    code: string,
+    order: number,
     key: keyof CreateRowCheckListDto,
     value: any
   ) => {
     setQuestions(
-      questions.map((q) => (q.code === code ? { ...q, [key]: value } : q))
+      questions.map((q) => (q.order === order ? { ...q, [key]: value } : q))
     );
   };
 
-  const addAnswer = (questionCode: string) => {
+  const addAnswer = (questionOrder: number) => {
     setQuestions(
       questions.map((q) => {
-        if (q.code === questionCode) {
+        if (q.order === questionOrder) {
           const newAnswerId = answerIdRef.current++;
           return {
             ...q,
@@ -159,30 +149,25 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
   };
 
   const updateAnswer = (
-    questionCode: string,
+    questionOrder: number,
     answerId: string,
     text: string
   ) => {
     setQuestions(
       questions.map((q) => {
-        if (q.code === questionCode) {
-          return {
-            ...q,
-            dropdownValues: {
-              ...q.dropdownValues,
-              [answerId]: text,
-            },
-          };
+        if (q.order === questionOrder) {
+          const newDropdownValues = { ...q.dropdownValues, [answerId]: text };
+          return { ...q, dropdownValues: newDropdownValues };
         }
         return q;
       })
     );
   };
 
-  const removeAnswer = (questionCode: string, answerId: string) => {
+  const removeAnswer = (questionOrder: number, answerId: string) => {
     setQuestions(
       questions.map((q) => {
-        if (q.code === questionCode) {
+        if (q.order === questionOrder) {
           const { [answerId]: removed, ...rest } = q.dropdownValues || {};
           return {
             ...q,
@@ -194,38 +179,25 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
     );
   };
 
-  // Khi xóa câu hỏi, nếu câu hỏi có trường id (đã được tạo từ API) thì lưu vào deletedQuestions
-  const removeQuestion = (questionCode: string) => {
+  const removeQuestion = (questionOrder: number) => {
     setQuestions((prev) => {
-      const removedQuestion = prev.find((q) => q.code === questionCode);
+      const removedQuestion = prev.find((q) => q.order === questionOrder);
       if (removedQuestion && "id" in removedQuestion && removedQuestion.id) {
         setDeletedQuestions((prevDeleted) => [
           ...prevDeleted,
           removedQuestion.id as string,
         ]);
       }
-      return prev.filter((q) => q.code !== questionCode);
+      return prev.filter((q) => q.order !== questionOrder);
     });
-    if (targetQuestionId === questionCode) {
+    if (targetQuestionId === questionOrder) {
       setTargetQuestionId(null);
     }
   };
 
-  // Hàm validate: yêu cầu phải có ít nhất một header và các câu hỏi không được để trống
   const validateQuestions = () => {
     let valid = true;
-    // const hasHeader = questions.some((q) => q.isHeader);
-    // if (!hasHeader) {
-    //   valid = false;
-    //   setLocalErrors((prev) => ({
-    //     ...prev,
-    //     header: "Vui lòng tạo ít nhất một Header để nhóm câu hỏi.",
-    //   }));
-    // } else {
-    //   setLocalErrors((prev) => ({ ...prev, header: "" }));
-    // }
     questions.forEach((q) => {
-      // Nếu là header thì chỉ cần content
       if (q.isHeader) {
         if (q.content.trim() === "") {
           valid = false;
@@ -257,85 +229,19 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       return;
     }
     setLocalErrors({});
-    // try {
     if (id) {
-      // Update Checklist
-      const res = await updateChecklist({ id: id, updatedData: data });
+      const res = await updateChecklist({
+        id: id,
+        updatedData: { ...data, rowChecks: questions },
+      });
       notify(res.message, "success");
-
-      // Xử lý các row câu hỏi: nếu row có id thì update, nếu không thì tạo mới
-      let parentId = "";
-
-      for (const [index, row] of questions.entries()) {
-        if (row.id) {
-          // Cập nhật câu hỏi đã có
-          const updateResponse = await rowCheckListApi.update(row.id, {
-            content: row.content,
-            typeErrorId: undefined,
-            typeValue: row.typeValue,
-            dropdownValues: row.dropdownValues,
-          });
-        } else {
-          // Tạo mới câu hỏi
-          const newRowResponse = await rowCheckListApi
-            .post({
-              ...row,
-              id: undefined,
-              code: Date.now().toString() + index,
-              templateCheckId: id,
-              parentId: parentId === "" ? undefined : parentId,
-              typeValue: row.isHeader ? EnumTypeValue.TEXT : row.typeValue,
-              typeErrorId: undefined,
-              // typeErrorId:
-              //   row.typeErrorId === ""
-              //     ? "285daf35-9c80-4201-8fe2-ea3ffd9fc32e"
-              //     : row.typeErrorId,
-            })
-            .then(unwrapObjectReponse);
-          if (row.isHeader) {
-            parentId = newRowResponse.id;
-          }
-        }
-      }
-
-      // Xóa các câu hỏi đã bị xóa trước đó
-      if (deletedQuestions && deletedQuestions.length > 0)
-        await rowCheckListApi.delete(true, deletedQuestions).catch(unwrapError);
     } else {
-      // Tạo mới Checklist
       const checklistRes = await templateCheckListApi
-        .post(data)
+        .post({ ...data, rowChecks: questions })
         .then(unwrapObjectReponse);
-      let parentId = "";
-
-      for (const [index, row] of questions.entries()) {
-        const newRow = await rowCheckListApi
-          .post({
-            ...row,
-            code: Date.now().toString() + index,
-            templateCheckId: checklistRes.id,
-            parentId: parentId === "" ? undefined : parentId,
-            typeValue: row.isHeader ? EnumTypeValue.TEXT : row.typeValue,
-            typeErrorId: undefined,
-          })
-          .then(unwrapObjectReponse);
-        if (row.isHeader) parentId = newRow.id;
-      }
-
       notify("success", "success");
       navigate("/template-check-list");
     }
-    // } catch (err) {
-    //   const { message } = unwrapError(err);
-    //   notify(message, "error");
-    // }
-  };
-  const getNextOrder = () => {
-    const currentMaxOrder = questions.reduce(
-      (max, q) => Math.max(max, q.order || 0),
-      0
-    );
-    return currentMaxOrder + 1;
   };
 
   return (
@@ -446,10 +352,10 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           )}
         </Grid2>
       </Grid2>
-      {/* Danh sách câu hỏi */}
+      {/* Render danh sách câu hỏi */}
       {questions.map((question) => (
         <QuestionComponent
-          key={question.code}
+          key={question.order}
           question={question}
           updateQuestion={updateQuestion}
           addAnswer={addAnswer}
@@ -465,11 +371,6 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           {localErrors.questions}
         </Typography>
       )}
-      {/* {localErrors.header && (
-        <Typography color="error" sx={{ mt: 1 }}>
-          {localErrors.header}
-        </Typography>
-      )} */}
       <Button
         variant="contained"
         color="primary"
@@ -481,7 +382,6 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       <Button variant="contained" onClick={addQuestion} sx={{ mt: 2, ml: 2 }}>
         Thêm câu hỏi
       </Button>
-
       <Button
         type="submit"
         color="success"
