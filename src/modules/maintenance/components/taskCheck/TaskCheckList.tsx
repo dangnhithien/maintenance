@@ -20,7 +20,7 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
     ...param,
-    includeProperties: "TemplateCheck",
+    includeProperties: "TemplateCheck,Product,Customer",
     takeCount: 5,
     sortBy: "CreatedDate DESC",
   });
@@ -79,13 +79,22 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
         renderConditionalLink(params, params.row.name),
     },
     {
-      field: "customerCode",
+      field: "productName",
+      headerName: "Thiết bị",
+      align: "center",
+      headerAlign: "center",
+      flex: 1,
+      renderCell: (params: any) =>
+        renderConditionalLink(params, params.row.product?.name),
+    },
+    {
+      field: "customerName",
       headerName: "Khách hàng ",
       align: "center",
       headerAlign: "center",
       flex: 1,
       renderCell: (params: any) =>
-        renderConditionalLink(params, params.row.customerCode),
+        renderConditionalLink(params, params.row.customer?.name),
     },
     {
       field: "createdDate",
