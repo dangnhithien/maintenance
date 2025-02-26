@@ -101,6 +101,10 @@ const MaintainedDevicesLineChart: React.FC = () => {
       xAxis: {
         type: "category",
         data: userListTask.map((employee) => employee.assigneeName),
+        axisLabel: {
+          fontSize: 9,
+          rotate: 45, // Xoay nhãn trục x 45 độ
+        },
       },
       yAxis: {
         type: "value",
@@ -263,7 +267,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
         <Wrapper title="Theo dõi công việc bảo trì">
           <ReactECharts
             option={barOption}
-            style={{ height: "300px", width: "100%" }}
+            style={{ height: "500px", width: "100%" }}
           />
         </Wrapper>
       </Grid2>
