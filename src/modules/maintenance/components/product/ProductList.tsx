@@ -50,7 +50,7 @@ const ProductList: React.FC<Props> = ({ param, isPage = true }) => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/product/detail/${params.row.id}`}>
+        <Link to={`/product/detail-new/${params.row.id}`}>
           {params.row.serialNumber}
         </Link>
       ),
@@ -62,7 +62,9 @@ const ProductList: React.FC<Props> = ({ param, isPage = true }) => {
       sortable: false,
       flex: 1,
       renderCell: (params: any) => (
-        <Link to={`/product/detail/${params.row.id}`}>{params.row.name}</Link>
+        <Link to={`/product/detail-new/${params.row.id}`}>
+          {params.row.name}
+        </Link>
       ),
     },
 

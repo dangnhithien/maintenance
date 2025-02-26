@@ -9,4 +9,5 @@ export interface ApiRequest {
   toDate?: Date;
   fromTime?: Date;
   toTime?: Date;
+  assigneeId?: string;
 }

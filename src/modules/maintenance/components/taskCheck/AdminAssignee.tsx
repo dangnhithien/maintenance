@@ -10,7 +10,7 @@ import AssigneeCard from "./AssigneeCard";
 
 const AdminAssignee = () => {
   // Số phần tử trên mỗi trang
-  const PAGE_SIZE = 12;
+  const PAGE_SIZE = 4;
 
   // Các tham số filter ban đầu
   const [params, setParams] = useState<GetProductDto>({

@@ -5,6 +5,7 @@ import {
 } from "../../../datas/comon/ApiResponse";
 import { CreateCustomerDto } from "../datas/customer/CreateCustomerDto";
 import { CustomerDto } from "../datas/customer/CustomerDto";
+import { CustomerOverview } from "../datas/customer/CustomerOverview";
 import { GetCustomerDto } from "../datas/customer/GetCustomerDto";
 
 // Định nghĩa kiểu dữ liệu trả về từ API
@@ -19,6 +20,16 @@ class CustomerApi {
     return await axiosInstance.get(BASE_URL, {
       params,
     });
+  };
+  getOverviewCustomerTaskCheck = async (
+    params?: GetCustomerDto
+  ): Promise<ApiResponseWithObject<CustomerOverview>> => {
+    return await axiosInstance.get(
+      BASE_URL + "/get-overview-customer-task-check",
+      {
+        params,
+      }
+    );
   };
   post = async (
     params?: CreateCustomerDto

@@ -1,4 +1,3 @@
-import { ReactECharts } from "@components/ReactChart";
 import { unwrapError } from "@datas/comon/ApiResponse";
 import productApi from "@modules/maintenance/apis/productApi";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
@@ -9,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import InfoProduct from "../common/InfoProduct";
 import { useNotification } from "../common/Notistack";
 import Wrapper from "../common/Wrapper";
+import ComponentCreateUpdate from "../component/ComponentCreateUpdate";
 import TaskCheckList from "../taskCheck/TaskCheckList";
 
 interface Props {
@@ -116,7 +116,7 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
         sx={{ display: "flex" }}
         spacing={2}
       >
-        <Grid2 size={{ xs: 12, md: 12 }}>
+        {/* <Grid2 size={{ xs: 12, md: 12 }}>
           <Paper sx={{ p: 3, boxShadow: 3, borderRadius: 4, height: "100%" }}>
             <Typography
               variant="h6"
@@ -127,14 +127,19 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
             </Typography>
             <ReactECharts option={option} style={{ height: "300px" }} />
           </Paper>
-        </Grid2>
-        <Grid2 container size={{ xs: 12, md: 12 }} mt={1}>
+        </Grid2> */}
+        <Grid2 container size={{ xs: 12, md: 12 }}>
           <Grid2 size={{ xs: 12, md: 12 }}>
             <Wrapper
               title="Danh sách task"
               sx={{ width: "100%", height: "100%" }}
             >
               <TaskCheckList param={{ productId: id }} />
+            </Wrapper>
+          </Grid2>
+          <Grid2 size={12} minHeight={450}>
+            <Wrapper title="Danh sách linh kiện">
+              <ComponentCreateUpdate productId={id} isEdit={false} />
             </Wrapper>
           </Grid2>
           {/* <Grid2 size={{ xs: 12, md: 4 }}>

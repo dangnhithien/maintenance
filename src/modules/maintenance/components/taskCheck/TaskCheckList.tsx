@@ -41,8 +41,6 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     {
       field: "code",
       headerName: "Mã",
-      editable: false,
-      sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
@@ -52,26 +50,38 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     },
     {
       field: "name",
-      headerName: "Tên phiếu ",
-      editable: false,
-      sortable: false,
+      align: "center",
+      headerAlign: "center",
+      headerName: "Tên ",
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.templateCheck?.name}
+          {params.row.name}
         </Link>
       ),
     },
     {
-      field: "checkTime",
-      headerName: "Ngày tạo",
-      editable: false,
-      sortable: false,
+      field: "customerCode",
+      headerName: "Khách hàng ",
+      align: "center",
+      headerAlign: "center",
       flex: 1,
       renderCell: (params: any) => (
         <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.checkTime &&
-            new Date(params.row.checkTime).toLocaleDateString("vi-VN", {
+          {params.row.customerCode}
+        </Link>
+      ),
+    },
+    {
+      field: "createdDate",
+      align: "center",
+      headerAlign: "center",
+      headerName: "Ngày tạo",
+      flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/task-check/detail/${params.row.id}`}>
+          {params.row.createdDate &&
+            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
@@ -81,27 +91,16 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     },
 
     {
-      field: "createdBy",
+      field: "taskCreator",
       headerName: "Người tạo",
-      editable: false,
-      sortable: false,
       align: "center",
       headerAlign: "center",
       flex: 1,
-      renderCell: (params: any) => (
-        <span>
-          {params.row.createdBy || params.row.createdBy == "undifined"
-            ? "Admin"
-            : params.row.createdBy}
-        </span>
-      ),
     },
 
     {
       field: "taskCheckStatus",
       headerName: "Trạng thái",
-      editable: false,
-      sortable: false,
       flex: 1,
       renderCell: (params: any) => (
         <ChipTaskCheckStatus status={params.row.taskCheckStatus} />

@@ -2,94 +2,139 @@ import { ReactECharts } from "@components/ReactChart";
 import { Grid2, Paper, TextField, Typography } from "@mui/material";
 import * as echarts from "echarts";
 
-import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
+import {
+  unwrapListReponse,
+  unwrapObjectReponse,
+} from "@datas/comon/ApiResponse";
 import overviewApi from "@modules/maintenance/apis/overviewApi";
+import productApi from "@modules/maintenance/apis/productApi";
 import { OverviewKeyMetricDto } from "@modules/maintenance/datas/overview/OverviewKeyMetricsDto";
-import { useEffect, useState } from "react";
+import { OverviewProductByDate } from "@modules/maintenance/datas/overview/OverViewProductByDate";
+import userApi from "@modules/user/apis/UserApi";
+import { OverviewUser } from "@modules/user/datas/user/OverviewUser";
+import { useEffect, useMemo, useState } from "react";
+import Approval from "../approval/Approval";
 import Wrapper from "../common/Wrapper";
-import ProductWithoutTask from "../product/ProductWithoutTasks";
+import TaskCheckOverview from "../taskCheck/components/TaskcheckOverview";
+import LineChartProduct from "./components/LineChartProduct";
+
+// Hàm tạo khoảng thời gian 7 ngày (3 ngày trước và 3 ngày sau ngày được chọn)
+function getSevenDayRange(inputDate: string): { fromDate: Date; toDate: Date } {
+  const date = new Date(inputDate);
+  const fromDate = new Date(date);
+  fromDate.setDate(date.getDate() - 3);
+  const toDate = new Date(date);
+  toDate.setDate(date.getDate() + 3);
+  return { fromDate, toDate };
+}
+
+// Hàm tạo khoảng thời gian 1 ngày (từ ngày được chọn đến ngày kế tiếp)
+function getOneDayRange(dateStr: string): { fromDate: Date; toDate: Date } {
+  const fromDate = new Date(dateStr);
+  const toDate = new Date(fromDate);
+  toDate.setDate(fromDate.getDate() + 1);
+  return { fromDate, toDate };
+}
 
 const MaintainedDevicesLineChart: React.FC = () => {
   const [keyMetric, setKeyMetric] = useState<OverviewKeyMetricDto>();
-  useEffect(() => {
-    overviewApi
-      .getKeyMetric()
-      .then(unwrapObjectReponse)
-      .then((res) => setKeyMetric(res));
-  }, []);
-
-  const lineChartLabels = [
-    "2025-02-15",
-    "2025-02-16",
-    "2025-02-17",
-    "2025-02-18",
-    "2025-02-19",
-    "2025-02-20",
-    "2025-02-21",
-  ];
-
-  // Dữ liệu thực tế số thiết bị mà nhân viên đã làm
-  const lineChartData = [3, 5, 2, 8, 4, 6, 7];
-
-  // Dữ liệu hệ thống tạo ra yêu cầu bảo trì
-  const lineChartSystemData = [4, 6, 3, 7, 5, 7, 8];
-
-  // Tính toán sự chênh lệch giữa 2 dữ liệu
-  const lineChartDifference = lineChartData.map(
-    (value, index) => value - lineChartSystemData[index]
+  const [productData, setProductData] = useState<OverviewProductByDate[]>([]);
+  const [userListTask, setUserListTask] = useState<OverviewUser[]>([]);
+  const [date, setDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
   );
 
-  const lineOption: echarts.EChartsOption = {
-    tooltip: { trigger: "axis" },
-    legend: {
-      data: [
-        "Số thiết bị đã bảo trì",
-        "Số thiết bị yêu cầu bảo trì",
-        "Chênh lệch",
+  // Lấy số liệu key metrics cho ngày được chọn
+  useEffect(() => {
+    const selectedDate = new Date(date);
+    overviewApi
+      .getKeyMetric({ fromDate: selectedDate, toDate: selectedDate })
+      .then(unwrapObjectReponse)
+      .then(setKeyMetric);
+  }, [date]);
+
+  // Lấy danh sách task của người dùng cho khoảng 1 ngày
+  useEffect(() => {
+    const { fromDate, toDate } = getOneDayRange(date);
+    userApi
+      .getOverviewUserTask({ fromDate, toDate })
+      .then(unwrapListReponse)
+      .then(setUserListTask);
+  }, [date]);
+
+  // Lấy dữ liệu sản phẩm cho khoảng 7 ngày (trung tâm theo ngày được chọn)
+  useEffect(() => {
+    const { fromDate, toDate } = getSevenDayRange(date);
+    productApi
+      .getOverviewProductByDate({ fromDate, toDate })
+      .then(unwrapListReponse)
+      .then((res) => setProductData(res as OverviewProductByDate[]));
+  }, [date]);
+
+  const lineChartLabels = productData.map((item) =>
+    new Date(item.date).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    })
+  );
+
+  const lineChartData = productData.map(
+    (item) => item.totalProductMaintenanced
+  );
+  const lineChartSystemData = productData.map(
+    (item) => item.totalProductNeedToMaintenance
+  );
+  const lineChartDifference = productData.map(
+    (item) => item.totalProductMaintenanced - item.totalProductNeedToMaintenance
+  );
+
+  const lineOption: echarts.EChartsOption = useMemo(
+    () => ({
+      tooltip: { trigger: "axis" },
+      legend: {},
+      xAxis: { type: "category", data: lineChartLabels },
+      yAxis: { type: "value", interval: 1 },
+      series: [
+        {
+          name: "Số thiết bị đã bảo trì",
+          type: "line",
+          data: lineChartData,
+          smooth: true,
+          itemStyle: {
+            color: "#aee8a1",
+          },
+        },
+        {
+          name: "Số thiết bị cần bảo trì",
+          type: "line",
+          data: lineChartSystemData,
+          smooth: true,
+          itemStyle: {
+            color: "#749fdf",
+          },
+        },
+        {
+          name: "Chưa hoàn thành",
+          type: "line",
+          data: lineChartDifference,
+          smooth: true,
+          lineStyle: { type: "dotted" },
+          itemStyle: { color: "red" },
+        },
       ],
-    },
-    xAxis: { type: "category", data: lineChartLabels },
-    yAxis: { type: "value" },
+      grid: {
+        top: "32px",
+        left: "16px",
+        right: "16px",
+        bottom: "16px",
+        containLabel: true,
+      },
+    }),
+    [lineChartLabels, lineChartData, lineChartSystemData, lineChartDifference]
+  );
 
-    series: [
-      {
-        name: "Số thiết bị đã bảo trì",
-        type: "line",
-        data: lineChartData,
-        smooth: true,
-      },
-      {
-        name: "Số thiết bị yêu cầu bảo trì",
-        type: "line",
-        data: lineChartSystemData,
-        smooth: true,
-        lineStyle: {
-          type: "dashed", // Đường kẻ nét đứt
-        },
-      },
-      {
-        name: "Chênh lệch",
-        type: "line",
-        data: lineChartDifference,
-        smooth: true,
-        lineStyle: {
-          type: "dotted", // Đường kẻ chấm để dễ phân biệt
-        },
-        itemStyle: {
-          color: "red", // Màu đỏ để dễ nhìn thấy sự chênh lệch
-        },
-      },
-    ],
-    grid: {
-      top: "32px",
-      left: "16px",
-      right: "16px",
-      bottom: "16px",
-      containLabel: true,
-    },
-  };
-
-  // Dữ liệu cho biểu đồ tròn (pie chart)
+  // Dữ liệu cho pie chart (nếu cần sử dụng trong tương lai)
   const taskStatusData = [
     { value: 40, name: "Đã hoàn thành" },
     { value: 25, name: "Đang tiến hành" },
@@ -118,58 +163,55 @@ const MaintainedDevicesLineChart: React.FC = () => {
       },
     ],
   };
-  const data: any = [
-    { name: "Nguyễn Văn A", assigned: 10, completed: 8 },
-    { name: "Trần Thị B", assigned: 12, completed: 9 },
-    { name: "Lê Văn C", assigned: 15, completed: 12 },
-    { name: "Phạm Thị D", assigned: 9, completed: 7 },
-    { name: "Hoàng Văn E", assigned: 14, completed: 10 },
-  ];
-  const barOption: echarts.EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-    },
-    legend: {
-      data: ["Công việc được giao", "Công việc đã hoàn thành"],
-      top: 0,
-    },
-    xAxis: {
-      type: "category",
-      data: data.map((employee: any) => employee.name),
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        name: "Công việc được giao",
-        type: "bar",
-        data: data.map((employee: any) => employee.assigned),
-        barWidth: "30%", // Giảm chiều rộng của cột
-        itemStyle: {
-          color: "#749fdf", // Màu sáng hơn
-        },
-      },
-      {
-        name: "Công việc đã hoàn thành",
-        type: "bar",
-        data: data.map((employee: any) => employee.completed),
-        barWidth: "30%", // Giảm chiều rộng của cột
-        itemStyle: {
-          color: "#aee8a1", // Màu sáng hơn
-        },
-      },
-    ],
-    grid: {
-      top: "40px",
-      left: "16px",
-      right: "16px",
-      bottom: "16px",
-      containLabel: true,
-    },
-  };
 
-  // Style dùng chung cho Paper (card)
+  const barOption: echarts.EChartsOption = useMemo(
+    () => ({
+      tooltip: {
+        trigger: "axis",
+      },
+      legend: {
+        data: ["Task được giao", "Task đã hoàn thành"],
+        top: 0,
+      },
+      xAxis: {
+        type: "category",
+        data: userListTask.map((employee) => employee.assigneeName),
+      },
+      yAxis: {
+        type: "value",
+        interval: 1,
+      },
+      series: [
+        {
+          name: "Task được giao",
+          type: "bar",
+          data: userListTask.map((employee) => employee.totalTask),
+          barWidth: "30%",
+          itemStyle: {
+            color: "#749fdf",
+          },
+        },
+        {
+          name: "Task đã hoàn thành",
+          type: "bar",
+          data: userListTask.map((employee) => employee.totalTaskDone),
+          barWidth: "30%",
+          itemStyle: {
+            color: "#aee8a1",
+          },
+        },
+      ],
+      grid: {
+        top: "40px",
+        left: "16px",
+        right: "16px",
+        bottom: "16px",
+        containLabel: true,
+      },
+    }),
+    [userListTask]
+  );
+
   const cardPaperStyle = {
     p: 3,
     width: "100%",
@@ -178,6 +220,45 @@ const MaintainedDevicesLineChart: React.FC = () => {
     borderRadius: 4,
   };
 
+  const metrics = [
+    {
+      title: "Tổng số thiết bị trong hệ thống",
+      value: keyMetric?.totalProduct,
+      subValue: keyMetric?.totalRFID,
+      subText: "thiết bị đã gắn RFID",
+    },
+    {
+      title: "Thiết bị cần bảo trì hôm nay",
+      value: keyMetric?.totalProductNeedToMaintenanceToday,
+      subValue: keyMetric?.totalProductMaintenancedToday,
+      subText: "thiết bị đã được bảo trì",
+    },
+    {
+      title: "Tổng số khách hàng",
+      value: keyMetric?.totalCustomer,
+      subValue: keyMetric?.totalCustomerNeedMaintenanceToday,
+      subText: "khách hàng cần bảo trì hôm nay",
+    },
+    {
+      title: "Tổng số task kiểm tra hôm nay",
+      value: keyMetric?.totalTaskCheckToday,
+      subValue: keyMetric?.totalTaskCheckDoneToday,
+      subText: "task đã hoàn thành",
+    },
+    {
+      title: "Tổng số nhân viên",
+      value: keyMetric?.totalUser,
+      subValue: keyMetric?.totalUserHaveTask,
+      subText: "nhân viên có task hôm nay",
+    },
+    {
+      title: "Task cần duyệt hôm nay",
+      value: keyMetric?.totalTaskCheckNeedToApproveToday,
+      subValue: keyMetric?.totalTaskCheckApprovedToday,
+      subText: "task đã được duyệt",
+    },
+  ];
+
   return (
     <Grid2 container spacing={2}>
       <Grid2 container size={12} mb={1}>
@@ -185,221 +266,72 @@ const MaintainedDevicesLineChart: React.FC = () => {
           Tổng quan
         </Typography>
         <TextField
+          value={date}
           type="date"
           size="small"
           placeholder="Tìm kiếm"
           color="primary"
+          onChange={(e) => setDate(e.target.value)}
           sx={{
             backgroundColor: "#fff",
             borderRadius: "20px",
             "& .MuiInputBase-input": {
-              fontSize: "12px", // font size nhỏ hơn
+              fontSize: "12px",
             },
           }}
           InputProps={{
             style: {
               borderRadius: "20px",
-              fontSize: "12px", // đảm bảo font size ở input được đặt nhỏ
+              fontSize: "12px",
             },
           }}
         />
       </Grid2>
-      {/* Hàng 1: Metric và Line Chart */}
-      <Grid2 container size={12} spacing={2} alignItems="center">
-        <Grid2 size={{ xs: 12, md: 4 }}>
-          <Grid2
-            container
-            spacing={2}
-            justifyContent="space-between"
-            height="100%"
-          >
-            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
+
+      {/* Hàng 1: Metrics và Line Chart */}
+      <Grid2 container spacing={2} alignItems="center">
+        <Grid2 size={4} container spacing={2}>
+          {metrics.map((metric, index) => (
+            <Grid2 key={index} size={6}>
               <Paper sx={cardPaperStyle}>
                 <Typography
                   variant="caption"
                   sx={{ color: "#555", fontWeight: 500 }}
                 >
-                  Tổng số thiết bị trong hệ thống
+                  {metric.title}
                 </Typography>
                 <Typography
                   variant="h5"
                   sx={{ color: "#333", fontWeight: "bold" }}
                 >
-                  {keyMetric?.totalProduct}
+                  {metric.value || 0}
                 </Typography>
                 <Typography
                   variant="overline"
                   sx={{ mt: 2 }}
                   color="success"
-                  fontWeight={"bold"}
+                  fontWeight="bold"
                   mr={0.5}
                   fontSize={14}
                 >
-                  120
+                  {metric.subValue || 0}
                 </Typography>
                 <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  thiết bị đã gắn RFID
+                  {metric.subText}
                 </Typography>
               </Paper>
             </Grid2>
-            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
-              <Paper sx={cardPaperStyle}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#555", fontWeight: 500 }}
-                >
-                  Tổng số nhân viên
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{ color: "#333", fontWeight: "bold" }}
-                >
-                  {keyMetric?.totalUser}
-                </Typography>
-                <Typography
-                  variant="overline"
-                  sx={{ mt: 2 }}
-                  color="success"
-                  fontWeight={"bold"}
-                  mr={0.5}
-                  fontSize={14}
-                >
-                  80
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  nhân viên có task trong hôm nay
-                </Typography>
-              </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
-              <Paper sx={cardPaperStyle}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#555", fontWeight: 500 }}
-                >
-                  Tổng số khách hàng
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{ color: "#333", fontWeight: "bold" }}
-                >
-                  {keyMetric?.totalCustomer}
-                </Typography>
-                <Typography
-                  variant="overline"
-                  sx={{ mt: 2 }}
-                  color="success"
-                  fontWeight={"bold"}
-                  mr={0.5}
-                  fontSize={14}
-                >
-                  100
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  khách hàng cần bảo trì hôm nay
-                </Typography>
-              </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
-              <Paper sx={cardPaperStyle}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#555", fontWeight: 500 }}
-                >
-                  Tổng số task
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{ color: "#333", fontWeight: "bold" }}
-                >
-                  {/* {keyMetric?.totalTemplate} */}50
-                </Typography>
-                <Typography
-                  variant="overline"
-                  sx={{ mt: 2 }}
-                  color="success"
-                  fontWeight={"bold"}
-                  mr={0.5}
-                  fontSize={14}
-                >
-                  15
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  task đang chờ xử lý
-                </Typography>
-              </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
-              <Paper sx={cardPaperStyle}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#555", fontWeight: 500 }}
-                >
-                  Tổng số thiết bị cần bảo trì
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{ color: "#333", fontWeight: "bold" }}
-                >
-                  {/* {keyMetric?.totalTemplate} */} 50
-                </Typography>
-                <Typography
-                  variant="overline"
-                  sx={{ mt: 2 }}
-                  color="success"
-                  fontWeight={"bold"}
-                  mr={0.5}
-                  fontSize={14}
-                >
-                  15
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  thiết bị đã được bảo trì
-                </Typography>
-              </Paper>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 6 }} height="100%">
-              <Paper sx={cardPaperStyle}>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "#555", fontWeight: 500 }}
-                >
-                  Tổng số task cần duyệt
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{ color: "#333", fontWeight: "bold" }}
-                >
-                  {/* {keyMetric?.totalTemplate} */} 30
-                </Typography>
-                <Typography
-                  variant="overline"
-                  sx={{ mt: 2 }}
-                  color="success"
-                  fontWeight={"bold"}
-                  mr={0.5}
-                  fontSize={14}
-                >
-                  15
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
-                  task đã được duyệt
-                </Typography>
-              </Paper>
-            </Grid2>
-          </Grid2>
+          ))}
         </Grid2>
-        <Grid2 size={{ xs: 12, md: 8 }} height={"100%"}>
+        <Grid2 size={8} sx={{ height: "100%" }}>
           <Wrapper title="Theo dõi bảo trì thiết bị" sx={{ height: "100%" }}>
-            <ReactECharts
-              option={lineOption}
-              style={{ height: "350px", width: "100%" }}
-            />
+            <LineChartProduct params={getSevenDayRange(date)} />
           </Wrapper>
         </Grid2>
       </Grid2>
 
-      <Grid2 size={{ xs: 12, md: 12 }}>
+      {/* Hàng 2: Biểu đồ cột theo dõi task */}
+      <Grid2 size={12}>
         <Wrapper title="Theo dõi công việc bảo trì">
           <ReactECharts
             option={barOption}
@@ -408,30 +340,17 @@ const MaintainedDevicesLineChart: React.FC = () => {
         </Wrapper>
       </Grid2>
 
-      {/* Hàng 2: Danh sách và Pie Chart */}
+      {/* Hàng 3: Danh sách task cần duyệt và Task Check Overview */}
       <Grid2 size={12} container spacing={2}>
-        <Grid2 size={{ xs: 12, md: 8 }}>
+        <Grid2 size={8}>
           <Wrapper title="Danh sách task cần duyệt">
-            <ProductWithoutTask />
+            <Approval />
           </Wrapper>
         </Grid2>
-        <Grid2 size={{ xs: 12, md: 4 }}>
-          <Wrapper title="Trạng thái task">
-            <ReactECharts
-              option={pieOption}
-              style={{ height: "300px", width: "100%" }}
-            />
-          </Wrapper>
+        <Grid2 size={4}>
+          <TaskCheckOverview param={getOneDayRange(date)} />
         </Grid2>
       </Grid2>
-      {/* Hàng 3: Danh sách và Pie Chart */}
-      {/* <Grid2 size={12} container spacing={2}>
-        <Grid2 size={12}>
-          <Wrapper title="Danh sách nhân viên cần thực hiện task">
-            <OverviewUserTask />
-          </Wrapper>
-        </Grid2>
-      </Grid2> */}
     </Grid2>
   );
 };

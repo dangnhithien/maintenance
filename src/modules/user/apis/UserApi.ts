@@ -24,9 +24,12 @@ class UserApi {
   getOverviewUserTask = async (
     params?: GetUserDto
   ): Promise<ApiResponseWithList<OverviewUser>> => {
-    return await axiosInstance.get("api/users/get-overview-user-task", {
-      params,
-    });
+    return await axiosInstance.get(
+      "api/users/get-overview-user-list-task-check",
+      {
+        params,
+      }
+    );
   };
   post = async (
     params?: CreateUserDto

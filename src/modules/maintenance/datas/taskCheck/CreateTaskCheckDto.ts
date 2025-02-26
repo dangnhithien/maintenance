@@ -9,5 +9,7 @@ export interface CreateTaskCheckDto {
   scheduledTime: string;
 }
 export interface UpdateTaskCheckDto {
-  taskCheckStatus: EnumStatusTaskCheck;
+  status: EnumStatusTaskCheck;
+  taskCheckId?: string;
+  reason?: string;
 }

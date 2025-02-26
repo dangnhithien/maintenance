@@ -18,7 +18,8 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
     if (!id) return;
     taskCheckApi
       .approveStatus(id, {
-        taskCheckStatus: EnumStatusTaskCheck.APPROVED,
+        status: EnumStatusTaskCheck.APPROVED,
+        reason: note,
       })
       .then(() => {
         notify("Duyệt thành công", "success");
@@ -33,7 +34,8 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
     if (!id) return;
     taskCheckApi
       .approveStatus(id, {
-        taskCheckStatus: EnumStatusTaskCheck.REJECTED,
+        status: EnumStatusTaskCheck.REJECTED,
+        reason: note,
       })
       .then(() => {
         notify("Đã từ chối", "error");

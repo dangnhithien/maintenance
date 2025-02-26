@@ -1,6 +1,4 @@
 import UserDetail from "@modules/user/components/user/UserDetail";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { useParams } from "react-router-dom";
 
@@ -22,7 +20,7 @@ const UserDetailPage = () => {
         <meta name="description" content="Danh sách các thiết bị" />
       </Helmet>
 
-      <Breadcrumbs
+      {/* <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
         sx={{
@@ -30,7 +28,7 @@ const UserDetailPage = () => {
         }}
       >
         {breadcrumbs}
-      </Breadcrumbs>
+      </Breadcrumbs> */}
 
       <UserDetail id={id} />
     </div>

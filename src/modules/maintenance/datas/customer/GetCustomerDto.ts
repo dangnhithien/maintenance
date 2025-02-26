@@ -1,3 +1,5 @@
 import { ApiRequest } from "@datas/comon/ApiRequest";
 
-export interface GetCustomerDto extends ApiRequest {}
+export interface GetCustomerDto extends ApiRequest {
+  customerId?: string;
+}

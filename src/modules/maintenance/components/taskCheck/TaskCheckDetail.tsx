@@ -1,8 +1,4 @@
-import {
-  unwrapListReponse,
-  unwrapObjectReponse,
-} from "@datas/comon/ApiResponse";
-import rowCheckValueApi from "@modules/maintenance/apis/rowCheckValueApi";
+import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import taskCheckApi from "@modules/maintenance/apis/taskCheckApi";
 import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCheckValueDto";
 import { TaskCheckDto } from "@modules/maintenance/datas/taskCheck/TaskCheckDto";
@@ -18,14 +14,6 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
   const [taskCheck, setTaskCheck] = useState<TaskCheckDto>();
   useEffect(() => {
     if (id) {
-      rowCheckValueApi
-        .get({ taskCheckId: id, sortBy: "Order ASC" })
-        .then(unwrapListReponse)
-        .then((res) => {
-          res.sort((a, b) => a.order - b.order);
-          setRowCheckValues(res);
-        })
-        .catch((err) => {});
       taskCheckApi
         .getById(id, {
           includeProperties: "TemplateCheck,Product",
@@ -33,15 +21,16 @@ const TaskCheckDetail: React.FC<Props> = ({ id }) => {
         .then(unwrapObjectReponse)
         .then((res) => {
           setTaskCheck(res);
+          setRowCheckValues(res.rowCheckValues);
         })
         .catch((err) => {});
     }
   }, []);
   return (
-    <Grid2 container spacing={1}>
+    <Grid2 container spacing={2}>
       {taskCheck?.product && <InfoProduct product={taskCheck?.product} />}
       <Grid2 flex={1}>
-        <Paper sx={{ p: 2, width: "100%", height: "100%" }}>
+        <Paper sx={{ p: 3, width: "100%", height: "100%", borderRadius: 4 }}>
           <Typography variant="h6" color="primary" mb={2} fontWeight={"bold"}>
             {taskCheck?.templateCheck?.name}
           </Typography>

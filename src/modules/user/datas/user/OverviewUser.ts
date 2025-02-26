@@ -1,5 +1,7 @@
-import { UserDto } from "./UserDto";
-
-export interface OverviewUser extends UserDto {
+export interface OverviewUser {
+  assigneeId: string | null;
+  assigneeName: string;
   totalTask: number;
+  totalTaskDone: number;
+  totalTaskApproved: number;
 }

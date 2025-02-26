@@ -234,9 +234,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
 
                             <Grid2>
                               <ChipTaskCheckStatus
-                                status={
-                                  item.status || EnumStatusTaskCheck.CREATED
-                                }
+                                status={EnumStatusTaskCheck.CREATED}
                               />
                             </Grid2>
                           </Grid2>

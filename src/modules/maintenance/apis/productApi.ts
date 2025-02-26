@@ -4,6 +4,7 @@ import {
   ApiResponseWithList,
   ApiResponseWithObject,
 } from "../../../datas/comon/ApiResponse";
+import { OverviewProductByDate } from "../datas/overview/OverViewProductByDate";
 import { CreateProductDto } from "../datas/product/CreateProductDto";
 import { GetProductDto } from "../datas/product/GetProductDto";
 import { ProductDto } from "../datas/product/ProductDto";
@@ -40,6 +41,13 @@ class ProductApi {
         params,
       }
     );
+  };
+  getOverviewProductByDate = async (
+    params?: ApiRequest
+  ): Promise<ApiResponseWithList<OverviewProductByDate>> => {
+    return await axiosInstance.get(BASE_URL + "/get-overview-product_by_date", {
+      params,
+    });
   };
   getListProductDetail = async (
     params?: GetProductDto

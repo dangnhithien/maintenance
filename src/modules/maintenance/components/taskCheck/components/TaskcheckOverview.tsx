@@ -36,7 +36,7 @@ const TaskCheckOverview: React.FC<Props> = ({ param }) => {
   // Chuyển đổi dữ liệu tổng quan thành mảng dữ liệu cho biểu đồ Pie
   const pieData = data
     ? [
-        { name: "Tổng số Task", value: data.totalTaskCheck },
+        // { name: "Tổng số Task", value: data.totalTaskCheck },
         { name: "Task đã tạo", value: data.totalTaskCreated },
         { name: "Task chưa được giao", value: data.totalTaskNotAssigned },
         { name: "Task trễ", value: data.totalTaskLate },

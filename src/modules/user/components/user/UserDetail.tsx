@@ -1,6 +1,7 @@
 import { ReactECharts } from "@components/ReactChart";
 import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
+import LineChartProduct from "@modules/maintenance/components/dashboard/components/LineChartProduct";
 import TaskCheckOverview from "@modules/maintenance/components/taskCheck/components/TaskcheckOverview";
 import TaskCheckList from "@modules/maintenance/components/taskCheck/TaskCheckList";
 import userApi from "@modules/user/apis/UserApi";
@@ -15,6 +16,7 @@ import {
   Grid2,
   IconButton,
   Paper,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -26,6 +28,15 @@ interface Device {
   id: string;
   name: string;
   date: string; // định dạng YYYY-MM-DD
+}
+
+function getSevenDayRange(inputDate: string): { fromDate: Date; toDate: Date } {
+  const date = new Date(inputDate);
+  const fromDate = new Date(date);
+  fromDate.setDate(date.getDate() - 3);
+  const toDate = new Date(date);
+  toDate.setDate(date.getDate() + 3);
+  return { fromDate, toDate };
 }
 
 const EmployeeDetails: React.FC<{ user: UserDto }> = ({ user }) => (
@@ -232,7 +243,9 @@ interface Props {
 const UserDetailPage: React.FC<Props> = ({ id }) => {
   const [user, setUser] = useState<UserDto>({} as UserDto);
   const [fromDate, setFromDate] = useState<string>("");
-  const [toDate, setToDate] = useState<string>("");
+  const [date, setDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
 
   useEffect(() => {
     if (id) {
@@ -255,35 +268,46 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
   return (
     <>
       {/* Bộ lọc ngày cho toàn bộ trang */}
-      {/* <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
+      <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
+        <Typography color="primary" variant="subtitle1" fontWeight="bold">
+          Chi tiết nhân viên
+        </Typography>
         <TextField
-          label="Từ ngày"
+          value={date}
           type="date"
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
           size="small"
+          placeholder="Tìm kiếm"
+          color="primary"
+          onChange={(e) => setDate(e.target.value)}
+          sx={{
+            backgroundColor: "#fff",
+            borderRadius: "20px",
+            "& .MuiInputBase-input": {
+              fontSize: "12px", // font size nhỏ hơn
+            },
+          }}
+          InputProps={{
+            style: {
+              borderRadius: "20px",
+              fontSize: "12px", // đảm bảo font size ở input được đặt nhỏ
+            },
+          }}
         />
-        <TextField
-          label="Đến ngày"
-          type="date"
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          size="small"
-        />
-      </Box> */}
+      </Box>
 
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, md: 3 }}>
           <EmployeeDetails user={user} />
         </Grid2>
         <Grid2 size={{ xs: 12, md: 9 }}>
-          <DeviceChart
-            completedDevices={completedDevices}
-            fromDate={fromDate}
-            toDate={toDate}
-          />
+          <Wrapper
+            title="Theo dõi công việc
+          "
+          >
+            <LineChartProduct
+              params={{ ...getSevenDayRange(date), assigneeId: id }}
+            />
+          </Wrapper>
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
           <TaskCheckOverview param={{ AssigneeId: id }} />
