@@ -30,7 +30,7 @@ function getSevenDayRange(inputDate: string): { fromDate: Date; toDate: Date } {
 function getOneDayRange(dateStr: string): { fromDate: Date; toDate: Date } {
   const fromDate = new Date(dateStr);
   const toDate = new Date(fromDate);
-  toDate.setDate(fromDate.getDate() + 1);
+  toDate.setDate(fromDate.getDate());
   return { fromDate, toDate };
 }
 
