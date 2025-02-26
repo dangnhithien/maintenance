@@ -49,6 +49,20 @@ const UserList = () => {
         <Link to={`/user/detail/${params.row.id}`}>{params.row.position}</Link>
       ),
     },
+    {
+      field: "roles",
+      headerName: "Role",
+      editable: false,
+      sortable: false,
+      flex: 1,
+      renderCell: (params: any) => {
+        // Check if roles exists and extract role names
+        const roleNames = params.row.roles
+          ? Object.values(params.row.roles).join(", ")
+          : "";
+        return <Link to={`/user/detail/${params.row.id}`}>{roleNames}</Link>;
+      },
+    },
 
     {
       field: "createdDate",

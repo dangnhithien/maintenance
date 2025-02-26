@@ -94,7 +94,7 @@ const UserCreateUpdate: React.FC<EmployeeFormProps> = ({ id }) => {
         // notify("success", "Cập nhật thành công");
       } else {
         // Nếu không có id => tạo mới
-        await userApi.post(data);
+        await userApi.post({ ...data, firstName: "first", lastName: "" });
         // notify("success", "Tạo mới thành công");
       }
     } catch (err) {
