@@ -1,36 +1,41 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useState } from "react";
 import taskCheckApi from "../apis/taskCheckApi";
 import { CreateTaskCheckDto } from "../datas/taskCheck/CreateTaskCheckDto";
 import { DeleteTaskCheckDto } from "../datas/taskCheck/DeleteTaskCheckDto";
 import { GetTaskCheckDto } from "../datas/taskCheck/GetTaskCheckDto";
+import { TaskCheckDto } from "../datas/taskCheck/TaskCheckDto";
 
 const KEY = "TaskChecks";
-export const useTaskCheck = (initialParams?: GetTaskCheckDto) => {
+export const useTaskCheck = () => {
   const queryClient = useQueryClient();
+  const [taskChecks, setTaskChecks] = useState<TaskCheckDto[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
 
-  // Fetch template checklists
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: [KEY, initialParams], // Dynamic queryKey
-    queryFn: () => taskCheckApi.get(initialParams).then((res) => res.result),
-    staleTime: 60000,
-    retry: (failureCount, error) => {
+  // Fetch function to be called manually
+  const fetchTaskChecks = async (params: GetTaskCheckDto) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await taskCheckApi.get(params);
+      setTaskChecks(response?.result?.items || []);
+      setTotalCount(response.result.totalCount);
+    } catch (error) {
       const axiosError = error as AxiosError;
       if (
         axiosError?.response?.status === 400 ||
         axiosError?.response?.status === 401
       ) {
-        return false; // Không retry với lỗi Bad Request hoặc Unauthorized
+        setError("Unauthorized or bad request");
+      } else {
+        setError(axiosError.message);
       }
-      return failureCount < 3; // Retry với các lỗi khác
-    },
-  });
-
-  // Function to manually refetch with new params
-  const fetchTaskChecks = (newParams: GetTaskCheckDto) => {
-    queryClient.invalidateQueries({
-      queryKey: [KEY, newParams],
-    });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Create a new checklist
@@ -64,7 +69,7 @@ export const useTaskCheck = (initialParams?: GetTaskCheckDto) => {
     },
   });
 
-  const restoreChecklist = useMutation({
+  const restoreTaskCheck = useMutation({
     mutationFn: (ids: string[]) => taskCheckApi.restore(ids),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
@@ -72,15 +77,15 @@ export const useTaskCheck = (initialParams?: GetTaskCheckDto) => {
   });
 
   return {
-    taskChecks: data?.items || [],
-    totalCount: data?.totalCount || 0,
-    loading: isPending,
-    error: isError ? error?.message : null,
-    fetchTaskChecks, // Now accepts params
+    fetchTaskChecks, // Function to manually fetch data
     createTaskCheck: createTaskCheck.mutateAsync,
     updateTaskCheck: updateTaskCheck.mutateAsync,
     deleteTaskCheck: deleteTaskCheck.mutateAsync,
-    restoreTaskCheck: restoreChecklist.mutateAsync,
+    restoreTaskCheck: restoreTaskCheck.mutateAsync,
+    taskChecks,
+    totalCount,
+    loading,
+    error,
   };
 };
 

@@ -20,27 +20,21 @@ import {
 } from "@mui/material";
 import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 
-// Hàm định dạng Date thành chuỗi dd/mm/yy
-function formatDateDDMMYY(date: Date): string {
+// Hàm format ngày dạng dd/MM/yyyy
+function formatDateDDMMYYYY(date: Date) {
   if (!date) return "";
   const d = new Date(date);
   const day = d.getDate().toString().padStart(2, "0");
   const month = (d.getMonth() + 1).toString().padStart(2, "0");
-  const year = d.getFullYear().toString().slice(-2);
-  return `${day}/${month}/${year}`;
+  const year = d.getFullYear().toString();
+  return `${month}/${day}/${year}`;
 }
 
-// Hàm parse chuỗi dd/mm/yy thành Date
-function parseDateFromDDMMYY(value: string): Date {
-  const parts = value.split("/");
-  if (parts.length !== 3) return new Date();
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1;
-  let year = parseInt(parts[2], 10);
-  if (year < 100) {
-    year += 2000;
-  }
-  return new Date(year, month, day);
+// Hàm chuyển đổi Date sang chuỗi định dạng YYYY-MM-DD theo múi giờ địa phương
+function toLocalDateString(date: Date) {
+  if (!date) return "";
+  const tzOffset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - tzOffset).toISOString().split("T")[0];
 }
 
 interface Props {
@@ -85,7 +79,7 @@ const ComponentCreateUpdate: React.FC<Props> = ({
     setEditingCell({ rowIndex, field });
   };
 
-  // Cập nhật dữ liệu khi gõ (cho các field không phải ngày)
+  // Cập nhật dữ liệu khi gõ
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     rowIndex: number,
@@ -98,6 +92,14 @@ const ComponentCreateUpdate: React.FC<Props> = ({
 
       if (field === "maintenanceCycle" || field === "reminderAdvanceDays") {
         parsedValue = parseInt(newValue, 10) || 0;
+      } else if (
+        field === "installationDate" ||
+        field === "lastMaintenanceDate"
+      ) {
+        parsedValue = new Date(newValue);
+        if (isNaN(parsedValue.getTime())) {
+          parsedValue = new Date();
+        }
       }
       updated[rowIndex] = { ...updated[rowIndex], [field]: parsedValue };
       return updated;
@@ -211,7 +213,7 @@ const ComponentCreateUpdate: React.FC<Props> = ({
             <TableCell>Ngày lắp đặt</TableCell>
             <TableCell>Chu kì bảo trì</TableCell>
             <TableCell>Lần bảo trì cuối</TableCell>
-            <TableCell>Số ngày nhắc</TableCell>
+            <TableCell>Số ngày nhắc </TableCell>
             {!isEdit && <TableCell>Ngày bảo trì kế tiếp</TableCell>}
             {isEdit && (
               <TableCell sx={{ textAlign: "center" }}>Action</TableCell>
@@ -251,28 +253,16 @@ const ComponentCreateUpdate: React.FC<Props> = ({
                 {editingCell.rowIndex === rowIndex &&
                 editingCell.field === "installationDate" ? (
                   <TextField
-                    type="text"
+                    type="date"
                     autoFocus
                     value={
                       row.installationDate
-                        ? formatDateDDMMYY(row.installationDate)
+                        ? toLocalDateString(row.installationDate)
                         : ""
                     }
-                    onChange={(e) => {
-                      const newValue = e.target.value;
-                      // Nếu chuỗi có định dạng dd/mm/yy
-                      if (newValue.split("/").length === 3) {
-                        const parsedDate = parseDateFromDDMMYY(newValue);
-                        setTableData((prevData) => {
-                          const updated = [...prevData];
-                          updated[rowIndex] = {
-                            ...updated[rowIndex],
-                            installationDate: parsedDate,
-                          };
-                          return updated;
-                        });
-                      }
-                    }}
+                    onChange={(e) =>
+                      handleChange(e, rowIndex, "installationDate")
+                    }
                     onBlur={handleFinishEdit}
                     onKeyDown={handleKeyDown}
                     size="small"
@@ -282,7 +272,7 @@ const ComponentCreateUpdate: React.FC<Props> = ({
                 ) : (
                   <span style={cellDisplayStyle}>
                     {row.installationDate
-                      ? formatDateDDMMYY(row.installationDate)
+                      ? formatDateDDMMYYYY(row.installationDate)
                       : ""}
                   </span>
                 )}
@@ -321,27 +311,16 @@ const ComponentCreateUpdate: React.FC<Props> = ({
                 {editingCell.rowIndex === rowIndex &&
                 editingCell.field === "lastMaintenanceDate" ? (
                   <TextField
-                    type="text"
+                    type="date"
                     autoFocus
                     value={
                       row.lastMaintenanceDate
-                        ? formatDateDDMMYY(row.lastMaintenanceDate)
+                        ? toLocalDateString(row.lastMaintenanceDate)
                         : ""
                     }
-                    onChange={(e) => {
-                      const newValue = e.target.value;
-                      if (newValue.split("/").length === 3) {
-                        const parsedDate = parseDateFromDDMMYY(newValue);
-                        setTableData((prevData) => {
-                          const updated = [...prevData];
-                          updated[rowIndex] = {
-                            ...updated[rowIndex],
-                            lastMaintenanceDate: parsedDate,
-                          };
-                          return updated;
-                        });
-                      }
-                    }}
+                    onChange={(e) =>
+                      handleChange(e, rowIndex, "lastMaintenanceDate")
+                    }
                     onBlur={handleFinishEdit}
                     onKeyDown={handleKeyDown}
                     size="small"
@@ -351,7 +330,7 @@ const ComponentCreateUpdate: React.FC<Props> = ({
                 ) : (
                   <span style={cellDisplayStyle}>
                     {row.lastMaintenanceDate
-                      ? formatDateDDMMYY(row.lastMaintenanceDate)
+                      ? formatDateDDMMYYYY(row.lastMaintenanceDate)
                       : ""}
                   </span>
                 )}
@@ -387,7 +366,7 @@ const ComponentCreateUpdate: React.FC<Props> = ({
                 <TableCell sx={{ width: "160px", padding: 0 }}>
                   <span style={cellDisplayStyle}>
                     {row?.nextMaintenanceDate
-                      ? formatDateDDMMYY(row.nextMaintenanceDate)
+                      ? formatDateDDMMYYYY(row.nextMaintenanceDate)
                       : ""}
                   </span>
                 </TableCell>

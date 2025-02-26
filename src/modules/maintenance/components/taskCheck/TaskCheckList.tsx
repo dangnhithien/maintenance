@@ -4,7 +4,7 @@ import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
 import { Box, Grid2 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
 import { useNotification } from "../common/Notistack";
@@ -27,13 +27,17 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
 
   const {
     taskChecks,
+    fetchTaskChecks,
     deleteTaskCheck,
     restoreTaskCheck,
     error,
     loading,
     totalCount,
-  } = useTaskCheck(params);
+  } = useTaskCheck();
 
+  useEffect(() => {
+    fetchTaskChecks(params); // Gọi khi cần
+  }, [params]);
   // Hàm dùng để mở popup cảnh báo nếu không có templateCheckId
   const handleOpenTemplateWarning = () => {
     setOpenPopupTemplateWarning(true);
@@ -103,6 +107,13 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     {
       field: "taskCreator",
       headerName: "Người tạo",
+      align: "center",
+      headerAlign: "center",
+      flex: 1,
+    },
+    {
+      field: "assigneeName",
+      headerName: "Kĩ thuật viên",
       align: "center",
       headerAlign: "center",
       flex: 1,

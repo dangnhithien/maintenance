@@ -5,7 +5,7 @@ import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
 import { Grid2 } from "@mui/material";
 import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
 import { useNotification } from "../common/Notistack";
@@ -30,13 +30,18 @@ const Approval: React.FC<Props> = ({ productId }) => {
     useState<GridRowSelectionModel>([]);
 
   const {
+    fetchTaskChecks,
     taskChecks,
     deleteTaskCheck,
     restoreTaskCheck,
     error,
     loading,
     totalCount,
-  } = useTaskCheck(params);
+  } = useTaskCheck();
+
+  useEffect(() => {
+    fetchTaskChecks(params);
+  }, [params]);
 
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },

@@ -1,11 +1,11 @@
 import ImageBase64 from "@components/ImageBase64";
 import { unwrapListReponse } from "@datas/comon/ApiResponse";
 import { yupResolver } from "@hookform/resolvers/yup";
-import taskCheckApi from "@modules/maintenance/apis/taskCheckApi";
 import templateCheckListApi from "@modules/maintenance/apis/templateCheckListApi";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import { CreateTaskCheckDto } from "@modules/maintenance/datas/taskCheck/CreateTaskCheckDto";
 import { TemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/TemplateCheckListDto";
+import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { UserDto } from "@modules/user/datas/user/UserDto";
 import {
   Box,
@@ -44,8 +44,16 @@ const schema = yup.object({
     .required("Ngày đến bảo trì là bắt buộc"),
 });
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
   const navigate = useNavigate();
+  const {
+    createTaskCheck,
+
+    error,
+    loading,
+    totalCount,
+  } = useTaskCheck();
   const [templateCheckList, setTemplateCheckList] = useState<
     TemplateCheckListDto[]
   >([]);
@@ -67,9 +75,9 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
     resolver: yupResolver(schema),
   });
 
-  const handleTemplateSelectOpen = () => {
+  const handleTemplateSelectOpen = async () => {
     if (templateCheckList.length === 0) {
-      templateCheckListApi
+      await templateCheckListApi
         .get()
         .then(unwrapListReponse)
         .then((res) => setTemplateCheckList(res))
@@ -80,11 +88,13 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
   };
 
   const onSubmit: SubmitHandler<CreateTaskCheckDto> = async (data) => {
-    await taskCheckApi
-      .post(data)
+    await createTaskCheck(data)
       .then(() => notify("Thêm yêu cầu bảo trì thành công", "success"))
       .catch(() => notify("Không thành công", "error"))
-      .finally(() => navigate("/task-check"));
+      .finally(async () => {
+        // await delay(2000); // Simulate delay for loading data
+        navigate("/task-check");
+      });
   };
 
   return (
