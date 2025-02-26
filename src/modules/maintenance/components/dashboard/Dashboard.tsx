@@ -154,20 +154,20 @@ const MaintainedDevicesLineChart: React.FC = () => {
     },
     {
       title: "Thiết bị cần bảo trì hôm nay",
-      value: keyMetric?.totalProductNeedToMaintenanceToday,
-      subValue: keyMetric?.totalProductMaintenancedToday,
+      value: keyMetric?.totalProductNeedToMaintenance,
+      subValue: keyMetric?.totalProductMaintenanced,
       subText: "thiết bị đã được bảo trì",
     },
     {
       title: "Tổng số khách hàng",
       value: keyMetric?.totalCustomer,
-      subValue: keyMetric?.totalCustomerNeedMaintenanceToday,
+      subValue: keyMetric?.totalCustomerNeedMaintenance,
       subText: "khách hàng cần bảo trì hôm nay",
     },
     {
       title: "Tổng số task kiểm tra hôm nay",
-      value: keyMetric?.totalTaskCheckToday,
-      subValue: keyMetric?.totalTaskCheckDoneToday,
+      value: keyMetric?.totalTaskCheck,
+      subValue: keyMetric?.totalTaskCheckDone,
       subText: "task đã hoàn thành",
     },
     {
@@ -178,8 +178,8 @@ const MaintainedDevicesLineChart: React.FC = () => {
     },
     {
       title: "Task cần duyệt hôm nay",
-      value: keyMetric?.totalTaskCheckNeedToApproveToday,
-      subValue: keyMetric?.totalTaskCheckApprovedToday,
+      value: keyMetric?.totalTaskCheckNeedToApprove,
+      subValue: keyMetric?.totalTaskCheckApproved,
       subText: "task đã được duyệt",
     },
   ];
