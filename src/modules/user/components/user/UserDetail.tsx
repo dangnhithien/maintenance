@@ -38,6 +38,12 @@ function getSevenDayRange(inputDate: string): { fromDate: Date; toDate: Date } {
   toDate.setDate(date.getDate() + 3);
   return { fromDate, toDate };
 }
+function getOneDayRange(dateStr: string): { fromDate: Date; toDate: Date } {
+  const fromDate = new Date(dateStr);
+  const toDate = new Date(fromDate);
+  toDate.setDate(fromDate.getDate() + 1);
+  return { fromDate, toDate };
+}
 
 const EmployeeDetails: React.FC<{ user: UserDto }> = ({ user }) => (
   <Paper
@@ -256,15 +262,6 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
     }
   }, [id]);
 
-  // Dữ liệu mẫu cho danh sách thiết bị đã làm
-  const completedDevices: Device[] = [
-    { id: "1", name: "Thiết bị A", date: "2025-02-10" },
-    { id: "2", name: "Thiết bị B", date: "2025-02-11" },
-    { id: "3", name: "Thiết bị C", date: "2025-02-11" },
-    { id: "4", name: "Thiết bị D", date: "2025-02-12" },
-    { id: "5", name: "Thiết bị E", date: "2025-02-13" },
-  ];
-
   return (
     <>
       {/* Bộ lọc ngày cho toàn bộ trang */}
@@ -310,12 +307,16 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
           </Wrapper>
         </Grid2>
         <Grid2 size={{ xs: 12, md: 4 }}>
-          <TaskCheckOverview param={{ AssigneeId: id }} />
+          <TaskCheckOverview
+            param={{ ...getOneDayRange(date), assigneeId: id }}
+          />
         </Grid2>
         <Grid2 size={{ xs: 12, md: 8 }}>
           <Wrapper title="Danh sách task">
             {/* Truyền thêm filter ngày nếu TaskCheckList hỗ trợ */}
-            <TaskCheckList param={{ AssigneeId: id }} />
+            <TaskCheckList
+              param={{ ...getSevenDayRange(date), assigneeId: id }}
+            />
           </Wrapper>
         </Grid2>
       </Grid2>

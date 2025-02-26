@@ -19,6 +19,7 @@ interface PopupProps {
   onCancel: () => void;
   onConfirm: () => void;
   sx?: SxProps<Theme>;
+  haveButtons?: boolean;
 }
 
 const PopupConfirm = ({
@@ -30,6 +31,7 @@ const PopupConfirm = ({
   onCancel,
   onConfirm,
   sx,
+  haveButtons = true,
 }: PopupProps) => {
   const modalStyle = {
     position: "absolute",
@@ -80,15 +82,19 @@ const PopupConfirm = ({
             {subMessage}
           </Typography>
         )}
-        <Divider sx={{ mb: 2, width: "100%" }} />
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="text" onClick={onCancel}>
-            Đóng
-          </Button>
-          <Button variant="contained" onClick={onConfirm} color="primary">
-            Xác nhận
-          </Button>
-        </Stack>
+        {haveButtons && (
+          <>
+            <Divider sx={{ mb: 2, width: "100%" }} />
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="text" onClick={onCancel}>
+                Đóng
+              </Button>
+              <Button variant="contained" onClick={onConfirm} color="primary">
+                Xác nhận
+              </Button>
+            </Stack>
+          </>
+        )}
       </Box>
     </Modal>
   );

@@ -1,17 +1,14 @@
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import CustomerList from "@modules/maintenance/components/customer/CustomerList";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Breadcrumbs } from "@mui/material";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
 
 const CustomerListPage = () => {
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/error-detail">
-      <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách khách hàng
-      </span>
-    </Link>,
+    <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
+      Danh sách khách hàng
+    </span>,
   ];
 
   return (

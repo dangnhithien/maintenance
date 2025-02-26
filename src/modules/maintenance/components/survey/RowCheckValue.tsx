@@ -12,13 +12,13 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          p: 1,
-          backgroundColor: "#e0f7fa",
-          borderLeft: "4px solid #00acc1",
+          p: 2, // tăng padding
+          backgroundColor: "#e3f2fd", // màu nền sáng nhẹ
+          // borderLeft: "5px solid #1565c0", // màu viền trái nổi bật
           mb: 2,
         }}
       >
-        <Typography variant="subtitle1" fontWeight="bold" color="#006064">
+        <Typography variant="subtitle1" fontWeight="bold" color="#1565c0">
           {data.rowCheckContent}
         </Typography>
       </Box>
@@ -26,8 +26,8 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
   }
 
   return (
-    <Box sx={{ p: 1, mb: 1, pl: 4 }}>
-      <Grid container spacing={1}>
+    <Box sx={{ p: 1, mb: 1, pl: 5 }}>
+      <Grid container spacing={2}>
         {/* Cột câu hỏi bên trái */}
         <Grid item xs={6}>
           <Typography
@@ -50,7 +50,7 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
           )}
         </Grid>
       </Grid>
-      <Divider sx={{ mt: 1 }} />
+      <Divider sx={{ mt: 2 }} />
     </Box>
   );
 };

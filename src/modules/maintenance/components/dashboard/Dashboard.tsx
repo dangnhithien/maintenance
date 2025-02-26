@@ -289,7 +289,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
       </Grid2>
 
       {/* Hàng 1: Metrics và Line Chart */}
-      <Grid2 container spacing={2} alignItems="center">
+      <Grid2 size={12} container spacing={2} alignItems="center">
         <Grid2 size={4} container spacing={2}>
           {metrics.map((metric, index) => (
             <Grid2 key={index} size={6}>
@@ -323,8 +323,11 @@ const MaintainedDevicesLineChart: React.FC = () => {
             </Grid2>
           ))}
         </Grid2>
-        <Grid2 size={8} sx={{ height: "100%" }}>
-          <Wrapper title="Theo dõi bảo trì thiết bị" sx={{ height: "100%" }}>
+        <Grid2 container size={8} sx={{ height: "100%" }}>
+          <Wrapper
+            title="Theo dõi bảo trì thiết bị"
+            sx={{ height: "100%", width: "100%" }}
+          >
             <LineChartProduct params={getSevenDayRange(date)} />
           </Wrapper>
         </Grid2>

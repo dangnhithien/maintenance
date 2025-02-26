@@ -7,6 +7,9 @@ import { Route, Routes } from "react-router-dom";
 const DashBoardPage = React.lazy(
   () => import("../pages/dashBoard/DashBoardPage")
 );
+const CustomerCreateUpdatePage = React.lazy(
+  () => import("../pages/customer/CustomerCreateUpdatePage")
+);
 const AdminAssigneePage = React.lazy(
   () => import("../pages/taskCheck/AdminAssigneePage")
 );
@@ -398,6 +401,22 @@ const MaintenanceRoutes = () => (
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <CustomerDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/customer/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CustomerCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/customer/create/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CustomerCreateUpdatePage />
         </React.Suspense>
       }
     />

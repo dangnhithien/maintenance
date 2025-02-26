@@ -70,7 +70,7 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
   const handleTemplateSelectOpen = () => {
     if (templateCheckList.length === 0) {
       templateCheckListApi
-        .get({ deviceId: product.deviceId })
+        .get()
         .then(unwrapListReponse)
         .then((res) => setTemplateCheckList(res))
         .catch((error) =>

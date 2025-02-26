@@ -6,6 +6,7 @@ import userApi from "@modules/user/apis/UserApi";
 import { UserDto } from "@modules/user/datas/user/UserDto";
 import { Box, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
+import InputSearch from "../common/InputSearch";
 import AssigneeCard from "./AssigneeCard";
 
 const AdminAssignee = () => {
@@ -99,6 +100,13 @@ const AdminAssignee = () => {
 
   return (
     <Box sx={{ p: 2, minHeight: "100vh" }}>
+      <Grid2 container justifyContent={"space-between"} mb={2}>
+        <InputSearch
+          onSearch={(searchText) => {
+            setParams({ ...params, searchTerm: searchText });
+          }}
+        />
+      </Grid2>
       <Grid2 container spacing={2}>
         {products.map((product) => (
           <AssigneeCard

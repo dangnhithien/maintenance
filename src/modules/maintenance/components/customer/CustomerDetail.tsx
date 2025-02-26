@@ -2,16 +2,19 @@ import { unwrapError, unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import customerApi from "@modules/maintenance/apis/customerApi";
 import { CustomerDto } from "@modules/maintenance/datas/customer/CustomerDto";
 import { CustomerOverview } from "@modules/maintenance/datas/customer/CustomerOverview";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Avatar,
   Box,
   Grid2,
+  IconButton,
   Paper,
   Tab,
   Tabs,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import MaintenanceReminder from "../product/MaintenanceReminder";
 import ProductList from "../product/ProductList";
 import TaskCheckList from "../taskCheck/TaskCheckList";
@@ -71,7 +74,7 @@ const CustomerDetail: React.FC<Props> = ({ id }) => {
             }}
           >
             {/* Header with Edit Icon */}
-            {/* <Box
+            <Box
               sx={{
                 width: "100%",
                 display: "flex",
@@ -87,7 +90,7 @@ const CustomerDetail: React.FC<Props> = ({ id }) => {
                   <EditIcon fontSize="small" color="action" />
                 </Link>
               </IconButton>
-            </Box> */}
+            </Box>
 
             {/* Avatar Section */}
             <Avatar

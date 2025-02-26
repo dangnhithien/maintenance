@@ -3,7 +3,7 @@ import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskChe
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
 import { Box, Grid2 } from "@mui/material";
-import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import InputSearch from "../common/InputSearch";
@@ -15,8 +15,8 @@ interface Props {
   param?: GetTaskCheckDto;
 }
 const TaskCheckList: React.FC<Props> = ({ param }) => {
-  const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
-  const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
+  const [openPopupTemplateWarning, setOpenPopupTemplateWarning] =
+    useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
     ...param,
@@ -24,8 +24,6 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     takeCount: 5,
     sortBy: "CreatedDate DESC",
   });
-  const [rowSelectionModel, setRowSelectionModel] =
-    useState<GridRowSelectionModel>([]);
 
   const {
     taskChecks,
@@ -36,17 +34,36 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     totalCount,
   } = useTaskCheck(params);
 
+  // Hàm dùng để mở popup cảnh báo nếu không có templateCheckId
+  const handleOpenTemplateWarning = () => {
+    setOpenPopupTemplateWarning(true);
+  };
+
+  const handleCloseTemplateWarning = () => {
+    setOpenPopupTemplateWarning(false);
+  };
+
+  // Hàm render chung cho các cell cần link
+  const renderConditionalLink = (params: any, fieldValue: any) => {
+    if (params.row.templateCheckId) {
+      return (
+        <Link to={`/task-check/detail/${params.row.id}`}>{fieldValue}</Link>
+      );
+    }
+    return (
+      <span style={{ cursor: "pointer" }} onClick={handleOpenTemplateWarning}>
+        {fieldValue}
+      </span>
+    );
+  };
+
   const columns: GridColDef[] = [
-    // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
     {
       field: "code",
-      headerName: "Mã",
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.code}
-        </Link>
-      ),
+      headerName: "Mã ",
+      width: 100,
+      renderCell: (params: any) =>
+        renderConditionalLink(params, params.row.code),
     },
     {
       field: "name",
@@ -54,11 +71,8 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
       headerAlign: "center",
       headerName: "Tên ",
       flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.name}
-        </Link>
-      ),
+      renderCell: (params: any) =>
+        renderConditionalLink(params, params.row.name),
     },
     {
       field: "customerCode",
@@ -66,11 +80,8 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
       align: "center",
       headerAlign: "center",
       flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.customerCode}
-        </Link>
-      ),
+      renderCell: (params: any) =>
+        renderConditionalLink(params, params.row.customerCode),
     },
     {
       field: "createdDate",
@@ -78,18 +89,17 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
       headerAlign: "center",
       headerName: "Ngày tạo",
       flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/task-check/detail/${params.row.id}`}>
-          {params.row.createdDate &&
+      renderCell: (params: any) =>
+        renderConditionalLink(
+          params,
+          params.row.createdDate &&
             new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
-            })}
-        </Link>
-      ),
+            })
+        ),
     },
-
     {
       field: "taskCreator",
       headerName: "Người tạo",
@@ -97,7 +107,6 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
       headerAlign: "center",
       flex: 1,
     },
-
     {
       field: "taskCheckStatus",
       headerName: "Trạng thái",
@@ -108,52 +117,6 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     },
   ];
 
-  const handleCancelSoftDelete = () => {
-    setOpenPopupsoftDelete(false);
-  };
-  const handleCancelHardDelete = () => {
-    setOpenPopupHardDelete(false);
-  };
-
-  const onSoftDelete = () => {
-    if (rowSelectionModel.length > 0) {
-      setOpenPopupsoftDelete(true);
-    }
-  };
-  const onHardDelete = () => {
-    if (rowSelectionModel.length > 0) {
-      setOpenPopupHardDelete(true);
-    }
-  };
-  const handelConfirmSoftDelete = async () => {
-    await deleteTaskCheck({
-      isHardDeleted: false,
-      ids: rowSelectionModel as string[],
-    })
-      .then(() => {
-        notify("success", "success");
-        setOpenPopupsoftDelete(false);
-      })
-      .catch(() => {});
-  };
-  const handleConfirmHardDelete = async () => {
-    await deleteTaskCheck({
-      isHardDeleted: true,
-      ids: rowSelectionModel as string[],
-    })
-      .then(() => {
-        notify("success", "success");
-        setOpenPopupHardDelete(false);
-      })
-      .catch(() => {});
-  };
-  const restore = async () => {
-    await restoreTaskCheck(rowSelectionModel as string[])
-      .then(() => {
-        notify("success", "success");
-      })
-      .catch(() => {});
-  };
   return (
     <>
       <Grid2 container direction={"column"} spacing={2}>
@@ -163,45 +126,7 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          {/* <Grid2 container spacing={1}>
-            <Button
-              variant="contained"
-              color="success"
-              component={Link}
-              to={""}
-              size="small"
-            >
-              <Add />
-            </Button>
-            {rowSelectionModel.length > 0 && (
-              <Button
-                variant="contained"
-                color="error"
-                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
-                size="small"
-              >
-                <GridDeleteIcon />
-              </Button>
-            )}
-            {rowSelectionModel.length > 0 && params.isDeleted && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={restore}
-                size="small"
-              >
-                <RestoreIcon />
-              </Button>
-            )}
-
-            <Divider draggable={false} orientation="vertical" flexItem />
-
-            <TrashButton
-              onClick={(isDeleted) =>
-                setParams({ ...params, isDeleted: isDeleted })
-              }
-            />
-          </Grid2> */}
+          {/* ... các nút khác nếu cần ... */}
         </Grid2>
         <Grid2>
           <Box>
@@ -210,32 +135,24 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
               rows={taskChecks}
               totalCount={totalCount}
               setParams={setParams}
-              onRowSelectionModelChange={(newRowSelectionModel) => {
-                setRowSelectionModel(newRowSelectionModel);
-              }}
+              rowSelection={false}
               loading={loading}
+              disableRowSelectionOnClick
+              checkboxSelection={false}
             />
           </Box>
         </Grid2>
       </Grid2>
+
       <PopupConfirm
-        open={openPopupSoftDelete}
-        onClose={() => setOpenPopupsoftDelete(false)}
-        onCancel={handleCancelSoftDelete}
-        onConfirm={handelConfirmSoftDelete}
+        haveButtons={false}
+        open={openPopupTemplateWarning}
+        onClose={handleCloseTemplateWarning}
+        onCancel={handleCloseTemplateWarning}
+        onConfirm={handleCloseTemplateWarning}
         icon={<Warning fontSize="large" color="warning" />}
-        message="Bạn có chắc chắn muốn xóa?"
-        subMessage="Sau khi xoá, danh sách sẽ được chuyển vào thùng rác."
-        sx={{ width: 450 }}
-      />
-      <PopupConfirm
-        open={openPopupHardDelete}
-        onClose={() => setOpenPopupHardDelete(false)}
-        onCancel={handleCancelHardDelete}
-        onConfirm={handleConfirmHardDelete}
-        icon={<Warning fontSize="large" color="warning" />}
-        message="Bạn có chắc chắn muốn xóa?"
-        subMessage="Sau khi xoá danh sách sẽ biến mất vĩnh viễn!"
+        message="Cảnh báo"
+        subMessage="Không thể xem chi tiết vì task chưa lựa chọn loại phiếu"
         sx={{ width: 450 }}
       />
     </>
