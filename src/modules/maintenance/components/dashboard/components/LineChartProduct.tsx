@@ -46,7 +46,7 @@ const LineChartProduct: React.FC<Props> = ({ params }) => {
       tooltip: { trigger: "axis" },
       legend: {},
       xAxis: { type: "category", data: lineChartLabels },
-      yAxis: { type: "value", interval: 1 },
+      yAxis: { type: "value" },
       series: [
         {
           name: "Số thiết bị đã bảo trì",

@@ -57,7 +57,7 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
     formState: { errors },
   } = useForm<CreateTaskCheckDto>({
     defaultValues: {
-      name: "",
+      name: "Phiểu tạo bởi quản lí",
       note: "",
       templateCheckId: "",
       productId: product.id,

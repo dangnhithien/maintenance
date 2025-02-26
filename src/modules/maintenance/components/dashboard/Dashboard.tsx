@@ -7,9 +7,7 @@ import {
   unwrapObjectReponse,
 } from "@datas/comon/ApiResponse";
 import overviewApi from "@modules/maintenance/apis/overviewApi";
-import productApi from "@modules/maintenance/apis/productApi";
 import { OverviewKeyMetricDto } from "@modules/maintenance/datas/overview/OverviewKeyMetricsDto";
-import { OverviewProductByDate } from "@modules/maintenance/datas/overview/OverViewProductByDate";
 import userApi from "@modules/user/apis/UserApi";
 import { OverviewUser } from "@modules/user/datas/user/OverviewUser";
 import { useEffect, useMemo, useState } from "react";
@@ -38,7 +36,6 @@ function getOneDayRange(dateStr: string): { fromDate: Date; toDate: Date } {
 
 const MaintainedDevicesLineChart: React.FC = () => {
   const [keyMetric, setKeyMetric] = useState<OverviewKeyMetricDto>();
-  const [productData, setProductData] = useState<OverviewProductByDate[]>([]);
   const [userListTask, setUserListTask] = useState<OverviewUser[]>([]);
   const [date, setDate] = useState<string>(
     new Date().toISOString().split("T")[0]
@@ -61,78 +58,6 @@ const MaintainedDevicesLineChart: React.FC = () => {
       .then(unwrapListReponse)
       .then(setUserListTask);
   }, [date]);
-
-  // Lấy dữ liệu sản phẩm cho khoảng 7 ngày (trung tâm theo ngày được chọn)
-  useEffect(() => {
-    const { fromDate, toDate } = getSevenDayRange(date);
-    productApi
-      .getOverviewProductByDate({ fromDate, toDate })
-      .then(unwrapListReponse)
-      .then((res) => setProductData(res as OverviewProductByDate[]));
-  }, [date]);
-
-  const lineChartLabels = productData.map((item) =>
-    new Date(item.date).toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    })
-  );
-
-  const lineChartData = productData.map(
-    (item) => item.totalProductMaintenanced
-  );
-  const lineChartSystemData = productData.map(
-    (item) => item.totalProductNeedToMaintenance
-  );
-  const lineChartDifference = productData.map(
-    (item) => item.totalProductMaintenanced - item.totalProductNeedToMaintenance
-  );
-
-  const lineOption: echarts.EChartsOption = useMemo(
-    () => ({
-      tooltip: { trigger: "axis" },
-      legend: {},
-      xAxis: { type: "category", data: lineChartLabels },
-      yAxis: { type: "value", interval: 1 },
-      series: [
-        {
-          name: "Số thiết bị đã bảo trì",
-          type: "line",
-          data: lineChartData,
-          smooth: true,
-          itemStyle: {
-            color: "#aee8a1",
-          },
-        },
-        {
-          name: "Số thiết bị cần bảo trì",
-          type: "line",
-          data: lineChartSystemData,
-          smooth: true,
-          itemStyle: {
-            color: "#749fdf",
-          },
-        },
-        {
-          name: "Chưa hoàn thành",
-          type: "line",
-          data: lineChartDifference,
-          smooth: true,
-          lineStyle: { type: "dotted" },
-          itemStyle: { color: "red" },
-        },
-      ],
-      grid: {
-        top: "32px",
-        left: "16px",
-        right: "16px",
-        bottom: "16px",
-        containLabel: true,
-      },
-    }),
-    [lineChartLabels, lineChartData, lineChartSystemData, lineChartDifference]
-  );
 
   // Dữ liệu cho pie chart (nếu cần sử dụng trong tương lai)
   const taskStatusData = [
@@ -179,7 +104,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
       },
       yAxis: {
         type: "value",
-        interval: 1,
+        min: 1,
       },
       series: [
         {
