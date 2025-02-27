@@ -24,21 +24,19 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
   if (!data) return <></>;
 
   return (
-    <Card sx={{ display: "flex", width: "100%", p: 1 }} variant="outlined">
+    <Card
+      sx={{ display: "flex", width: "100%", border: "none" }}
+      variant="outlined"
+    >
       {/* Hiển thị hình ảnh bên trái */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          borderRight: "1px solid #ccc",
+          // borderRight: "1px solid #ccc",
         }}
       >
-        <Box display={"flex"} justifyContent={"flex-end"}>
-          <Typography variant="caption" sx={{ color: "#c3c3c3" }}>
-            Seri: {data.serialNumber}
-          </Typography>
-        </Box>
         {/* <CardMedia
           component="img"
           sx={{
@@ -269,7 +267,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 direction="column"
                 spacing={1}
                 size={5}
-                sx={{ borderRight: "1px solid #ccc" }}
+                // sx={{ borderRight: "1px solid #ccc" }}
               >
                 <Typography variant="body2" fontWeight={"bold"}>
                   Bảo trì gần đây

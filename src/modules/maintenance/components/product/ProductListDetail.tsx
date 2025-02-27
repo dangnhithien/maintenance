@@ -88,7 +88,7 @@ const ProductListDetail = () => {
   }, [isLoading, hasMore]);
 
   return (
-    <Wrapper>
+    <>
       <Box mb={2}>
         <Stack
           direction="row"
@@ -123,7 +123,9 @@ const ProductListDetail = () => {
       <Grid2 container spacing={2}>
         {products.map((item) => (
           <Grid2 key={item.id} size={12}>
-            <ProductRowDetail data={item} />
+            <Wrapper>
+              <ProductRowDetail data={item} />
+            </Wrapper>
           </Grid2>
         ))}
       </Grid2>
@@ -132,7 +134,7 @@ const ProductListDetail = () => {
           Loading...
         </Typography>
       )}
-    </Wrapper>
+    </>
   );
 };
 
