@@ -85,6 +85,21 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
           <InfoItem label="Nhà cung cấp" value={product.supplier || ""} />
           <InfoItem label="Khách hàng" value={product.customer?.name || ""} />
           <InfoItem label="Nhóm thiết bị" value={product.device?.name || ""} />
+          <InfoItem
+            label="Ngày lắp đặt"
+            value={
+              product.installationDate
+                ? new Date(product.installationDate).toLocaleDateString(
+                    "vi-VN",
+                    {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                    }
+                  )
+                : ""
+            }
+          />
         </Stack>
       </Box>
 

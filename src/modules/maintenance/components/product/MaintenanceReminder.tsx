@@ -22,7 +22,7 @@ const MaintenanceReminder: React.FC<Props> = ({ param }) => {
   const [params, setParams] = useState<GetProductDto>({
     ...param,
     includeProperties: "TemplateCheck",
-    takeCount: 10,
+    takeCount: 5,
     sortBy: "CreatedDate DESC",
   });
   const [rowSelectionModel, setRowSelectionModel] =
