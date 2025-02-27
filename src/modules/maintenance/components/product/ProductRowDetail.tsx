@@ -108,11 +108,14 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                     label="Seri"
                     value={data.serialNumber?.toString() || ""}
                   />
-                  {/* <InfoItem label="Nhà cung cấp" value={data.supplier || ""} /> */}
-                  {/* <InfoItem label="Version" value={data.version || ""} /> */}
+                  <InfoItem label="Nhà cung cấp" value={data.supplier || ""} />
                   <InfoItem
                     label="Nhóm thiết bị"
                     value={data.device?.name || ""}
+                  />
+                  <InfoItem
+                    label="Khách hàng"
+                    value={data.customer?.name || ""}
                   />
                 </Grid2>
               </Grid2>
@@ -172,7 +175,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 container
                 direction="column"
                 spacing={1}
-                size={3}
+                size={5}
                 sx={{ borderRight: "1px solid #ccc" }}
               >
                 <Typography variant="body2" fontWeight={"bold"}>
@@ -210,15 +213,14 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                                 color="text.secondary"
                               >
                                 <span>
-                                  {item.checkTime &&
-                                    new Date(item.checkTime).toLocaleDateString(
-                                      "vi-VN",
-                                      {
-                                        day: "2-digit",
-                                        month: "2-digit",
-                                        year: "2-digit",
-                                      }
-                                    )}
+                                  {item.createdDate &&
+                                    new Date(
+                                      item.createdDate
+                                    ).toLocaleDateString("vi-VN", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "2-digit",
+                                    })}
                                 </span>
                               </Typography>
                             </Grid2>
@@ -228,7 +230,15 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                                 variant="caption"
                                 color="text.secondary"
                               >
-                                {item.createdBy}
+                                {item.name}
+                              </Typography>
+                            </Grid2>
+                            <Grid2>
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
+                                {item.taskCreator}
                               </Typography>
                             </Grid2>
 
@@ -244,7 +254,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                   )}
                 </Grid2>
               </Grid2>
-              <Grid2 container direction="column" spacing={1} size={2}>
+              {/* <Grid2 container direction="column" spacing={1} size={2}>
                 <Typography variant="body2" fontWeight={"bold"}>
                   Ghi chú
                 </Typography>
@@ -253,7 +263,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                     {data.note}
                   </Typography>
                 </Grid2>
-              </Grid2>
+              </Grid2> */}
             </Grid2>
           </Box>
           <Box>
@@ -265,6 +275,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                 />
                 <Typography variant="caption" color="text.secondary">
                   <span>
+                    Ngày lắp đặt:{" "}
                     {data.installationDate
                       ? new Date(data.installationDate).toLocaleDateString(
                           "vi-VN",
@@ -284,7 +295,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
                   sx={{ fontSize: "16px", mt: "-1.5px !important" }}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  {data.address}
+                  Địa chỉ: {data.address}
                 </Typography>
               </Stack>
             </Stack>
@@ -297,7 +308,7 @@ const ProductRowDetail: React.FC<Props> = ({ data }) => {
 };
 const InfoItem = ({ label, value }: { label: string; value: string }) => (
   <Box display="flex">
-    <Typography variant="caption" color="textSecondary" mr={1}>
+    <Typography variant="caption" color="textSecondary" mr={1} minWidth={90}>
       {label}:
     </Typography>
     <Typography variant="caption" color="info" fontWeight="bold">

@@ -51,7 +51,7 @@ const CustomerDetail: React.FC<Props> = ({ id }) => {
           setCustomerOverView(response);
         });
     }
-  }, [id]);
+  }, []);
 
   return (
     <Box>

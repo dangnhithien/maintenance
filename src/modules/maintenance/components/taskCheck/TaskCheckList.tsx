@@ -1,8 +1,18 @@
 import PaginatedDataGrid from "@components/PaginationDatagrid";
+import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusTaskCheck";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
-import { Box, Grid2 } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  Grid2,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -14,14 +24,20 @@ import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 interface Props {
   param?: GetTaskCheckDto;
 }
+
 const TaskCheckList: React.FC<Props> = ({ param }) => {
   const [openPopupTemplateWarning, setOpenPopupTemplateWarning] =
     useState(false);
   const { notify } = useNotification();
+
+  // Local state for new filters
+  const [filterDate, setFilterDate] = useState({ start: "", end: "" });
+  const [filterStatus, setFilterStatus] = useState("0");
+
   const [params, setParams] = useState<GetTaskCheckDto>({
     ...param,
     includeProperties: "TemplateCheck,Product,Customer",
-    takeCount: 5,
+    takeCount: 10,
     sortBy: "CreatedDate DESC",
   });
 
@@ -36,8 +52,9 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
   } = useTaskCheck();
 
   useEffect(() => {
-    fetchTaskChecks(params); // Gọi khi cần
+    fetchTaskChecks(params);
   }, [params]);
+
   // Hàm dùng để mở popup cảnh báo nếu không có templateCheckId
   const handleOpenTemplateWarning = () => {
     setOpenPopupTemplateWarning(true);
@@ -51,7 +68,9 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
   const renderConditionalLink = (params: any, fieldValue: any) => {
     if (params.row.templateCheckId) {
       return (
-        <Link to={`/task-check/detail/${params.row.id}`}>{fieldValue}</Link>
+        <Link to={`/task-check/detail/${params.row.id}`}>
+          <Tooltip title={fieldValue}>{fieldValue}</Tooltip>
+        </Link>
       );
     }
     return (
@@ -97,16 +116,16 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
         renderConditionalLink(params, params.row.customer?.name),
     },
     {
-      field: "createdDate",
+      field: "scheduledTime",
       align: "center",
       headerAlign: "center",
-      headerName: "Ngày tạo",
+      headerName: "Ngày bảo trì",
       flex: 1,
       renderCell: (params: any) =>
         renderConditionalLink(
           params,
-          params.row.createdDate &&
-            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
+          params.row.scheduledTime &&
+            new Date(params.row.scheduledTime).toLocaleDateString("vi-VN", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
@@ -139,15 +158,90 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
 
   return (
     <>
-      <Grid2 container direction={"column"} spacing={2}>
-        <Grid2 container justifyContent={"space-between"}>
-          <InputSearch
-            onSearch={(searchText) => {
-              setParams({ ...params, searchTerm: searchText });
-            }}
-          />
-          {/* ... các nút khác nếu cần ... */}
+      <Grid2 container direction="column" spacing={2}>
+        {/* Filter Controls */}
+        <Grid2 container spacing={2}>
+          <Grid2>
+            <InputSearch
+              onSearch={(searchText) => {
+                setParams({ ...params, searchTerm: searchText });
+              }}
+            />
+          </Grid2>
+          <Grid2 width={150}>
+            <FormControl fullWidth>
+              <InputLabel id="status-filter-label">Trạng thái</InputLabel>
+              <Select
+                labelId="status-filter-label" // Đã bỏ comment để liên kết đúng với InputLabel
+                id="status-filter"
+                value={filterStatus}
+                label="Trạng thái"
+                size="small"
+                onChange={(e) => {
+                  const status = e.target.value;
+                  setFilterStatus(status);
+                  setParams({
+                    ...params,
+                    taskCheckStatus:
+                      status === "0"
+                        ? undefined
+                        : (status as EnumStatusTaskCheck),
+                  });
+                }}
+              >
+                <MenuItem value={"0"}>Tất cả</MenuItem>
+                <MenuItem value={EnumStatusTaskCheck.CREATED}>Đã tạo</MenuItem>
+                <MenuItem value={EnumStatusTaskCheck.WAITING}>
+                  Chờ duyệt
+                </MenuItem>
+                <MenuItem value={EnumStatusTaskCheck.APPROVED}>
+                  Đã duyệt
+                </MenuItem>
+                <MenuItem value={EnumStatusTaskCheck.REJECTED}>
+                  Từ chối
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid2>
+
+          <Grid2 width={150}>
+            <TextField
+              label="Từ ngày"
+              type="date"
+              value={filterDate.start}
+              size="small"
+              onChange={(e) => {
+                const newStart = e.target.value;
+                setFilterDate({ ...filterDate, start: newStart });
+                setParams({ ...params, fromDate: new Date(newStart) });
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+            />
+          </Grid2>
+          <Grid2 width={150}>
+            <TextField
+              label="Đến ngày"
+              type="date"
+              value={filterDate.end}
+              size="small"
+              onChange={(e) => {
+                const newEnd = e.target.value;
+                setFilterDate({ ...filterDate, end: newEnd });
+                setParams({ ...params, toDate: new Date(newEnd) });
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+            />
+          </Grid2>
         </Grid2>
+        <Grid2 container spacing={2} marginTop={2}></Grid2>
+
+        {/* DataGrid */}
         <Grid2>
           <Box>
             <PaginatedDataGrid

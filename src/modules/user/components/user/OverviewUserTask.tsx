@@ -25,7 +25,7 @@ const OverviewUserTask: React.FC<Props> = ({ param }) => {
 
   const [params, setParams] = useState<GetUserDto>({
     ...param,
-    takeCount: 5,
+    takeCount: 10,
     sortBy: "CreatedDate DESC",
     fromTime: firstDayOfMonth,
     toTime: lastDayOfMonth,

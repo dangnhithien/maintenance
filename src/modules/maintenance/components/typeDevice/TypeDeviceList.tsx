@@ -20,7 +20,7 @@ const TypeDeviceList = () => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
-  const [params, setParams] = useState<GetTypeDeviceDto>({ takeCount: 5 });
+  const [params, setParams] = useState<GetTypeDeviceDto>({ takeCount: 10 });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
 

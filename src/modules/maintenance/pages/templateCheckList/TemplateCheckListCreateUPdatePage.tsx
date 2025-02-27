@@ -1,6 +1,6 @@
 import TemplateCheckListCreateUpdate from "@modules/maintenance/components/templateCheckList/TemplateCheckListCreateUPdate";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Breadcrumbs, Container, Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
@@ -45,7 +45,9 @@ const TemplateCheckListCreateUpdatePage = () => {
       >
         {breadcrumbs}
       </Breadcrumbs>
-      <TemplateCheckListCreateUpdate id={id} />
+      <Container>
+        <TemplateCheckListCreateUpdate id={id} />
+      </Container>
     </div>
   );
 };

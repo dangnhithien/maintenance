@@ -22,7 +22,7 @@ const ErrorDetailList = () => {
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTemplateCheckListDto>({
     includeProperties: "TypeError",
-    takeCount: 5,
+    takeCount: 10,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

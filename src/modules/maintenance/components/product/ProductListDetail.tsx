@@ -14,7 +14,7 @@ const ProductListDetail = () => {
 
   // Các tham số filter ban đầu
   const [params, setParams] = useState<GetProductDto>({
-    includeProperties: "Device",
+    includeProperties: "Device,Customer",
     searchTerm: "",
     takeCount: PAGE_SIZE, // Số phần tử trên mỗi trang
     // Lưu ý: skipCount sẽ được truyền theo số trang (page) riêng
@@ -97,7 +97,7 @@ const ProductListDetail = () => {
             <Stack width={230}>
               <DeviceSelect
                 onChange={(data) =>
-                  setParams((prev) => ({ ...prev, deviceId: data }))
+                  setParams((prev) => ({ ...prev, deviceId: data?.id }))
                 }
               />
             </Stack>

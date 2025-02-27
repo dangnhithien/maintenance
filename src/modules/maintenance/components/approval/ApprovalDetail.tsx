@@ -38,7 +38,7 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
         reason: note,
       })
       .then(() => {
-        notify("Đã từ chối", "error");
+        notify("Đã từ chối", "success");
         navigate("/approval");
       })
       .catch(() => {
@@ -66,10 +66,10 @@ const ApprovalDetail: React.FC<Props> = ({ id }) => {
             onClick={handleApprove}
             sx={{ mr: 2 }}
           >
-            Approve
+            Duyệt
           </Button>
           <Button variant="contained" color="error" onClick={handleReject}>
-            Reject
+            Từ chối
           </Button>
         </Box>
       </form>

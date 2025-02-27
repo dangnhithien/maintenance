@@ -27,7 +27,7 @@ const ProductList: React.FC<Props> = ({ param, isPage = true }) => {
   const [params, setParams] = useState<GetProductDto>({
     ...param,
     includeProperties: "Device",
-    takeCount: 5,
+    takeCount: 10,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

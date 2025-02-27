@@ -3,7 +3,7 @@ import { EnumStatusTaskCheck } from "@modules/maintenance/datas/enum/EnumStatusT
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
 import { Warning } from "@mui/icons-material";
-import { Grid2 } from "@mui/material";
+import { Grid2, Tooltip } from "@mui/material";
 import { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -14,14 +14,22 @@ import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 interface Props {
   productId?: string;
 }
+const renderConditionalLink = (params: any, fieldValue: any) => {
+  if (params.row.templateCheckId) {
+    return (
+      <Link to={`/task-check/detail/${params.row.id}`}>
+        <Tooltip title={fieldValue}>{fieldValue}</Tooltip>
+      </Link>
+    );
+  }
+};
 const Approval: React.FC<Props> = ({ productId }) => {
-  console.log("deviceId", productId);
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTaskCheckDto>({
-    includeProperties: "TemplateCheck",
-    takeCount: 5,
+    includeProperties: "TemplateCheck,Customer",
+    takeCount: 10,
     taskCheckStatus: EnumStatusTaskCheck.WAITING,
     productId: productId || undefined,
     sortBy: "CreatedDate DESC",
@@ -82,31 +90,44 @@ const Approval: React.FC<Props> = ({ productId }) => {
       ),
     },
     {
-      field: "createdBy",
-      headerName: "Người tạo",
-      editable: false,
-      sortable: false,
+      field: "customerName",
+      headerName: "Khách hàng ",
+      align: "center",
+      headerAlign: "center",
       flex: 1,
+      renderCell: (params: any) =>
+        renderConditionalLink(params, params.row.customer?.name),
     },
     {
-      field: "checkTime",
+      field: "createdDate",
+      align: "center",
+      headerAlign: "center",
       headerName: "Ngày tạo",
-      editable: false,
-      sortable: false,
       flex: 1,
-      renderCell: (params: any) => (
-        <>
-          {params.row.checkTime &&
-            new Date(params.row.checkTime).toLocaleString("vi-VN", {
+      renderCell: (params: any) =>
+        renderConditionalLink(
+          params,
+          params.row.createdDate &&
+            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              // second: "2-digit", // Bỏ comment nếu muốn hiển thị giây
-            })}
-        </>
-      ),
+            })
+        ),
+    },
+    {
+      field: "taskCreator",
+      headerName: "Người tạo",
+      align: "center",
+      headerAlign: "center",
+      flex: 1,
+    },
+    {
+      field: "assigneeName",
+      headerName: "Kĩ thuật viên",
+      align: "center",
+      headerAlign: "center",
+      flex: 1,
     },
 
     {

@@ -13,7 +13,7 @@ export interface TaskCheckDto extends TrackingDataDto {
   customerId: string;
   customerCode: string;
   customer?: CustomerDto | null;
-  scheduledTime: string;
+  scheduledTime: Date;
   checkTime?: string | null;
   taskCheckStatus: EnumStatusTaskCheck;
   templateCheckId?: string | null;
@@ -28,4 +28,5 @@ export interface TaskCheckDto extends TrackingDataDto {
   assigneeId?: string | null;
   assignee?: ProductDto | null;
   rowCheckValues: RowCheckValueDto[];
+  reason?: string;
 }

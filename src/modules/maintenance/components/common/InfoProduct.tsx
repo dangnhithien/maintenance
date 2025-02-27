@@ -1,7 +1,15 @@
 import ImageBase64 from "@components/ImageBase64";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Chip, Grid2, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Grid2,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -47,16 +55,17 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
           color={product.status === "Active" ? "error" : "success"}
           sx={{
             fontWeight: 600,
-            fontSize: "0.85rem", // tăng kích thước chữ cho chip
+            fontSize: "0.85rem",
             padding: "4px 8px",
             textTransform: "uppercase",
           }}
+          size="small"
         />
       </Box>
 
       {/* Tên sản phẩm */}
       <Box textAlign="center" mb={3}>
-        <Typography variant="h5" sx={{ fontWeight: 700, color: "#2d3748" }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, color: "#2d3748" }}>
           {product.name}
         </Typography>
       </Box>
@@ -141,14 +150,32 @@ const InfoProduct: React.FC<Props> = ({ product }) => {
   );
 };
 
-const InfoItem = ({ label, value }: { label: string; value: string }) => (
-  <Box display="flex" alignItems="center">
+interface InfoItemProps {
+  label: string;
+  value: string;
+}
+
+const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => (
+  <Box display="flex" alignItems="center" justifyContent="space-between">
     <Typography variant="body2" color="textSecondary" sx={{ minWidth: 120 }}>
       {label}:
     </Typography>
-    <Typography variant="body2" color="info" fontWeight="bold">
-      {value}
-    </Typography>
+    <Tooltip title={value}>
+      <Typography
+        variant="body2"
+        color="info"
+        fontWeight="bold"
+        sx={{
+          textAlign: "right",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          maxWidth: "calc(100% - 120px)", // Giới hạn chiều rộng cho phần value
+        }}
+      >
+        {value || "-"}
+      </Typography>
+    </Tooltip>
   </Box>
 );
 

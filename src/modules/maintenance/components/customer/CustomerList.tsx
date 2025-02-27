@@ -21,7 +21,7 @@ const CustomerList = () => {
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<GetCustomerDto>({
-    takeCount: 5,
+    takeCount: 10,
   });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);

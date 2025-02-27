@@ -25,7 +25,7 @@ const ProductWithoutTask: React.FC<Props> = ({ param }) => {
 
   const [params, setParams] = useState<GetProductDto>({
     ...param,
-    takeCount: 5,
+    takeCount: 10,
     sortBy: "CreatedDate DESC",
     isCreated: false,
     fromTime: firstDayOfMonth,
