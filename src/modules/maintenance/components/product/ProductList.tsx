@@ -67,6 +67,18 @@ const ProductList: React.FC<Props> = ({ param, isPage = true }) => {
         </Link>
       ),
     },
+    {
+      field: "deviceName",
+      headerName: "Nhóm thiết bị",
+      editable: false,
+      sortable: false,
+      flex: 1,
+      renderCell: (params: any) => (
+        <Link to={`/product/detail-new/${params.row.id}`}>
+          {params.row.device.name}
+        </Link>
+      ),
+    },
 
     {
       field: "createdDate",

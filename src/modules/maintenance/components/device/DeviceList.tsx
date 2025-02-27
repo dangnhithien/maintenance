@@ -44,7 +44,7 @@ const DeviceList = () => {
     },
     {
       field: "name",
-      headerName: "Tên biểu mẫu ",
+      headerName: "Tên nhóm thiết bị ",
       editable: false,
       sortable: false,
       flex: 1,
