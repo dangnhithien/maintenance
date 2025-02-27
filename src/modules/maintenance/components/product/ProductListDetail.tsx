@@ -14,7 +14,7 @@ const ProductListDetail = () => {
 
   // Các tham số filter ban đầu
   const [params, setParams] = useState<GetProductDto>({
-    includeProperties: "Device,Customer",
+    includeProperties: "Device,Customer,Components",
     searchTerm: "",
     takeCount: PAGE_SIZE, // Số phần tử trên mỗi trang
     // Lưu ý: skipCount sẽ được truyền theo số trang (page) riêng
@@ -33,6 +33,7 @@ const ProductListDetail = () => {
     setHasMore(true);
   }, [params.searchTerm]);
 
+  console.log(products[0]?.components);
   // Gọi API load dữ liệu mỗi khi số trang (page) hoặc các tham số khác thay đổi
   useEffect(() => {
     // Nếu đã load hết dữ liệu và không phải trang đầu tiên thì không gọi API nữa
@@ -47,6 +48,7 @@ const ProductListDetail = () => {
         takeCount: PAGE_SIZE,
       })
       .then((res) => {
+        console.log(res);
         // Nếu không còn dữ liệu trả về thì đánh dấu hasMore là false
         if ((page + 1) * PAGE_SIZE >= res.result.totalCount) {
           setHasMore(false);
@@ -113,7 +115,7 @@ const ProductListDetail = () => {
           </Typography>
         </Stack>
       </Box>
-      {products.length === 0 && (
+      {products.length === 0 && !isLoading && (
         <Typography variant="body1" textAlign={"center"} height={100}>
           No products
         </Typography>
@@ -125,7 +127,11 @@ const ProductListDetail = () => {
           </Grid2>
         ))}
       </Grid2>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && (
+        <Typography textAlign={"center"} mt={2}>
+          Loading...
+        </Typography>
+      )}
     </Wrapper>
   );
 };

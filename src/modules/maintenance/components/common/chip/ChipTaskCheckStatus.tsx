@@ -4,9 +4,13 @@ import React from "react";
 
 interface StatusChipProps {
   status: EnumStatusTaskCheck;
+  size?: "small" | "medium";
 }
 
-const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({ status }) => {
+const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({
+  status,
+  size = "medium",
+}) => {
   let label: string;
   let color: "info" | "warning" | "success" | "error" | "default";
 
@@ -33,7 +37,7 @@ const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({ status }) => {
       break;
   }
 
-  return <Chip label={label} color={color} />;
+  return <Chip label={label} color={color} size={size} />;
 };
 
 export default ChipTaskCheckStatus;

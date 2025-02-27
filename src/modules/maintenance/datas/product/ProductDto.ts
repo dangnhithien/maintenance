@@ -1,4 +1,5 @@
 import { TrackingDataDto } from "../../../../datas/comon/TrackingDataDto";
+import { ComponentDto } from "../component/ComponentDto";
 import { CustomerDto } from "../customer/CustomerDto";
 import { DeviceDto } from "../device/DeviceDto";
 import { TaskCheckDto } from "../taskCheck/TaskCheckDto";
@@ -27,4 +28,5 @@ export interface ProductDto extends TrackingDataDto {
   name: string;
   customerId: string;
   customer?: CustomerDto;
+  components: ComponentDto[];
 }

@@ -3,7 +3,6 @@ import productApi from "@modules/maintenance/apis/productApi";
 import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
 import { CircularProgress, Paper, Typography } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
-import { EChartsOption } from "echarts";
 import React, { useEffect, useState } from "react";
 import InfoProduct from "../common/InfoProduct";
 import { useNotification } from "../common/Notistack";
@@ -57,48 +56,6 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
       </Paper>
     );
   }
-
-  const lineChartLabels = [
-    "2025-02-15",
-    "2025-02-16",
-    "2025-02-17",
-    "2025-02-18",
-    "2025-02-19",
-    "2025-02-20",
-    "2025-02-21",
-  ];
-
-  const lineChartData = [3, 5, 2, 8, 4, 6, 7];
-
-  const option: EChartsOption = {
-    tooltip: { trigger: "axis" },
-    xAxis: { type: "category", data: lineChartLabels },
-    yAxis: { type: "value" },
-    visualMap: {
-      show: false,
-      dimension: 0, // Sử dụng giá trị của trục x (chỉ số của category)
-      pieces: [
-        { gt: 0, lte: 4, color: "#6C63FF" }, // Các điểm từ chỉ số 3 đến 4 sẽ có màu xanh lá
-        { gt: 4, color: "red" }, // Các điểm còn lại sẽ có màu xanh dương
-      ],
-    },
-    series: [
-      {
-        name: "Số thiết bị bảo trì",
-        type: "line",
-        data: lineChartData,
-        smooth: true,
-        // Bỏ đi lineStyle.color để visualMap có thể áp dụng màu tự động
-      },
-    ],
-    grid: {
-      top: "16px",
-      left: "16px",
-      right: "16px",
-      bottom: "16px",
-      containLabel: true,
-    },
-  };
 
   return (
     <Grid2 container spacing={2} direction="row" sx={{ height: "100%" }}>

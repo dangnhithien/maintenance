@@ -6,11 +6,10 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 
 const CustomerDetailPage = () => {
   const { id } = useParams();
-  console.log("CustomerDetailPage", id);
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/product">
+    <Link key="1" underline="none" component={RouterLink} to="/customer">
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách nhóm thiết bị
+        Danh sách khách hàng
       </span>
     </Link>,
     <Link
