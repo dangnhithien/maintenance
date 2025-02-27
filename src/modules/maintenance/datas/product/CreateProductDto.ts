@@ -11,4 +11,5 @@ export interface CreateProductDto {
   version?: string;
   image?: string;
   name?: string;
+  customerId?: string;
 }

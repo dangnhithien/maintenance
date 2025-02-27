@@ -25,7 +25,7 @@ const ProductDetailNew: React.FC<Props> = ({ id }) => {
     const fetchProduct = async () => {
       try {
         const res = await productApi.getById(id, {
-          includeProperties: "Device",
+          includeProperties: "Device,Customer",
         });
         setProduct(res.result);
       } catch (err: any) {

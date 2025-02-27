@@ -9,4 +9,5 @@ export interface ComponentDto {
   maintenanceCount?: number;
   nextMaintenanceDate?: Date;
   reminderAdvanceDays?: number;
+  customerId?: string;
 }

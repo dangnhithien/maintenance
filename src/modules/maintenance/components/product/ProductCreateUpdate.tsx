@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
+import CustomerSelect from "../common/select/CustomerSelect";
 import DeviceSelect from "../common/select/DeviceSelect";
 import Wrapper from "../common/Wrapper";
 import ComponentCreateUpdate from "../component/ComponentCreateUpdate";
@@ -358,6 +359,43 @@ const ProductCreateUpdate: React.FC<FormProps> = ({ id }) => {
                     }}
                   >
                     {errors.deviceId.message}
+                  </p>
+                )}
+              </Grid2>
+              <Grid2 size={4}>
+                <Stack direction="row" spacing={1}>
+                  <Typography
+                    variant="body2"
+                    color="primary"
+                    fontWeight={"bold"}
+                  >
+                    Khách hàng
+                  </Typography>
+                  <Typography sx={{ color: "#ffffff" }}>*</Typography>
+                </Stack>
+                <Controller
+                  name="customerId"
+                  control={control}
+                  rules={{
+                    required: "Please select a device type",
+                  }}
+                  render={({ field }) => (
+                    <CustomerSelect
+                      id={field?.value}
+                      onChange={(value) => field.onChange(value?.id)}
+                    />
+                  )}
+                />
+                {errors.customerId && (
+                  <p
+                    style={{
+                      color: "#d32f2f",
+                      fontSize: "12px",
+                      marginLeft: "14px",
+                      marginTop: "5px",
+                    }}
+                  >
+                    {errors.customerId.message}
                   </p>
                 )}
               </Grid2>
