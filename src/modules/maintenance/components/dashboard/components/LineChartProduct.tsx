@@ -37,10 +37,6 @@ const LineChartProduct: React.FC<Props> = ({ params }) => {
     (item) => item.totalProductNeedToMaintenance
   );
 
-  const lineChartDifference = productData?.map(
-    (item) => item.totalProductMaintenanced - item.totalProductNeedToMaintenance
-  );
-
   const lineOption: echarts.EChartsOption = useMemo(
     () => ({
       tooltip: { trigger: "axis" },
@@ -65,14 +61,6 @@ const LineChartProduct: React.FC<Props> = ({ params }) => {
           itemStyle: {
             color: "#749fdf", // Màu sáng hơn
           },
-        },
-        {
-          name: "Chưa hoàn thành",
-          type: "line",
-          data: lineChartDifference,
-          smooth: true,
-          lineStyle: { type: "dotted" },
-          itemStyle: { color: "red" },
         },
       ],
       grid: {

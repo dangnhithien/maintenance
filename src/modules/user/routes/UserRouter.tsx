@@ -2,6 +2,7 @@
 import SpinnerLoading from "@components/SpinerLoading";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import Schedule from "../components/user/Schedule";
 import UserCreateUpdatePage from "../pages/user/UserCreateUpdatePage";
 import UserDetailPage from "../pages/user/UserDetailPage";
 
@@ -38,6 +39,14 @@ const UserRoutes = () => (
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <UserDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/user/schedule"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <Schedule />
         </React.Suspense>
       }
     />
