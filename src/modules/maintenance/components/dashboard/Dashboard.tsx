@@ -1,5 +1,5 @@
 import { ReactECharts } from "@components/ReactChart";
-import { Grid2, Paper, TextField, Typography } from "@mui/material";
+import { Grid2, Paper, Stack, Typography } from "@mui/material";
 import * as echarts from "echarts";
 
 import {
@@ -11,10 +11,10 @@ import { OverviewKeyMetricDto } from "@modules/maintenance/datas/overview/Overvi
 import userApi from "@modules/user/apis/UserApi";
 import { OverviewUser } from "@modules/user/datas/user/OverviewUser";
 import { useEffect, useMemo, useState } from "react";
-import Approval from "../approval/Approval";
 import Wrapper from "../common/Wrapper";
+import CustomerList from "../customer/CustomerList";
 import TaskCheckOverview from "../taskCheck/components/TaskcheckOverview";
-import LineChartProduct from "./components/LineChartProduct";
+import TaskCheckList from "../taskCheck/TaskCheckList";
 
 // Hàm tạo khoảng thời gian 7 ngày (3 ngày trước và 3 ngày sau ngày được chọn)
 function getSevenDayRange(inputDate: string): { fromDate: Date; toDate: Date } {
@@ -47,7 +47,10 @@ const MaintainedDevicesLineChart: React.FC = () => {
     overviewApi
       .getKeyMetric({ fromDate: selectedDate, toDate: selectedDate })
       .then(unwrapObjectReponse)
-      .then(setKeyMetric);
+      .then(setKeyMetric)
+      .catch((error) => {
+        console.log(error);
+      });
   }, [date]);
 
   // Lấy danh sách task của người dùng cho khoảng 1 ngày
@@ -56,7 +59,10 @@ const MaintainedDevicesLineChart: React.FC = () => {
     userApi
       .getOverviewUserTask({ fromDate, toDate })
       .then(unwrapListReponse)
-      .then(setUserListTask);
+      .then(setUserListTask)
+      .catch((error) => {
+        console.log(error);
+      });
   }, [date]);
 
   // Dữ liệu cho pie chart (nếu cần sử dụng trong tương lai)
@@ -145,8 +151,6 @@ const MaintainedDevicesLineChart: React.FC = () => {
     p: 3,
     width: "100%",
     height: "100%",
-    boxShadow: 3,
-    borderRadius: 4,
   };
 
   const metrics = [
@@ -174,23 +178,53 @@ const MaintainedDevicesLineChart: React.FC = () => {
       subValue: keyMetric?.totalTaskCheckDone,
       subText: "task đã hoàn thành",
     },
-    {
-      title: "Tổng số nhân viên",
-      value: keyMetric?.totalUser,
-      subValue: keyMetric?.totalUserHaveTask,
-      subText: "nhân viên có task hôm nay",
-    },
-    {
-      title: "Task cần duyệt hôm nay",
-      value: keyMetric?.totalTaskCheckNeedToApprove,
-      subValue: keyMetric?.totalTaskCheckApproved,
-      subText: "task đã được duyệt",
-    },
+    // {
+    //   title: "Tổng số nhân viên",
+    //   value: keyMetric?.totalUser,
+    //   subValue: keyMetric?.totalUserHaveTask,
+    //   subText: "nhân viên có task hôm nay",
+    // },
+    // {
+    //   title: "Task cần duyệt hôm nay",
+    //   value: keyMetric?.totalTaskCheckNeedToApprove,
+    //   subValue: keyMetric?.totalTaskCheckApproved,
+    //   subText: "task đã được duyệt",
+    // },
   ];
+
+  const pieChartOption: echarts.EChartsOption = {
+    tooltip: {
+      trigger: "item",
+    },
+    legend: {
+      bottom: 0, // Tăng khoảng cách từ đáy container đến legend
+    },
+    series: [
+      {
+        name: "Access From",
+        type: "pie",
+        radius: ["60%", "90%"],
+        center: ["50%", "40%"], // Di chuyển biểu đồ lên trên để tạo khoảng cách với legend
+        avoidLabelOverlap: false,
+        label: {
+          show: false,
+          position: "center",
+        },
+        labelLine: {
+          show: false,
+        },
+        data: [
+          { value: 1048, name: "Search" },
+          { value: 735, name: "Direct" },
+        ],
+      },
+    ],
+    // Lưu ý: Thuộc tính grid không ảnh hưởng đến biểu đồ pie nên có thể bỏ qua hoặc xóa nếu không cần thiết.
+  };
 
   return (
     <Grid2 container spacing={2}>
-      <Grid2 container size={12} mb={1}>
+      {/* <Grid2 container size={12} mb={1}>
         <Typography variant="h5" color="primary" fontWeight="bold">
           Tổng quan
         </Typography>
@@ -215,14 +249,14 @@ const MaintainedDevicesLineChart: React.FC = () => {
             },
           }}
         />
-      </Grid2>
+      </Grid2> */}
 
       {/* Hàng 1: Metrics và Line Chart */}
       <Grid2 size={12} container spacing={2} alignItems="center">
-        <Grid2 size={4} container spacing={2}>
+        <Grid2 size={12} container spacing={2}>
           {metrics.map((metric, index) => (
-            <Grid2 key={index} size={6}>
-              <Paper sx={cardPaperStyle}>
+            <Grid2 key={index} size={3}>
+              <Paper sx={cardPaperStyle} variant="outlined">
                 <Typography
                   variant="caption"
                   sx={{ color: "#555", fontWeight: 500 }}
@@ -252,35 +286,126 @@ const MaintainedDevicesLineChart: React.FC = () => {
             </Grid2>
           ))}
         </Grid2>
-        <Grid2 container size={8} sx={{ height: "100%" }}>
+        {/* <Grid2 container size={12} sx={{ height: "100%" }}>
           <Wrapper
             title="Theo dõi bảo trì thiết bị"
             sx={{ height: "100%", width: "100%" }}
           >
             <LineChartProduct params={getSevenDayRange(date)} />
           </Wrapper>
-        </Grid2>
+        </Grid2> */}
       </Grid2>
 
       {/* Hàng 2: Biểu đồ cột theo dõi task */}
-      <Grid2 size={12}>
-        <Wrapper title="Theo dõi công việc bảo trì">
-          <ReactECharts
-            option={barOption}
-            style={{ height: "500px", width: "100%" }}
-          />
-        </Wrapper>
+      <Grid2 container size={12}>
+        <Grid2 size={8}>
+          <Wrapper title="Theo dõi công việc bảo trì">
+            <ReactECharts
+              option={barOption}
+              style={{ height: "300px", width: "100%" }}
+            />
+          </Wrapper>
+        </Grid2>
+        <Grid2 size={2}>
+          <Paper sx={cardPaperStyle} variant="outlined">
+            <Stack direction="column" sx={{ height: "100%" }}>
+              <div>
+                <Typography
+                  variant="caption"
+                  sx={{ color: "#555", fontWeight: 500 }}
+                >
+                  Số task phát sinh
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{ color: "#333", fontWeight: "bold" }}
+                >
+                  0
+                </Typography>
+                <Typography
+                  variant="overline"
+                  sx={{ mt: 2 }}
+                  color="success"
+                  fontWeight="bold"
+                  mr={0.5}
+                  fontSize={14}
+                >
+                  0
+                </Typography>
+                <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
+                  Số task đã hoàn thành
+                </Typography>
+              </div>
+              {/* Sử dụng marginTop: 'auto' để đẩy biểu đồ xuống dưới */}
+              <div style={{ marginTop: "auto" }}>
+                <ReactECharts
+                  option={pieChartOption}
+                  style={{ height: "230px", width: "100%" }}
+                />
+              </div>
+            </Stack>
+          </Paper>
+        </Grid2>
+
+        <Grid2 size={2}>
+          <Paper sx={cardPaperStyle} variant="outlined">
+            <Typography
+              variant="caption"
+              sx={{ color: "#555", fontWeight: 500 }}
+            >
+              Tổng số nhân viên viên
+            </Typography>
+            <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
+              0
+            </Typography>
+            <Typography
+              variant="overline"
+              sx={{ mt: 2 }}
+              color="success"
+              fontWeight="bold"
+              mr={0.5}
+              fontSize={14}
+            >
+              0
+            </Typography>
+            <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
+              Số nhân viên có task trong hôm nay
+            </Typography>
+            <ReactECharts
+              option={pieChartOption}
+              style={{ height: "230px", width: "100%" }}
+            />
+          </Paper>
+        </Grid2>
+      </Grid2>
+      {/* Hàng 2: Biểu đồ cột theo dõi task */}
+      <Grid2 container size={12}>
+        <Grid2 size={12}>
+          <Wrapper title="Danh sách khách hàng">
+            <CustomerList isViewMode={true} />
+          </Wrapper>
+        </Grid2>
+      </Grid2>
+      {/* Hàng 2: Biểu đồ cột theo dõi task */}
+      <Grid2 container size={12}>
+        <Grid2 size={12}>
+          <Wrapper title="Theo dõi kĩ thuật bảo trì">
+            <CustomerList isViewMode={true} />
+          </Wrapper>
+        </Grid2>
       </Grid2>
 
       {/* Hàng 3: Danh sách task cần duyệt và Task Check Overview */}
       <Grid2 size={12} container spacing={2}>
         <Grid2 size={8}>
-          <Wrapper title="Danh sách task cần duyệt">
-            <Approval />
+          <Wrapper title="Danh sách task">
+            <TaskCheckList />
           </Wrapper>
         </Grid2>
         <Grid2 size={4}>
-          <TaskCheckOverview param={getOneDayRange(date)} />
+          <Wrapper title="Tình trạng task">
+            <TaskCheckOverview param={getOneDayRange(date)} />
+          </Wrapper>
         </Grid2>
       </Grid2>
     </Grid2>

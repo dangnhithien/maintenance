@@ -1,14 +1,15 @@
 import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import deviceApi from "@modules/maintenance/apis/deviceApi";
-import { DeviceDto } from "@modules/maintenance/datas/device/DeviceDto";
-import { GetDeviceDto } from "@modules/maintenance/datas/device/GetDeviceDto";
+import { IDevice } from "@modules/maintenance/datas/device/IDevice";
+import { IDeviceGet } from "@modules/maintenance/datas/device/IDeviceGet";
+
 import React, { useEffect, useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 
 interface AsyncPaginateSelectProps {
   id?: string;
   disabled?: boolean;
-  onChange?: (value: DeviceDto | null) => void;
+  onChange?: (value: IDevice | null) => void;
 }
 
 const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
@@ -16,9 +17,9 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
   onChange,
   disabled,
 }) => {
-  const [internalValue, setInternalValue] = useState<DeviceDto | null>(null);
+  const [internalValue, setInternalValue] = useState<IDevice | null>(null);
 
-  const handleChange = (val: DeviceDto | null) => {
+  const handleChange = (val: IDevice | null) => {
     setInternalValue(val);
     onChange?.(val); // Gọi callback onChange nếu được truyền từ component cha
   };
@@ -35,14 +36,14 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
     }
   }, [id]);
 
-  const loadOptionDevices = async (
+  const loadOptionCustomers = async (
     search: any,
     loadedOptions: any,
     additional: any
   ) => {
     const page = additional?.page || 1; // Nếu `additional` là undefined, mặc định `page = 1`
 
-    const paramsObj: GetDeviceDto = {
+    const paramsObj: IDeviceGet = {
       searchTerm: search,
       takeCount: 20,
       skipCount: (page - 1) * 20,
@@ -58,7 +59,7 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
         },
       };
     } catch (error) {
-      console.error("Error loading device options:", error);
+      console.error("Error loading Customer options:", error);
       return {
         options: [],
         hasMore: false,
@@ -74,9 +75,9 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
       isClearable
       value={internalValue}
       onChange={handleChange}
-      loadOptions={loadOptionDevices}
-      getOptionLabel={(option: DeviceDto) => option.name}
-      getOptionValue={(option: DeviceDto) => option.id}
+      loadOptions={loadOptionCustomers}
+      getOptionLabel={(option: IDevice) => option.name}
+      getOptionValue={(option: IDevice) => option.id}
       additional={{
         page: 1,
       }}
@@ -84,7 +85,7 @@ const DeviceSelect: React.FC<AsyncPaginateSelectProps> = ({
       menuPortalTarget={document.body}
       styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
       isDisabled={disabled}
-      placeholder="Nhóm thiết bị..."
+      placeholder=" thiết bị..."
     />
   );
 };

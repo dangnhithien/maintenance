@@ -24,7 +24,6 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
   const { notify } = useNotification();
   const [params, setParams] = useState<GetTemplateCheckListDto>({
     deviceId: deviceId,
-    includeProperties: "Device",
     takeCount: 10,
   });
   const [rowSelectionModel, setRowSelectionModel] =
@@ -62,19 +61,6 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
       renderCell: (params: any) => (
         <Link to={`/template-check-list/create/${params.row.id}`}>
           {params.row.name}
-        </Link>
-      ),
-    },
-    {
-      field: "",
-      headerName: "Thiết bị",
-      minWidth: 300,
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/template-check-list/create/${params.row.id}`}>
-          {params.row.device?.name}
         </Link>
       ),
     },

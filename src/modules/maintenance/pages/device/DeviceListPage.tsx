@@ -1,15 +1,18 @@
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import DeviceList from "@modules/maintenance/components/device/DeviceList";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
-
+const page = {
+  title: "Danh sách thiết bị",
+  url: "/devices",
+  component: <DeviceList />,
+};
 const DeviceListPage = () => {
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/device">
+    <Link key="1" underline="none" component={RouterLink} to={page.url}>
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách nhóm thiết bị
+        {page.title}
       </span>
     </Link>,
   ];
@@ -17,21 +20,11 @@ const DeviceListPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Danh sách thiết bị</title>
-        <meta name="description" content="Danh sách các thiết bị" />
+        <title>{page.title}</title>
+        <meta name="description" content="Danh sách thiết bị" />
       </Helmet>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{
-          margin: "10px 0",
-        }}
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
-      <Wrapper>
-        <DeviceList />
-      </Wrapper>
+
+      <Wrapper title={page.title}>{page.component}</Wrapper>
     </div>
   );
 };

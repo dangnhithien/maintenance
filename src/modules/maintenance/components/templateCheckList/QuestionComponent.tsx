@@ -149,6 +149,12 @@ const QuestionComponent: React.FC<QuestionProps> = ({
                   <MenuItem value={EnumTypeValue.TEXT}>Văn bản</MenuItem>
                   <MenuItem value={EnumTypeValue.NUMBER}>Số</MenuItem>
                   <MenuItem value={EnumTypeValue.DROPDOWN}>Danh sách</MenuItem>
+                  <MenuItem value={EnumTypeValue.ChangePartDetail}>
+                    Thay thế linh kiện
+                  </MenuItem>
+                  <MenuItem value={EnumTypeValue.UpdateLastMaintenanceDate}>
+                    Cập nhật ngày bảo trì
+                  </MenuItem>
                 </TextField>
               </Grid2>
             </Grid2>
@@ -164,7 +170,9 @@ const QuestionComponent: React.FC<QuestionProps> = ({
         )}
         {targetQuestionId === question.order &&
           question.typeValue !== EnumTypeValue.TEXT &&
-          question.typeValue !== EnumTypeValue.NUMBER && (
+          question.typeValue !== EnumTypeValue.NUMBER &&
+          question.typeValue !== EnumTypeValue.ChangePartDetail &&
+          question.typeValue !== EnumTypeValue.UpdateLastMaintenanceDate && (
             <Box sx={{ ml: 1 }}>
               {answers.map(([answerId, answerText]) => (
                 <Box

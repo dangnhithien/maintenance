@@ -10,22 +10,23 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Tooltip,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
+import DateRangeFilter from "../common/DateFilter";
 import InputSearch from "../common/InputSearch";
 import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
-import ChipTaskCheckStatus from "../common/chip/ChipTaskCheckStatus";
 
 interface Props {
   param?: GetTaskCheckDto;
+  isViewMode?: boolean;
 }
 
-const TaskCheckList: React.FC<Props> = ({ param }) => {
+const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
   const [openPopupTemplateWarning, setOpenPopupTemplateWarning] =
     useState(false);
   const { notify } = useNotification();
@@ -36,7 +37,7 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
 
   const [params, setParams] = useState<GetTaskCheckDto>({
     ...param,
-    includeProperties: "TemplateCheck,Product,Customer",
+    includeProperties: "Customer,Device",
     takeCount: 10,
     sortBy: "CreatedDate DESC",
   });
@@ -104,7 +105,7 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
       headerAlign: "center",
       flex: 1,
       renderCell: (params: any) =>
-        renderConditionalLink(params, params.row.product?.name),
+        renderConditionalLink(params, params.row.device?.name),
     },
     {
       field: "customerName",
@@ -160,86 +161,67 @@ const TaskCheckList: React.FC<Props> = ({ param }) => {
     <>
       <Grid2 container direction="column" spacing={2}>
         {/* Filter Controls */}
-        <Grid2 container spacing={2}>
-          <Grid2>
-            <InputSearch
-              onSearch={(searchText) => {
-                setParams({ ...params, searchTerm: searchText });
-              }}
-            />
-          </Grid2>
-          <Grid2 width={150}>
-            <FormControl fullWidth>
-              <InputLabel id="status-filter-label">Trạng thái</InputLabel>
-              <Select
-                labelId="status-filter-label" // Đã bỏ comment để liên kết đúng với InputLabel
-                id="status-filter"
-                value={filterStatus}
-                label="Trạng thái"
-                size="small"
-                onChange={(e) => {
-                  const status = e.target.value;
-                  setFilterStatus(status);
-                  setParams({
-                    ...params,
-                    taskCheckStatus:
-                      status === "0"
-                        ? undefined
-                        : (status as EnumStatusTaskCheck),
-                  });
-                }}
-              >
-                <MenuItem value={"0"}>Tất cả</MenuItem>
-                <MenuItem value={EnumStatusTaskCheck.CREATED}>Đã tạo</MenuItem>
-                <MenuItem value={EnumStatusTaskCheck.WAITING}>
-                  Chờ duyệt
-                </MenuItem>
-                <MenuItem value={EnumStatusTaskCheck.APPROVED}>
-                  Đã duyệt
-                </MenuItem>
-                <MenuItem value={EnumStatusTaskCheck.REJECTED}>
-                  Từ chối
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Grid2>
 
-          <Grid2 width={150}>
-            <TextField
-              label="Từ ngày"
-              type="date"
-              value={filterDate.start}
-              size="small"
-              onChange={(e) => {
-                const newStart = e.target.value;
-                setFilterDate({ ...filterDate, start: newStart });
-                setParams({ ...params, fromDate: new Date(newStart) });
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
+        {isViewMode && (
+          <Grid2 container spacing={2}>
+            <Grid2>
+              <InputSearch
+                onSearch={(searchText) => {
+                  setParams({ ...params, searchTerm: searchText });
+                }}
+              />
+            </Grid2>
+            <Grid2 width={150}>
+              <FormControl fullWidth>
+                <InputLabel id="status-filter-label">Trạng thái</InputLabel>
+                <Select
+                  labelId="status-filter-label" // Đã bỏ comment để liên kết đúng với InputLabel
+                  id="status-filter"
+                  value={filterStatus}
+                  label="Trạng thái"
+                  size="small"
+                  onChange={(e) => {
+                    const status = e.target.value;
+                    setFilterStatus(status);
+                    setParams({
+                      ...params,
+                      taskCheckStatus:
+                        status === "0"
+                          ? undefined
+                          : (status as EnumStatusTaskCheck),
+                    });
+                  }}
+                >
+                  <MenuItem value={"0"}>Tất cả</MenuItem>
+                  <MenuItem value={EnumStatusTaskCheck.CREATED}>
+                    Đã tạo
+                  </MenuItem>
+                  <MenuItem value={EnumStatusTaskCheck.WAITING}>
+                    Chờ duyệt
+                  </MenuItem>
+                  <MenuItem value={EnumStatusTaskCheck.APPROVED}>
+                    Đã duyệt
+                  </MenuItem>
+                  <MenuItem value={EnumStatusTaskCheck.REJECTED}>
+                    Từ chối
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid2>
+
+            <DateRangeFilter
+            // onChange={(fromDayjs, toDayjs) => {
+            //   // Nếu fromDayjs là Dayjs, chuyển sang Date bằng fromDayjs.toDate()
+            //   // Nếu cần fallback, bạn có thể set undefined hoặc new Date() tuỳ ý
+            //   setParams({
+            //     ...params,
+            //     // fromDate: fromDayjs ? fromDayjs.toDate() : undefined,
+            //     // toDate: toDayjs ? toDayjs.toDate() : new Date(),
+            //   });
+            // }}
             />
           </Grid2>
-          <Grid2 width={150}>
-            <TextField
-              label="Đến ngày"
-              type="date"
-              value={filterDate.end}
-              size="small"
-              onChange={(e) => {
-                const newEnd = e.target.value;
-                setFilterDate({ ...filterDate, end: newEnd });
-                setParams({ ...params, toDate: new Date(newEnd) });
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-            />
-          </Grid2>
-        </Grid2>
-        <Grid2 container spacing={2} marginTop={2}></Grid2>
+        )}
 
         {/* DataGrid */}
         <Grid2>

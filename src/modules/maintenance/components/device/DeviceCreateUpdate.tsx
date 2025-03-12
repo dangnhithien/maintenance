@@ -1,32 +1,32 @@
+import ImageUpload from "@components/ImageUpload";
 import { unwrapError, unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import { yupResolver } from "@hookform/resolvers/yup";
+
 import deviceApi from "@modules/maintenance/apis/deviceApi";
-import { CreateDeviceDto } from "@modules/maintenance/datas/device/CreateDeviceDto";
-import {
-  Button,
-  Grid2,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { IDeviceCreate } from "@modules/maintenance/datas/device/IDeviceCreate";
+import { Button, Grid2, Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
-import TypeDeviceSelect from "../common/select/TypeDeviceSelect";
+import CustomerSelect from "../common/select/CustomerSelect";
+import DeviceGroupSelect from "../common/select/DeviceGroupSelect";
+import DeviceModelSelect from "../common/select/DeviceModel";
+import DeviceSKUSelect from "../common/select/DeviceSKUSelect";
+import DeviceTypeSelect from "../common/select/DeviceTypeSelect";
+import UsageTypeSelect from "../common/select/UsageTypeSelect";
 
-// Định nghĩa schema validation với Yup
+// Updated schema: removed validations for note and address
 const schema = yup.object({
-  name: yup.string().required("Name is required"),
-  code: yup.string().required("Code is required"),
-  typeDeviceId: yup.string().required("Type device is required"),
-  description: yup
-    .string()
-    .max(255, "Description must be under 255 characters"),
+  name: yup.string().required("Không được bỏ trống"),
+  serialNumber: yup.string().required("Không được bỏ trống"),
+  note: yup.string().max(255, "Giới hạn 255 ký tự"),
+  deviceTypeId: yup.string().required("Không được bỏ trống"),
+  deviceGroupId: yup.string().required("Không được bỏ trống"),
+  deviceSKUId: yup.string().required("Không được bỏ trống"),
+  deviceModelId: yup.string().required("Không được bỏ trống"),
+  image: yup.string(),
 });
-
-// Định nghĩa kiểu dữ liệu của form
 
 interface FormProps {
   id?: string; // Chỉ nhận vào id
@@ -38,12 +38,21 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateDeviceDto>({
+  } = useForm<IDeviceCreate>({
     defaultValues: {
+      serialNumber: "",
+      note: "",
       name: "",
-      code: "",
-      description: "",
-      typeDeviceId: "",
+      deviceTypeId: "",
+      deviceGroupId: "",
+      deviceSKUId: "",
+      deviceModelId: "",
+      supplier: "",
+      rfid: "",
+      installationDate: "",
+      address: "",
+      usageTypeId: "",
+      customerId: "",
     },
     resolver: yupResolver(schema),
   });
@@ -52,8 +61,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { notify } = useNotification();
 
-  // Fetch dữ liệu từ id
-
+  // Fetch dữ liệu từ id nếu có
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -61,7 +69,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
         .getById(id)
         .then(unwrapObjectReponse)
         .then((res) => {
-          reset(res as CreateDeviceDto); // Reset form với dữ liệu từ API
+          reset(res as IDeviceCreate); // Reset form với dữ liệu từ API
         })
         .catch((err) => {
           const { message } = unwrapError(err);
@@ -69,10 +77,11 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
         })
         .finally(() => setLoading(false));
     }
-  }, []);
+  }, [id, reset]);
 
-  const onSubmit = async (data: CreateDeviceDto) => {
+  const onSubmit = async (data: IDeviceCreate) => {
     setLoading(true);
+    console.log(data);
     try {
       if (id) {
         // Logic cập nhật (update)
@@ -82,7 +91,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
         // Logic tạo mới (create)
         const res = await deviceApi.post(data);
         notify(res.message, "success");
-        reset({} as CreateDeviceDto);
+        reset({} as IDeviceCreate);
       }
     } catch (err) {
       const { message } = unwrapError(err);
@@ -97,76 +106,294 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
   }
 
   return (
-    <Paper sx={{ p: 2 }}>
-      <Typography variant="body1" fontWeight={"bold"} color="primary">
-        Thông tin thiết bị
-      </Typography>
+    <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid2 container spacing={2} sx={{ marginTop: 2 }}>
-          <Grid2 size={3}>
-            <Stack direction="row" spacing={1}>
-              <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Mã
-              </Typography>
-              <Typography color="error">*</Typography>
-            </Stack>
+        <Grid2 container direction={"row"} mt={2} spacing={1}>
+          {/* Image upload */}
+          <Grid2 mt={2}>
             <Controller
-              name="code"
+              name="image"
               control={control}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  size="small"
-                  error={!!errors.code}
-                  helperText={errors.code?.message}
-                  disabled={!!id} // Không cho phép nhập mã khi đang ở trạng thái update
+                <ImageUpload
+                  label="Tải hình lên"
+                  image={field.value}
+                  onImageUpload={(binaryImage) => {
+                    field.onChange(binaryImage);
+                  }}
                 />
               )}
             />
-          </Grid2>
-          <Grid2 size={3}>
-            <Stack direction="row" spacing={1}>
-              <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Tên
+            {errors.image && (
+              <Typography color="error" variant="caption">
+                {errors.image.message}
               </Typography>
-              <Typography color="error">*</Typography>
-            </Stack>
-            <Controller
-              name="name"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  size="small"
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
-                />
+            )}
+          </Grid2>
+          <Grid2 flex={1} container spacing={2}>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Seri
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="serialNumber"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    size="small"
+                    error={!!errors.serialNumber}
+                    helperText={errors.serialNumber?.message}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Tên thiết bị
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    size="small"
+                    error={!!errors.name}
+                    helperText={errors.name?.message}
+                  />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Loại thiết bị
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="deviceTypeId"
+                control={control}
+                rules={{
+                  required: "Please select a device type",
+                }}
+                render={({ field }) => (
+                  <DeviceTypeSelect
+                    id={field?.value}
+                    onChange={(value) => field.onChange(value?.id)}
+                  />
+                )}
+              />
+              {errors.deviceTypeId && (
+                <p
+                  style={{
+                    color: "#d32f2f",
+                    fontSize: "12px",
+                    marginLeft: "14px",
+                    marginTop: "5px",
+                  }}
+                >
+                  {errors.deviceTypeId.message}
+                </p>
               )}
-            />
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Nhóm thiết bị
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="deviceGroupId"
+                control={control}
+                rules={{
+                  required: "Please select a device type",
+                }}
+                render={({ field }) => (
+                  <DeviceGroupSelect
+                    id={field?.value}
+                    onChange={(value) => field.onChange(value?.id)}
+                  />
+                )}
+              />
+              {errors.deviceGroupId && (
+                <p
+                  style={{
+                    color: "#d32f2f",
+                    fontSize: "12px",
+                    marginLeft: "14px",
+                    marginTop: "5px",
+                  }}
+                >
+                  {errors.deviceGroupId.message}
+                </p>
+              )}
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  SKU thiết bị
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="deviceSKUId"
+                control={control}
+                rules={{
+                  required: "Please select a device type",
+                }}
+                render={({ field }) => (
+                  <DeviceSKUSelect
+                    id={field?.value}
+                    onChange={(value) => field.onChange(value?.id)}
+                  />
+                )}
+              />
+              {errors.deviceSKUId && (
+                <p
+                  style={{
+                    color: "#d32f2f",
+                    fontSize: "12px",
+                    marginLeft: "14px",
+                    marginTop: "5px",
+                  }}
+                >
+                  {errors.deviceSKUId.message}
+                </p>
+              )}
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Đời thiết bị
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="deviceModelId"
+                control={control}
+                rules={{
+                  required: "Please select a device type",
+                }}
+                render={({ field }) => (
+                  <DeviceModelSelect
+                    id={field?.value}
+                    onChange={(value) => field.onChange(value?.id)}
+                  />
+                )}
+              />
+              {errors.deviceModelId && (
+                <p
+                  style={{
+                    color: "#d32f2f",
+                    fontSize: "12px",
+                    marginLeft: "14px",
+                    marginTop: "5px",
+                  }}
+                >
+                  {errors.deviceModelId.message}
+                </p>
+              )}
+            </Grid2>
+
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  RFID
+                </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
+              </Stack>
+              <Controller
+                name="rfid"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} fullWidth size="small" />
+                )}
+              />
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Loại
+                </Typography>
+                <Typography color="error">*</Typography>
+              </Stack>
+              <Controller
+                name="usageTypeId"
+                control={control}
+                rules={{
+                  required: "Please select a device type",
+                }}
+                render={({ field }) => (
+                  <UsageTypeSelect
+                    id={field?.value}
+                    onChange={(value) => field.onChange(value?.id)}
+                  />
+                )}
+              />
+              {errors.usageTypeId && (
+                <p
+                  style={{
+                    color: "#d32f2f",
+                    fontSize: "12px",
+                    marginLeft: "14px",
+                    marginTop: "5px",
+                  }}
+                >
+                  {errors.usageTypeId.message}
+                </p>
+              )}
+            </Grid2>
+            <Grid2 size={4}>
+              <Stack direction="row" spacing={1}>
+                <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                  Ghi chú
+                </Typography>
+                <Typography sx={{ color: "#ffffff" }}>*</Typography>
+              </Stack>
+              <Controller
+                name="note"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} fullWidth size="small" />
+                )}
+              />
+            </Grid2>
           </Grid2>
-          <Grid2 size={3}>
+        </Grid2>
+        {/* Các control còn thiếu */}
+        <Grid2 container spacing={2} mt={2}>
+          <Grid2 size={4}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Loại thiết bị
+                Khách hàng
               </Typography>
               <Typography color="error">*</Typography>
             </Stack>
             <Controller
-              name="typeDeviceId"
+              name="customerId"
               control={control}
               rules={{
-                required: "Please select a device type", // Validate bắt buộc
+                required: "Please select a device type",
               }}
               render={({ field }) => (
-                <TypeDeviceSelect
+                <CustomerSelect
                   id={field?.value}
-                  onChange={(value) => field.onChange(value?.id)} // Gọi field.onChange khi select thay đổi
+                  onChange={(value) => field.onChange(value?.id)}
                 />
               )}
             />
-            {errors.typeDeviceId && (
+            {errors.customerId && (
               <p
                 style={{
                   color: "#d32f2f",
@@ -175,27 +402,57 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
                   marginTop: "5px",
                 }}
               >
-                {errors.typeDeviceId.message}
+                {errors.customerId.message}
               </p>
             )}
           </Grid2>
-          <Grid2 size={3}>
+          {/* <Grid2 size={4}>
             <Stack direction="row" spacing={1}>
               <Typography variant="body2" color="primary" fontWeight={"bold"}>
-                Mô tả
+                Nhà cung cấp
               </Typography>
-              <Typography color="error">*</Typography>
+              <Typography sx={{ color: "#ffffff" }}>*</Typography>
             </Stack>
             <Controller
-              name="description"
+              name="supplier"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} fullWidth size="small" />
+              )}
+            />
+          </Grid2> */}
+          <Grid2 size={4}>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                Địa chỉ
+              </Typography>
+              <Typography sx={{ color: "#ffffff" }}>*</Typography>
+            </Stack>
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} fullWidth size="small" />
+              )}
+            />
+          </Grid2>
+          <Grid2 size={4}>
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2" color="primary" fontWeight={"bold"}>
+                Ngày lắp đặt
+              </Typography>
+              <Typography sx={{ color: "#ffffff" }}>*</Typography>
+            </Stack>
+            <Controller
+              name="installationDate"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
                   fullWidth
                   size="small"
-                  error={!!errors.description}
-                  helperText={errors.description?.message}
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
@@ -214,7 +471,7 @@ const DeviceCreateUpdate: React.FC<FormProps> = ({ id }) => {
           {successMessage}
         </Typography>
       )}
-    </Paper>
+    </>
   );
 };
 

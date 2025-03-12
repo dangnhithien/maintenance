@@ -1,208 +1,212 @@
-import PaginatedDataGrid from "@components/PaginationDatagrid";
-import { GetTemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/GetTemplateCheckListDto";
-import useDevice from "@modules/maintenance/hooks/useDevice";
-import { Add, Warning } from "@mui/icons-material";
-import RestoreIcon from "@mui/icons-material/Restore";
-import { Button, Divider, Grid2 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import {
-  GridColDef,
-  GridDeleteIcon,
-  GridRowSelectionModel,
-} from "@mui/x-data-grid";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+  Box,
+  Button,
+  Grid2,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import InputSearch from "../common/InputSearch";
+
+import deviceApi from "@modules/maintenance/apis/deviceApi";
+import { IDevice } from "@modules/maintenance/datas/device/IDevice";
+import { IDeviceGet } from "@modules/maintenance/datas/device/IDeviceGet";
+import { Warning } from "@mui/icons-material";
+import { GridDeleteIcon } from "@mui/x-data-grid";
+import { Link } from "react-router-dom";
+import DeviceDetailItem from "../common/DeviceDetailItem";
 import { useNotification } from "../common/Notistack";
 import PopupConfirm from "../common/PopupConfirm";
-import TrashButton from "../common/TrashButton";
 
-const DeviceList = () => {
-  const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
+const DeviceListDetail = () => {
+  // Số phần tử trên mỗi trang
+  const PAGE_SIZE = 10;
+
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
-  const [params, setParams] = useState<GetTemplateCheckListDto>({
-    includeProperties: "TypeDevice",
-    takeCount: 10,
+  const [selectedDevices, setSelectedDevices] = useState<string[]>([]);
+
+  // Các tham số filter ban đầu
+  const [params, setParams] = useState<IDeviceGet>({
+    includeProperties: "Customer,DeviceModel",
+    searchTerm: "",
+    takeCount: PAGE_SIZE, // Số phần tử trên mỗi trang
+    // Lưu ý: skipCount sẽ được truyền theo số trang (page) riêng
   });
-  const [rowSelectionModel, setRowSelectionModel] =
-    useState<GridRowSelectionModel>([]);
 
-  const { devices, deleteDevice, restoreDevice, error, loading, totalCount } =
-    useDevice(params);
+  const [devices, setDevices] = useState<IDevice[]>([]);
+  const [page, setPage] = useState<number>(0); // Số trang hiện tại (skipCount)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  // State để quản lí mode hiện tại (selection hiển thị checkbox)
+  const [mode, setMode] = useState<string>("");
 
-  const columns: GridColDef[] = [
-    // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
-    {
-      field: "code",
-      headerName: "Mã",
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/device/detail/${params.row.id}`}>{params.row.code}</Link>
-      ),
-    },
-    {
-      field: "name",
-      headerName: "Tên nhóm thiết bị ",
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/device/detail/${params.row.id}`}>{params.row.name}</Link>
-      ),
-    },
-    {
-      field: "",
-      headerName: "Loại thiết bị",
-      minWidth: 300,
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <Link to={`/device/detail/${params.row.id}`}>
-          {params.row.typeDevice?.name}
-        </Link>
-      ),
-    },
-    {
-      field: "createdDate",
-      headerName: "Ngày tạo",
-      minWidth: 300,
-      editable: false,
-      sortable: false,
-      flex: 1,
-      renderCell: (params: any) => (
-        <span>
-          {params.row.createdDate &&
-            new Date(params.row.createdDate).toLocaleDateString("vi-VN", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            })}
-        </span>
-      ),
-    },
-  ];
+  // Khi thay đổi tìm kiếm (hoặc các tham số khác) thì reset lại danh sách, số trang và trạng thái còn dữ liệu
+  useEffect(() => {
+    setDevices([]);
+    setPage(0);
+    setHasMore(true);
+  }, [params.searchTerm]);
 
-  const handleCancelSoftDelete = () => {
-    setOpenPopupsoftDelete(false);
-  };
-  const handleCancelHardDelete = () => {
-    setOpenPopupHardDelete(false);
-  };
+  // Gọi API load dữ liệu mỗi khi số trang (page) hoặc các tham số khác thay đổi
+  useEffect(() => {
+    // Nếu đã load hết dữ liệu và không phải trang đầu tiên thì không gọi API nữa
+    if (!hasMore && page !== 0) return;
 
-  const onSoftDelete = () => {
-    if (rowSelectionModel.length > 0) {
-      setOpenPopupsoftDelete(true);
-    }
-  };
-  const onHardDelete = () => {
-    if (rowSelectionModel.length > 0) {
-      setOpenPopupHardDelete(true);
-    }
-  };
-  const handelConfirmSoftDelete = async () => {
-    await deleteDevice({
-      isHardDeleted: false,
-      ids: rowSelectionModel as string[],
-    })
-      .then(() => {
-        notify("success", "success");
-        setOpenPopupsoftDelete(false);
+    setIsLoading(true);
+    // Truyền skipCount là số trang hiện tại và takeCount là số phần tử trên mỗi trang
+    deviceApi
+      .get({
+        ...params,
+        skipCount: page * PAGE_SIZE,
+        takeCount: PAGE_SIZE,
       })
-      .catch(() => {});
+      .then((res) => {
+        console.log(res);
+        // Nếu không còn dữ liệu trả về thì đánh dấu hasMore là false
+        if ((page + 1) * PAGE_SIZE >= res.result.totalCount) {
+          setHasMore(false);
+        }
+        // Nếu là trang đầu tiên thì thay thế danh sách, còn nếu không thì nối thêm vào danh sách hiện có
+        if (page === 0) {
+          setTotalCount(res.result.totalCount);
+          setDevices(res.result.items);
+        } else {
+          setDevices((prevDevices) => [...prevDevices, ...res.result.items]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading Devices:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [page, params, hasMore]);
+
+  // Lắng nghe sự kiện cuộn trang: khi cuộn gần cuối trang sẽ tăng số trang để load thêm dữ liệu
+  useEffect(() => {
+    const container = document.getElementById("layoutContainer");
+    if (!container) return;
+    const handleScroll = () => {
+      if (
+        container.scrollTop + container.clientHeight + 100 >=
+        container.scrollHeight
+      ) {
+        if (!isLoading && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      }
+    };
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [isLoading, hasMore]);
+
+  // Callback cập nhật danh sách thiết bị được chọn từ DeviceCard
+  const handleSelectionChange = (deviceId: string, checked: boolean) => {
+    setSelectedDevices((prevSelected) =>
+      checked
+        ? [...prevSelected, deviceId]
+        : prevSelected.filter((id) => id !== deviceId)
+    );
   };
+
   const handleConfirmHardDelete = async () => {
-    await deleteDevice({
-      isHardDeleted: true,
-      ids: rowSelectionModel as string[],
-    })
+    await deviceApi
+      .delete(true, selectedDevices as string[])
       .then(() => {
         notify("success", "success");
         setOpenPopupHardDelete(false);
+
+        setSelectedDevices([]);
       })
       .catch(() => {});
   };
-  const restore = async () => {
-    await restoreDevice(rowSelectionModel as string[])
-      .then(() => {
-        notify("success", "success");
-      })
-      .catch(() => {});
+
+  const handleCancelHardDelete = () => {
+    setOpenPopupHardDelete(false);
   };
+  const onHardDelete = () => {
+    if (selectedDevices.length > 0) {
+      setOpenPopupHardDelete(true);
+    }
+  };
+
   return (
     <>
-      <Grid2 container direction={"column"} spacing={2}>
-        <Grid2 container justifyContent={"space-between"}>
-          <InputSearch
-            onSearch={(searchText) => {
-              setParams({ ...params, searchTerm: searchText });
-            }}
-          />
-          <Grid2 container spacing={1}>
-            <Button
-              variant="contained"
-              color="success"
-              component={Link}
-              to={"/device/create"}
-              size="small"
+      <Box mb={2}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems={"center"}
+        >
+          <Stack direction={"row"} spacing={2} alignItems={"center"}>
+            {/* <Stack width={230}>
+              <DeviceSelect
+                onChange={(data) =>
+                  setParams((prev) => ({ ...prev, deviceId: data?.id }))
+                }
+              />
+            </Stack> */}
+            <InputSearch
+              onSearch={(data) => {
+                // Khi tìm kiếm, cập nhật searchTerm (và các tham số khác nếu cần)
+                setParams((prev) => ({ ...prev, searchTerm: data }));
+              }}
+            />
+          </Stack>
+          <div>
+            <Link to="/devices/create">
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+            </Link>
+            <IconButton
+              onClick={() => setMode(mode === "selection" ? "" : "selection")}
             >
-              <Add />
-            </Button>
-            {rowSelectionModel.length > 0 && (
+              <GridDeleteIcon
+                color={mode === "selection" ? "primary" : "inherit"}
+              />
+            </IconButton>
+            {mode === "selection" && (
               <Button
                 variant="contained"
                 color="error"
-                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
-                size="small"
+                onClick={onHardDelete}
+                disabled={selectedDevices.length === 0}
+                sx={{ ml: 2 }}
               >
-                <GridDeleteIcon />
+                Xóa thiết bị đã chọn
               </Button>
             )}
-            {rowSelectionModel.length > 0 && params.isDeleted && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={restore}
-                size="small"
-              >
-                <RestoreIcon />
-              </Button>
-            )}
-
-            <Divider draggable={false} orientation="vertical" flexItem />
-
-            <TrashButton
-              onClick={(isDeleted) =>
-                setParams({ ...params, isDeleted: isDeleted })
-              }
+          </div>
+        </Stack>
+      </Box>
+      {devices.length === 0 && !isLoading && (
+        <Typography variant="body1" textAlign={"center"} height={100}>
+          No Devices
+        </Typography>
+      )}
+      <Grid2 container spacing={2}>
+        {devices.map((item) => (
+          <Grid2 key={item.id} size={{ xs: 12, md: 6 }}>
+            <DeviceDetailItem
+              data={item}
+              linkBaseUrl={"/devices/update"}
+              mode={mode}
+              onCheckDelete={handleSelectionChange}
             />
           </Grid2>
-        </Grid2>
-        <Grid2>
-          <PaginatedDataGrid
-            columns={columns}
-            rows={devices}
-            totalCount={totalCount}
-            setParams={setParams}
-            onRowSelectionModelChange={(newRowSelectionModel) => {
-              setRowSelectionModel(newRowSelectionModel);
-            }}
-            loading={loading}
-          />
-        </Grid2>
+        ))}
       </Grid2>
-      <PopupConfirm
-        open={openPopupSoftDelete}
-        onClose={() => setOpenPopupsoftDelete(false)}
-        onCancel={handleCancelSoftDelete}
-        onConfirm={handelConfirmSoftDelete}
-        icon={<Warning fontSize="large" color="warning" />}
-        message="Bạn có chắc chắn muốn xóa?"
-        subMessage="Sau khi xoá, danh sách sẽ được chuyển vào thùng rác."
-        sx={{ width: 450 }}
-      />
+      {isLoading && (
+        <Typography textAlign={"center"} mt={2}>
+          Loading...
+        </Typography>
+      )}
+
       <PopupConfirm
         open={openPopupHardDelete}
         onClose={() => setOpenPopupHardDelete(false)}
@@ -217,4 +221,4 @@ const DeviceList = () => {
   );
 };
 
-export default DeviceList;
+export default DeviceListDetail;

@@ -18,13 +18,12 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
-import DeviceSelect from "../common/select/DeviceSelect";
+// import DeviceSelect from "../common/select/DeviceSelect";
 import QuestionComponent from "./QuestionComponent";
 
 const schema = yup.object({
   code: yup.string().required("Mã là bắt buộc"),
   name: yup.string().required("Nội dung là bắt buộc"),
-  deviceId: yup.string().required("Device là bắt buộc"),
   description: yup
     .string()
     .max(255, "Description must be under 255 characters"),
@@ -59,7 +58,6 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
       code: "",
       name: "",
       description: "",
-      deviceId: "",
     },
   });
   const navigate = useNavigate();
@@ -73,7 +71,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 
   useEffect(() => {
     if (id) {
-      getChecklistById(id, { includeProperties: "Device" })
+      getChecklistById(id)
         .then((res) => {
           reset(res as CreateTemplateCheckListDto);
           const checklist = res.rowChecks ? [...res.rowChecks] : [];
@@ -318,39 +316,6 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
             )}
           />
         </Grid2>
-        <Grid2 size={3}>
-          <Stack direction="row" spacing={1}>
-            <Typography variant="body2" color="primary" fontWeight={"bold"}>
-              Nhóm thiết bị
-            </Typography>
-            <Typography color="error">*</Typography>
-          </Stack>
-          <Controller
-            name="deviceId"
-            control={control}
-            rules={{
-              required: "Please select a device type",
-            }}
-            render={({ field }) => (
-              <DeviceSelect
-                id={field?.value}
-                onChange={(value) => field.onChange(value?.id)}
-              />
-            )}
-          />
-          {errors.deviceId && (
-            <p
-              style={{
-                color: "#d32f2f",
-                fontSize: "12px",
-                marginLeft: "14px",
-                marginTop: "5px",
-              }}
-            >
-              {errors.deviceId.message}
-            </p>
-          )}
-        </Grid2>
       </Grid2>
       {/* Render danh sách câu hỏi */}
       {questions.map((question) => (
@@ -371,25 +336,28 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
           {localErrors.questions}
         </Typography>
       )}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={addHeader}
-        sx={{ mt: 2 }}
-      >
-        Thêm tiêu đề
-      </Button>
-      <Button variant="contained" onClick={addQuestion} sx={{ mt: 2, ml: 2 }}>
-        Thêm câu hỏi
-      </Button>
-      <Button
-        type="submit"
-        color="success"
-        variant="contained"
-        sx={{ mt: 2, ml: 2 }}
-      >
-        Lưu
-      </Button>
+
+      <Stack direction={"row"} spacing={2} justifyContent={"flex-end"}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={addHeader}
+          sx={{ mt: 2 }}
+        >
+          Thêm tiêu đề
+        </Button>
+        <Button variant="contained" onClick={addQuestion} sx={{ mt: 2, ml: 2 }}>
+          Thêm câu hỏi
+        </Button>
+        <Button
+          type="submit"
+          color="success"
+          variant="contained"
+          sx={{ mt: 2, ml: 2 }}
+        >
+          Lưu
+        </Button>
+      </Stack>
     </form>
   );
 };

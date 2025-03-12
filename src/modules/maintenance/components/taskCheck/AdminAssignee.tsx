@@ -1,7 +1,10 @@
 import { unwrapListReponse } from "@datas/comon/ApiResponse";
-import productApi from "@modules/maintenance/apis/productApi";
-import { GetProductDto } from "@modules/maintenance/datas/product/GetProductDto";
-import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
+
+import caseApi from "@modules/maintenance/apis/caseApi";
+import deviceApi from "@modules/maintenance/apis/deviceApi";
+import { ICase } from "@modules/maintenance/datas/case/ICase";
+import { IDevice } from "@modules/maintenance/datas/device/IDevice";
+import { IDeviceGet } from "@modules/maintenance/datas/device/IDeviceGet";
 import userApi from "@modules/user/apis/UserApi";
 import { UserDto } from "@modules/user/datas/user/UserDto";
 import { Box, Grid2 } from "@mui/material";
@@ -14,14 +17,14 @@ const AdminAssignee = () => {
   const PAGE_SIZE = 4;
 
   // Các tham số filter ban đầu
-  const [params, setParams] = useState<GetProductDto>({
-    includeProperties: "Customer",
+  const [params, setParams] = useState<IDeviceGet>({
     searchTerm: "",
     takeCount: PAGE_SIZE,
   });
 
-  const [products, setProducts] = useState<ProductDto[]>([]);
+  const [products, setProducts] = useState<IDevice[]>([]);
   const [technicians, setTechnicians] = useState<UserDto[]>([]);
+  const [cases, setCases] = useState<ICase[]>([]);
   const [page, setPage] = useState<number>(0); // Số trang hiện tại (skipCount)
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -39,8 +42,8 @@ const AdminAssignee = () => {
     if (!hasMore && page !== 0) return;
 
     setIsLoading(true);
-    productApi
-      .getListProductDetail({
+    deviceApi
+      .get({
         ...params,
         skipCount: page * PAGE_SIZE,
         takeCount: PAGE_SIZE,
@@ -67,13 +70,21 @@ const AdminAssignee = () => {
   // Gọi API lấy danh sách kĩ thuật viên
   useEffect(() => {
     userApi
-      .get({
-        includeProperties: "Customer",
-      })
+      .get()
       .then(unwrapListReponse)
       .then((res) => {
         // Giả sử res.result.items chứa danh sách user với các trường id và name
         setTechnicians(res);
+      })
+      .catch((error) => {
+        console.error("Error loading technicians:", error);
+      });
+    caseApi
+      .get({ fromDate: new Date("2025-1-1"), toDate: new Date("2025-5-1") })
+      .then(unwrapListReponse)
+      .then((res) => {
+        // Giả sử res.result.items chứa danh sách user với các trường id và name
+        setCases(res);
       })
       .catch((error) => {
         console.error("Error loading technicians:", error);
@@ -113,6 +124,7 @@ const AdminAssignee = () => {
             key={product.id}
             product={product}
             technicians={technicians}
+            cases={cases}
           />
         ))}
       </Grid2>

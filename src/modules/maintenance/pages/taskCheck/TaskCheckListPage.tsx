@@ -1,7 +1,6 @@
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TaskCheckList from "@modules/maintenance/components/taskCheck/TaskCheckList";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 const page = {
@@ -24,16 +23,8 @@ const TaskCheckListPage = () => {
         <title>{page.title}</title>
         <meta name="description" content="Danh sách các thiết bị" />
       </Helmet>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{
-          margin: "10px 0",
-        }}
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
-      <Wrapper>{page.component}</Wrapper>
+
+      <Wrapper title={page.title}>{page.component}</Wrapper>
     </div>
   );
 };

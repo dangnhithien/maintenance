@@ -1,7 +1,5 @@
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import UserList from "@modules/user/components/user/UserList";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs } from "@mui/material";
 import { Helmet } from "react-helmet";
 
 const UserListPage = () => {
@@ -19,16 +17,8 @@ const UserListPage = () => {
         <title>Danh sách nhân viên</title>
         <meta name="description" content="Danh sách các thiết bị" />
       </Helmet>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{
-          margin: "10px 0",
-        }}
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
-      <Wrapper>
+
+      <Wrapper title="Danh sách nhân viên">
         <UserList />
       </Wrapper>
     </div>

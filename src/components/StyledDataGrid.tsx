@@ -27,6 +27,7 @@ const StyledDataGrid = styled((props: DataGridProps) => {
       pagination
       paginationModel={paginationModel}
       onPaginationModelChange={handlePaginationChange}
+      sx={{ width: "100%" }}
     />
   );
 })(({ theme }) => ({

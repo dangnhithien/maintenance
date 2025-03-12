@@ -1,7 +1,7 @@
 import { ReactECharts } from "@components/ReactChart";
 import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import Wrapper from "@modules/maintenance/components/common/Wrapper";
-import LineChartProduct from "@modules/maintenance/components/dashboard/components/LineChartProduct";
+// import LineChartProduct from "@modules/maintenance/components/dashboard/components/LineChartProduct";
 import TaskCheckOverview from "@modules/maintenance/components/taskCheck/components/TaskcheckOverview";
 import TaskCheckList from "@modules/maintenance/components/taskCheck/TaskCheckList";
 import userApi from "@modules/user/apis/UserApi";
@@ -301,21 +301,24 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
             title="Theo dõi công việc
           "
           >
-            <LineChartProduct
+            {/* <LineChartProduct
               params={{ ...getSevenDayRange(date), assigneeId: id }}
-            />
+            /> */}
           </Wrapper>
         </Grid2>
-        <Grid2 size={{ xs: 12, md: 4 }}>
-          <TaskCheckOverview
-            param={{ ...getOneDayRange(date), assigneeId: id }}
-          />
-        </Grid2>
+
         <Grid2 size={{ xs: 12, md: 8 }}>
           <Wrapper title="Danh sách task">
             {/* Truyền thêm filter ngày nếu TaskCheckList hỗ trợ */}
             <TaskCheckList
               param={{ ...getSevenDayRange(date), assigneeId: id }}
+            />
+          </Wrapper>
+        </Grid2>
+        <Grid2 size={{ xs: 12, md: 4 }}>
+          <Wrapper>
+            <TaskCheckOverview
+              param={{ ...getOneDayRange(date), assigneeId: id }}
             />
           </Wrapper>
         </Grid2>

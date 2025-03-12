@@ -2,7 +2,7 @@ import { ReactECharts } from "@components/ReactChart";
 import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
 import taskCheckApi from "@modules/maintenance/apis/taskCheckApi";
 import { GetTaskCheckDto } from "@modules/maintenance/datas/taskCheck/GetTaskCheckDto";
-import { Paper, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import * as echarts from "echarts";
 import { useEffect, useState } from "react";
 
@@ -72,26 +72,12 @@ const TaskCheckOverview: React.FC<Props> = ({ param }) => {
   };
 
   return (
-    <Paper
-      sx={{
-        borderRadius: 4,
-        overflow: "hidden",
-        boxShadow: 5,
-        height: "100%",
-        p: 3,
-      }}
-    >
-      <Typography
-        variant="subtitle1"
-        sx={{ fontWeight: "bold", color: "primary.main", mb: 2 }}
-      >
-        Tình trạng Task
-      </Typography>
+    <Box>
       <ReactECharts
         option={option}
         style={{ height: "300px", width: "100%" }}
       />
-    </Paper>
+    </Box>
   );
 };
 

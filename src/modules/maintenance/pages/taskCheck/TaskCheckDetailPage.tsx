@@ -1,6 +1,6 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
@@ -26,17 +26,10 @@ const TaskCheckDetailPage = () => {
         <title>Create Device</title>
         <meta name="description" content="Create a new device" />
       </Helmet>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{
-          margin: "10px 0",
-        }}
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
 
-      <TaskCheckDetail id={id} />
+      <Wrapper title="Chi tiết">
+        <TaskCheckDetail id={id} />
+      </Wrapper>
     </div>
   );
 };

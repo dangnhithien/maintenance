@@ -1,41 +1,47 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useState } from "react";
+
 import deviceApi from "../apis/deviceApi";
-import { CreateDeviceDto } from "../datas/device/CreateDeviceDto";
-import { DeleteDeviceDto } from "../datas/device/DeleteDeviceDto";
-import { GetDeviceDto } from "../datas/device/GetDeviceDto";
+import { IDevice } from "../datas/device/IDevice";
+import { IDeviceCreate } from "../datas/device/IDeviceCreate";
+import { IDeviceDelete } from "../datas/device/IDeviceDelete";
+import { IDeviceGet } from "../datas/device/IDeviceGet";
 
 const KEY = "Devices";
-export const useDevice = (initialParams?: GetDeviceDto) => {
+export const useDevice = () => {
   const queryClient = useQueryClient();
+  const [devices, setDevices] = useState<IDevice[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
 
-  // Fetch template checklists
-  const { data, isPending, isError, error } = useQuery({
-    queryKey: [KEY, initialParams], // Dynamic queryKey
-    queryFn: () => deviceApi.get(initialParams).then((res) => res.result),
-    staleTime: 60000,
-    retry: (failureCount, error) => {
+  // Fetch function to be called manually
+  const fetchDevices = async (params: IDeviceGet) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await deviceApi.get(params);
+      setDevices(response?.result?.items || []);
+      setTotalCount(response.result.totalCount);
+    } catch (error) {
       const axiosError = error as AxiosError;
       if (
         axiosError?.response?.status === 400 ||
         axiosError?.response?.status === 401
       ) {
-        return false; // Không retry với lỗi Bad Request hoặc Unauthorized
+        setError("Unauthorized or bad request");
+      } else {
+        setError(axiosError.message);
       }
-      return failureCount < 3; // Retry với các lỗi khác
-    },
-  });
-
-  // Function to manually refetch with new params
-  const fetchDevices = (newParams: GetDeviceDto) => {
-    queryClient.invalidateQueries({
-      queryKey: [KEY, newParams],
-    });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Create a new checklist
   const createDevice = useMutation({
-    mutationFn: (newData: CreateDeviceDto) => deviceApi.post(newData),
+    mutationFn: (newData: IDeviceCreate) => deviceApi.post(newData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] }); // Refresh list
     },
@@ -48,7 +54,7 @@ export const useDevice = (initialParams?: GetDeviceDto) => {
       updatedData,
     }: {
       id: string;
-      updatedData: CreateDeviceDto;
+      updatedData: IDeviceCreate;
     }) => deviceApi.update(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
@@ -57,14 +63,14 @@ export const useDevice = (initialParams?: GetDeviceDto) => {
 
   // Delete a checklist
   const deleteDevice = useMutation({
-    mutationFn: (data: DeleteDeviceDto) =>
+    mutationFn: (data: IDeviceDelete) =>
       deviceApi.delete(data.isHardDeleted, data.ids),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
 
-  const restoreChecklist = useMutation({
+  const restoreDevice = useMutation({
     mutationFn: (ids: string[]) => deviceApi.restore(ids),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
@@ -72,15 +78,15 @@ export const useDevice = (initialParams?: GetDeviceDto) => {
   });
 
   return {
-    devices: data?.items || [],
-    totalCount: data?.totalCount || 0,
-    loading: isPending,
-    error: isError ? error?.message : null,
-    fetchDevices, // Now accepts params
+    fetchDevices, // Function to manually fetch data
     createDevice: createDevice.mutateAsync,
     updateDevice: updateDevice.mutateAsync,
     deleteDevice: deleteDevice.mutateAsync,
-    restoreDevice: restoreChecklist.mutateAsync,
+    restoreDevice: restoreDevice.mutateAsync,
+    devices,
+    totalCount,
+    loading,
+    error,
   };
 };
 

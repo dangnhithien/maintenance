@@ -21,40 +21,54 @@ export function ReactECharts({
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Initialize chart
+    // Khởi tạo chart
     let chart: ECharts | undefined;
     if (chartRef.current !== null) {
       chart = init(chartRef.current, theme);
     }
 
-    // Add chart resize listener
-    // ResizeObserver is leading to a bit janky UX
-    function resizeChart() {
+    // Sử dụng ResizeObserver để theo dõi thay đổi kích thước của container
+    const resizeObserver = new ResizeObserver(() => {
+      // Bọc lệnh resize bên trong requestAnimationFrame để tránh loop notifications
+      requestAnimationFrame(() => {
+        try {
+          chart?.resize();
+        } catch (error) {
+          console.error("ResizeObserver error:", error);
+        }
+      });
+    });
+    if (chartRef.current) {
+      resizeObserver.observe(chartRef.current);
+    }
+
+    // Lắng nghe sự kiện thay đổi kích thước cửa sổ làm dự phòng
+    function handleWindowResize() {
       chart?.resize();
     }
-    window.addEventListener("resize", resizeChart);
+    window.addEventListener("resize", handleWindowResize);
 
-    // Return cleanup function
+    // Cleanup: hủy bỏ observer và sự kiện khi component unmount
     return () => {
       chart?.dispose();
-      window.removeEventListener("resize", resizeChart);
+      window.removeEventListener("resize", handleWindowResize);
+      resizeObserver.disconnect();
     };
   }, [theme]);
 
   useEffect(() => {
-    // Update chart
+    // Cập nhật option cho chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
       chart?.setOption(option, settings);
     }
-  }, [option, settings, theme]); // Whenever theme changes we need to add option and setting due to it being deleted in cleanup function
+  }, [option, settings, theme]);
 
   useEffect(() => {
-    // Update chart
+    // Hiển thị hoặc ẩn Loading của chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      loading === true ? chart?.showLoading() : chart?.hideLoading();
+      loading ? chart?.showLoading() : chart?.hideLoading();
     }
   }, [loading, theme]);
 

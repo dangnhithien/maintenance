@@ -15,8 +15,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import MaintenanceReminder from "../product/MaintenanceReminder";
-import ProductList from "../product/ProductList";
+
 import TaskCheckList from "../taskCheck/TaskCheckList";
 
 interface Props {
@@ -185,13 +184,16 @@ const CustomerDetail: React.FC<Props> = ({ id }) => {
             <Box sx={{ flexGrow: 1, overflow: "auto" }} p={2}>
               {tabValue === 0 && <TaskCheckList param={{ customerId: id }} />}
               {tabValue === 1 && (
-                <MaintenanceReminder param={{ customerId: id }} />
+                <></>
+                // <MaintenanceReminder param={{ customerId: id }} />
               )}
               {tabValue === 2 && (
-                <ProductList param={{ customerId: id }} isPage={false} />
+                <></>
+                // <ProductList param={{ customerId: id }} isPage={false} />
               )}
               {tabValue === 3 && (
-                <ProductList param={{ customerId: id }} isPage={false} />
+                <></>
+                // <ProductList param={{ customerId: id }} isPage={false} />
               )}
             </Box>
           </Paper>

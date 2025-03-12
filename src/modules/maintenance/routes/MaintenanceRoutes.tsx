@@ -23,48 +23,6 @@ const ApprovalPage = React.lazy(() => import("../pages/approval/ApprovalPage"));
 const ApprovalDetailPage = React.lazy(
   () => import("../pages/approval/ApprovalDetailPage")
 );
-const DeviceCreateUpdatePage = React.lazy(
-  () => import("../pages/device/DeviceCreateUpdatePage")
-);
-const DeviceDetailPage = React.lazy(
-  () => import("../pages/device/DeviceDetail")
-);
-const DeviceListPage = React.lazy(
-  () => import("../pages/device/DeviceListPage")
-);
-const ErrorDetailCreateUpdatePage = React.lazy(
-  () => import("../pages/errorDetail/ErrorDetailCreateUpdatePage")
-);
-const ErrorDetailListPage = React.lazy(
-  () => import("../pages/errorDetail/ErrorDetailListPage")
-);
-const ErrorDetailPage = React.lazy(
-  () => import("../pages/errorDetail/ErrorDetailPage")
-);
-const ProductCreateUpdatePage = React.lazy(
-  () => import("../pages/product/ProductCreateUpdatePage")
-);
-const ProductDetailPage = React.lazy(
-  () => import("../pages/product/ProductDetailPage")
-);
-const ProductDetailNewPage = React.lazy(
-  () => import("../pages/product/ProductDetailNewPage")
-);
-const ProductListPage = React.lazy(
-  () => import("../pages/product/ProductListPage")
-);
-const ProductListDetailPage = React.lazy(
-  () => import("../pages/product/ProductListDetailPage")
-);
-const SolutionOptionCreateUpdatePage = React.lazy(
-  () => import("../pages/solutionOption/SolutionOptionCreateUpdatePage")
-);
-const SolutionOptionDetailPage = React.lazy(
-  () => import("../pages/solutionOption/SolutionOptionDetail")
-);
-const SolutionOptionListPage = React.lazy(
-  () => import("../pages/solutionOption/SolutionOptionListPage")
-);
 
 const TaskCheckDetailPage = React.lazy(
   () => import("../pages/taskCheck/TaskCheckDetailPage")
@@ -78,27 +36,82 @@ const TemplateCheckListCreateUpdatePage = React.lazy(
 const TemplateCheckListPage = React.lazy(
   () => import("../pages/templateCheckList/TemplateCheckListPage")
 );
-const TypeDeviceCreateUpdatePage = React.lazy(
-  () => import("../pages/typeDevice/TypeDeviceCreateUpdatePage")
+const DeviceTypeListPage = React.lazy(
+  () => import("../pages/deviceType/DeviceTypeListPage")
 );
-const TypeDeviceDetailPage = React.lazy(
-  () => import("../pages/typeDevice/TypeDeviceDetailPage")
+const DeviceTypeCreateUpdatePage = React.lazy(
+  () => import("../pages/deviceType/DeviceTypeCreateUpdatePage")
 );
-const TypeDevicePage = React.lazy(
-  () => import("../pages/typeDevice/TypeDeviceListPage")
+const DeviceGroupListPage = React.lazy(
+  () => import("../pages/deviceGroup/DeviceGroupListPage")
 );
-const TypeErrorCreateUpdatePage = React.lazy(
-  () => import("../pages/typeError/TypeErrorCreateUpdatePage")
+const DeviceGroupCreateUpdatePage = React.lazy(
+  () => import("../pages/deviceGroup/DeviceGroupCreateUpdatePage")
 );
-const TypeErrorDetailPage = React.lazy(
-  () => import("../pages/typeError/TypeErrorDetailPage")
+const DeviceSKUListPage = React.lazy(
+  () => import("../pages/deviceSKU/DeviceSKUListPage")
 );
-const TypeErrorListPage = React.lazy(
-  () => import("../pages/typeError/TypeErrorListPage")
+const DeviceSKUCreateUpdatePage = React.lazy(
+  () => import("../pages/deviceSKU/DeviceSKUCreateUpdatePage")
 );
+const DeviceModelListPage = React.lazy(
+  () => import("../pages/deviceModel/DeviceModelListPage")
+);
+const DeviceModelCreateUpdatePage = React.lazy(
+  () => import("../pages/deviceModel/DeviceModelCreateUpdatePage")
+);
+const DeviceListPage = React.lazy(
+  () => import("../pages/device/DeviceListPage")
+);
+const DeviceCreateUpdatePage = React.lazy(
+  () => import("../pages/device/DeviceCreateUpdatePage")
+);
+const PartCategoryListPage = React.lazy(
+  () => import("../pages/partCategory/PartCategoryListPage")
+);
+const PartCategoryCreateUpdatePage = React.lazy(
+  () => import("../pages/partCategory/PartCategoryCreateUpdatePage")
+);
+const PartTypeListPage = React.lazy(
+  () => import("../pages/partType/PartTypeListPage")
+);
+const PartTypeCreateUpdatePage = React.lazy(
+  () => import("../pages/partType/PartTypeCreateUpdatePage")
+);
+const PartGroupListPage = React.lazy(
+  () => import("../pages/partGroup/PartGroupListPage")
+);
+const PartGroupCreateUpdatePage = React.lazy(
+  () => import("../pages/partGroup/PartGroupCreateUpdatePage")
+);
+const PartSKUListPage = React.lazy(
+  () => import("../pages/partSKU/PartSKUListPage")
+);
+const PartSKUCreateUpdatePage = React.lazy(
+  () => import("../pages/partSKU/PartSKUCreateUpdatePage")
+);
+const PartDetailListPage = React.lazy(
+  () => import("../pages/partDetail/PartDetailListPage")
+);
+const PartDetailCreateUpdatePage = React.lazy(
+  () => import("../pages/partDetail/PartDetailCreateUpdatePage")
+);
+const CaseListPage = React.lazy(() => import("../pages/case/CaseListPage"));
+const CaseCreateUpdatePage = React.lazy(
+  () => import("../pages/case/CaseCreateUpdatePage")
+);
+const CaseDetailPage = React.lazy(() => import("../pages/case/CaseDetailPage"));
 
 const MaintenanceRoutes = () => (
   <Routes>
+    {/* <Route
+      path="/"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <NotificationWindow />
+        </React.Suspense>
+      }
+    /> */}
     <Route
       path="/"
       element={
@@ -147,226 +160,6 @@ const MaintenanceRoutes = () => (
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <TemplateCheckListCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-
-    {/* device */}
-    <Route
-      path="/device"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <DeviceListPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/device/create"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <DeviceCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/device/create/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <DeviceCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/device/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <DeviceDetailPage />
-        </React.Suspense>
-      }
-    />
-
-    {/* type device */}
-    <Route
-      path="/type-device"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeDevicePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/type-device/create"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeDeviceCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/type-device/create/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeDeviceCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/type-device/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeDeviceDetailPage />
-        </React.Suspense>
-      }
-    />
-
-    {/* product */}
-    <Route
-      path="/product"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductListPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/product-list-detail"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductListDetailPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/product/create"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/product/create/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/product/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductDetailPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/product/detail-new/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ProductDetailNewPage />
-        </React.Suspense>
-      }
-    />
-
-    {/* errorDetail */}
-    <Route
-      path="/error-detail"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ErrorDetailListPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/error-detail/create"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ErrorDetailCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/error-detail/create/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ErrorDetailCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/error-detail/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <ErrorDetailPage />
-        </React.Suspense>
-      }
-    />
-
-    {/* typeError */}
-    <Route
-      path="/type-error"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeErrorListPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/type-error/create"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeErrorCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/type-error/create/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeErrorCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/type-error/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <TypeErrorDetailPage />
-        </React.Suspense>
-      }
-    />
-
-    {/* solutionOption */}
-    <Route
-      path="/solution-option"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <SolutionOptionListPage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/solution-option/create"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <SolutionOptionCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/solution-option/create/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <SolutionOptionCreateUpdatePage />
-        </React.Suspense>
-      }
-    />
-    <Route
-      path="/solution-option/detail/:id"
-      element={
-        <React.Suspense fallback={<SpinnerLoading />}>
-          <SolutionOptionDetailPage />
         </React.Suspense>
       }
     />
@@ -422,6 +215,286 @@ const MaintenanceRoutes = () => (
     />
     <Route
       path="/assignee"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <AdminAssigneePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-types"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceTypeListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-types/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceTypeCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-types/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceTypeCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-groups"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceGroupListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-groups/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceGroupCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-groups/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceGroupCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-SKUs"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceSKUListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-SKUs/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceSKUCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-SKUs/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceSKUCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-models"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceModelListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-models/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceModelCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/device-models/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceModelCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/devices"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/devices/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/devices/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <DeviceCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-categories"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartCategoryListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-categories/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartCategoryCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-categories/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartCategoryCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-types"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartTypeListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-types/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartTypeCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-types/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartTypeCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-groups"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartGroupListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-groups/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartGroupCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-groups/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartGroupCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-SKUs"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartSKUListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-SKUs/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartSKUCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-SKUs/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartSKUCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-details"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartDetailListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-details/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartDetailCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/part-details/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartDetailCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/cases"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CaseListPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/cases/create"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CaseCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/cases/update/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CaseCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/cases/detail/:id"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <CaseDetailPage />
+        </React.Suspense>
+      }
+    />
+    <Route
+      path="/tasks/assignee"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>
           <AdminAssigneePage />

@@ -48,6 +48,9 @@ const mdTheme = createTheme({
     primary: {
       main: "#10428E", // Màu primary mà bạn muốn áp dụng
     },
+    info: {
+      main: "#648CC8",
+    },
   },
 });
 

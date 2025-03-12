@@ -1,5 +1,4 @@
 import { TemplateCheckListDto } from "../templateCheckList/TemplateCheckListDto";
-import { TypeErrorDto } from "../typeError/TypeErrorDto";
 
 export interface RowCheckListDto {
   id: string;
@@ -9,7 +8,6 @@ export interface RowCheckListDto {
   description?: string;
   typeErrorId: string;
   typeErrorCode: string;
-  typeError?: TypeErrorDto;
   templateCheckId: string;
   templateCheckCode: string;
   templateChecks?: TemplateCheckListDto;

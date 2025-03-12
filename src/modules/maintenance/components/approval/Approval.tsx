@@ -194,47 +194,8 @@ const Approval: React.FC<Props> = ({ productId }) => {
               setParams({ ...params, searchTerm: searchText });
             }}
           />
-          {/* <Grid2 container spacing={1}>
-            <Button
-              variant="contained"
-              color="success"
-              component={Link}
-              to={""}
-              size="small"
-            >
-              <Add />
-            </Button>
-            {rowSelectionModel.length > 0 && (
-              <Button
-                variant="contained"
-                color="error"
-                onClick={params.isDeleted ? onHardDelete : onSoftDelete}
-                size="small"
-              >
-                <GridDeleteIcon />
-              </Button>
-            )}
-            {rowSelectionModel.length > 0 && params.isDeleted && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={restore}
-                size="small"
-              >
-                <RestoreIcon />
-              </Button>
-            )}
-
-            <Divider draggable={false} orientation="vertical" flexItem />
-
-            <TrashButton
-              onClick={(isDeleted) =>
-                setParams({ ...params, isDeleted: isDeleted })
-              }
-            />
-          </Grid2> */}
         </Grid2>
-        <Grid2>
+        <Grid2 sx={{ display: "flex", flexGrow: 1 }}>
           <PaginatedDataGrid
             columns={columns}
             rows={taskChecks}

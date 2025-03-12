@@ -1,6 +1,6 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TemplateCheckListCreateUpdate from "@modules/maintenance/components/templateCheckList/TemplateCheckListCreateUPdate";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Container, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 
@@ -36,18 +36,10 @@ const TemplateCheckListCreateUpdatePage = () => {
         <title>Create Device</title>
         <meta name="description" content="Create a new device" />
       </Helmet>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{
-          margin: "10px 0",
-        }}
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
-      <Container>
+
+      <Wrapper title="Tạo mới biểu mẫu">
         <TemplateCheckListCreateUpdate id={id} />
-      </Container>
+      </Wrapper>
     </div>
   );
 };

@@ -1,20 +1,19 @@
+import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import DeviceCreateUpdate from "@modules/maintenance/components/device/DeviceCreateUpdate";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
-
+const page = {
+  title: "Tạo mới  thiết bị",
+  url: "/devices",
+  component: <DeviceCreateUpdate />,
+};
 const DeviceCreateUpdatePage = () => {
   const { id } = useParams();
   const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/device">
+    <Link key="1" underline="none" component={RouterLink} to={page.url}>
       <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Danh sách nhóm thiết bị
-      </span>
-    </Link>,
-    <Link key="2" underline="none" component={RouterLink} to="/device/create">
-      <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        Tạo mới
+        {page.title}
       </span>
     </Link>,
   ];
@@ -22,19 +21,13 @@ const DeviceCreateUpdatePage = () => {
   return (
     <div>
       <Helmet>
-        <title>Create Device</title>
-        <meta name="description" content="Create a new device" />
+        <title>{page.title}</title>
+        <meta name="description" content="Tạo mới thiết bị" />
       </Helmet>
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{
-          margin: "10px 0",
-        }}
-      >
-        {breadcrumbs}
-      </Breadcrumbs>
-      <DeviceCreateUpdate id={id} />
+
+      <Wrapper title={page.title}>
+        <DeviceCreateUpdate id={id} />
+      </Wrapper>
     </div>
   );
 };

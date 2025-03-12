@@ -2,7 +2,8 @@ import ImageBase64 from "@components/ImageBase64";
 import { unwrapListReponse } from "@datas/comon/ApiResponse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import templateCheckListApi from "@modules/maintenance/apis/templateCheckListApi";
-import { ProductDto } from "@modules/maintenance/datas/product/ProductDto";
+import { ICase } from "@modules/maintenance/datas/case/ICase";
+import { IDevice } from "@modules/maintenance/datas/device/IDevice";
 import { CreateTaskCheckDto } from "@modules/maintenance/datas/taskCheck/CreateTaskCheckDto";
 import { TemplateCheckListDto } from "@modules/maintenance/datas/templateCheckList/TemplateCheckListDto";
 import useTaskCheck from "@modules/maintenance/hooks/useTaskCheck";
@@ -27,8 +28,9 @@ import * as yup from "yup";
 import { useNotification } from "../common/Notistack";
 
 interface Props {
-  product: ProductDto;
+  product: IDevice;
   technicians: UserDto[];
+  cases: ICase[];
 }
 
 // Schema validate với yup
@@ -36,24 +38,18 @@ const schema = yup.object({
   name: yup.string(), // Tùy chọn
   note: yup.string(), // Tùy chọn
   templateCheckId: yup.string().required("Phiếu là bắt buộc"),
-  productId: yup.string().required("Product là bắt buộc"),
-  assigneeId: yup.string().required("Vui lòng chọn kĩ thuật viên"),
+  deviceId: yup.string().required("Không được bỏ trống"),
+  assigneeId: yup.string().required("Không được bỏ trống"),
+  caseTaskId: yup.string().required("Không được bỏ trống"),
   scheduledTime: yup
     .string()
     .typeError("Ngày đến bảo trì không hợp lệ")
     .required("Ngày đến bảo trì là bắt buộc"),
 });
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
+const AssigneeCard: React.FC<Props> = ({ product, technicians, cases }) => {
   const navigate = useNavigate();
-  const {
-    createTaskCheck,
-
-    error,
-    loading,
-    totalCount,
-  } = useTaskCheck();
+  const { createTaskCheck } = useTaskCheck();
   const [templateCheckList, setTemplateCheckList] = useState<
     TemplateCheckListDto[]
   >([]);
@@ -68,9 +64,10 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
       name: "Phiếu tạo bởi quản lí",
       note: "",
       templateCheckId: "",
-      productId: product.id,
+      deviceId: product.id,
       assigneeId: "",
       scheduledTime: new Date().toISOString().split("T")[0],
+      caseTaskId: "",
     },
     resolver: yupResolver(schema),
   });
@@ -98,12 +95,12 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
   };
 
   return (
-    <Grid2 size={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }} key={product.id}>
+    <Grid2 size={{ xs: 6 }} key={product.id}>
       <Paper
+        variant="outlined"
         sx={{
-          borderRadius: 4,
           p: 3,
-          boxShadow: 3,
+
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
@@ -136,22 +133,13 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
             </Typography>
           </Tooltip>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-            Khách hàng: {product.customer?.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
             Serial Number: {product.serialNumber}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-            Ngày bảo trì trước:{" "}
-            {product.lastMaintenanceDate
-              ? new Date(product.lastMaintenanceDate).toLocaleDateString()
-              : ""}
+            Khách hàng: {product.customer?.name}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Ngày bảo trì kế tiếp:{" "}
-            {product.nextMaintenanceReminder
-              ? new Date(product.nextMaintenanceReminder).toLocaleDateString()
-              : ""}
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+            Đời thiết bị: {product.deviceModel?.name}
           </Typography>
 
           {/* Form Section */}
@@ -162,7 +150,7 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
             noValidate
           >
             <Grid2 container spacing={2}>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 size={{ xs: 12 }}>
                 <FormControl fullWidth>
                   <InputLabel>Phiếu</InputLabel>
                   <Controller
@@ -173,6 +161,13 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
                         {...field}
                         onOpen={handleTemplateSelectOpen}
                         label="Phiếu"
+                        size="small"
+                        sx={{
+                          "& .MuiSelect-select": {
+                            // paddingTop: "6px",
+                            paddingBottom: "16px",
+                          },
+                        }}
                       >
                         {templateCheckList.map((option) => (
                           <MenuItem key={option.id} value={option.id}>
@@ -190,14 +185,57 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
                 </FormControl>
               </Grid2>
 
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 size={{ xs: 12 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Case</InputLabel>
+                  <Controller
+                    name="caseTaskId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Kĩ thuật viên"
+                        size="small"
+                        sx={{
+                          "& .MuiSelect-select": {
+                            // paddingTop: "6px",
+                            paddingBottom: "16px",
+                          },
+                        }}
+                      >
+                        {cases.map((person) => (
+                          <MenuItem key={person.id} value={person.id}>
+                            {person.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                  {errors.caseTaskId && (
+                    <Typography variant="caption" color="error">
+                      {errors.caseTaskId.message}
+                    </Typography>
+                  )}
+                </FormControl>
+              </Grid2>
+              <Grid2 size={{ xs: 12 }}>
                 <FormControl fullWidth>
                   <InputLabel>Kĩ thuật viên</InputLabel>
                   <Controller
                     name="assigneeId"
                     control={control}
                     render={({ field }) => (
-                      <Select {...field} label="Kĩ thuật viên">
+                      <Select
+                        {...field}
+                        label="Kĩ thuật viên"
+                        size="small"
+                        sx={{
+                          "& .MuiSelect-select": {
+                            // paddingTop: "6px",
+                            paddingBottom: "16px",
+                          },
+                        }}
+                      >
                         {technicians.map((person) => (
                           <MenuItem key={person.id} value={person.id}>
                             {person.fullname}
@@ -214,7 +252,7 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
                 </FormControl>
               </Grid2>
 
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 size={{ xs: 12 }}>
                 <Controller
                   name="scheduledTime"
                   control={control}
@@ -222,6 +260,7 @@ const AssigneeCard: React.FC<Props> = ({ product, technicians }) => {
                     <TextField
                       {...field}
                       type="date"
+                      size="small"
                       fullWidth
                       error={!!errors.scheduledTime}
                       helperText={errors.scheduledTime?.message}

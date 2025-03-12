@@ -1,6 +1,6 @@
 import PaginatedDataGrid from "@components/PaginationDatagrid";
 import InputSearch from "@modules/maintenance/components/common/InputSearch";
-import { GetTypeErrorDto } from "@modules/maintenance/datas/typeError/GetTypeErrorDto";
+import { GetUserDto } from "@modules/user/datas/user/GetUserDto";
 import useUser from "@modules/user/hooks/useUser";
 import { Add, Warning } from "@mui/icons-material";
 import RestoreIcon from "@mui/icons-material/Restore";
@@ -20,7 +20,7 @@ const UserList = () => {
   const [openPopupSoftDelete, setOpenPopupsoftDelete] = useState(false);
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
-  const [params, setParams] = useState<GetTypeErrorDto>({ takeCount: 10 });
+  const [params, setParams] = useState<GetUserDto>({ takeCount: 10 });
   const [rowSelectionModel, setRowSelectionModel] =
     useState<GridRowSelectionModel>([]);
 
