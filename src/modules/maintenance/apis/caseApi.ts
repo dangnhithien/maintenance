@@ -49,6 +49,11 @@ class CaseApi {
       data: ids,
     });
   };
+  updateStatus = async (
+    id: string,
+  ): Promise<ApiResponseWithList<ICase>> => {
+    return await axiosInstance.put(`${BASE_URL}/done-case-task/${id}`);
+  };
 }
 
 const caseApi = new CaseApi();
