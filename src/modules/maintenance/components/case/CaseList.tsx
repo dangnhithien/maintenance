@@ -24,7 +24,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
   const [openPopupHardDelete, setOpenPopupHardDelete] = useState(false);
   const { notify } = useNotification();
   const [params, setParams] = useState<ICaseGet>({
-    takeCount: 10,
+    takeCount: 6,
     fromDate: new Date("2025-1-1"),
     toDate: new Date("2025-5-1"),
   });
@@ -43,7 +43,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 
   useEffect(() => {
     fetchCases(params);
-  }, []);
+  }, [params]);
 
   const columns: GridColDef[] = [
     // { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },

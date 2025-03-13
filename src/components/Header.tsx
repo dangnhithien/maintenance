@@ -1,5 +1,3 @@
-import { ArrowForwardIos } from "@mui/icons-material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
@@ -49,13 +47,14 @@ const Header: React.FC<HeaderProps> = ({ submenuOpen, toggleSubmenu }) => {
     >
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         {/* Nút quay lại */}
-        <IconButton edge="start" onClick={toggleSubmenu} color="info">
+        {/* <IconButton edge="start" onClick={toggleSubmenu} color="info">
           {submenuOpen ? (
             <ArrowBackIosNewIcon fontSize="small" />
           ) : (
             <ArrowForwardIos fontSize="small" />
           )}
-        </IconButton>
+        </IconButton> */}
+        <div></div>
 
         {/* Nhóm icon bên phải */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>

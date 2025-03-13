@@ -95,18 +95,45 @@ const MaintainedDevicesLineChart: React.FC = () => {
     ],
   };
 
+  const userList = [
+    {
+      assigneeName: "Nguyễn Văn A",
+      totalTask: 6,
+      totalTaskDone: 2,
+      totalComponentReplaced: 1,
+    },
+    {
+      assigneeName: "Trần Thị B",
+      totalTask: 6,
+      totalTaskDone: 2,
+      totalComponentReplaced: 2,
+    },
+    {
+      assigneeName: "Lê Văn C",
+      totalTask: 5,
+      totalTaskDone: 0,
+      totalComponentReplaced: 0,
+    },
+    {
+      assigneeName: "Phạm Thị D",
+      totalTask: 3,
+      totalTaskDone: 1,
+      totalComponentReplaced: 0,
+    },
+  ];
+
   const barOption: echarts.EChartsOption = useMemo(
     () => ({
       tooltip: {
         trigger: "axis",
       },
       legend: {
-        data: ["Task được giao", "Task đã hoàn thành"],
+        data: ["Task được giao", "Task đã hoàn thành", "Linh kiện đã thay thế"],
         top: 0,
       },
       xAxis: {
         type: "category",
-        data: userListTask.map((employee) => employee.assigneeName),
+        data: userList.map((employee) => employee.assigneeName),
         axisLabel: {
           fontSize: 9,
           rotate: 45, // Xoay nhãn trục x 45 độ
@@ -114,14 +141,13 @@ const MaintainedDevicesLineChart: React.FC = () => {
       },
       yAxis: {
         type: "value",
-        min: 1,
       },
       series: [
         {
           name: "Task được giao",
           type: "bar",
-          data: userListTask.map((employee) => employee.totalTask),
-          barWidth: "30%",
+          data: userList.map((employee) => employee.totalTask),
+
           itemStyle: {
             color: "#749fdf",
           },
@@ -129,10 +155,19 @@ const MaintainedDevicesLineChart: React.FC = () => {
         {
           name: "Task đã hoàn thành",
           type: "bar",
-          data: userListTask.map((employee) => employee.totalTaskDone),
-          barWidth: "30%",
+          data: userList.map((employee) => employee.totalTaskDone),
+
           itemStyle: {
             color: "#aee8a1",
+          },
+        },
+        {
+          name: "Linh kiện đã thay thế",
+          type: "bar",
+          data: userList.map((employee) => employee.totalComponentReplaced),
+
+          itemStyle: {
+            color: "#ffc107", // Màu sắc ví dụ cho series này
           },
         },
       ],
@@ -156,26 +191,26 @@ const MaintainedDevicesLineChart: React.FC = () => {
   const metrics = [
     {
       title: "Tổng số thiết bị trong hệ thống",
-      value: keyMetric?.totalProduct,
-      subValue: keyMetric?.totalRFID,
+      value: keyMetric?.totalProduct || 1192,
+      subValue: keyMetric?.totalRFID || 50,
       subText: "thiết bị đã gắn RFID",
     },
     {
       title: "Thiết bị cần bảo trì hôm nay",
-      value: keyMetric?.totalProductNeedToMaintenance,
-      subValue: keyMetric?.totalProductMaintenanced,
+      value: keyMetric?.totalProductNeedToMaintenance || 20,
+      subValue: keyMetric?.totalProductMaintenanced || 5,
       subText: "thiết bị đã được bảo trì",
     },
     {
       title: "Tổng số khách hàng",
-      value: keyMetric?.totalCustomer,
-      subValue: keyMetric?.totalCustomerNeedMaintenance,
+      value: keyMetric?.totalCustomer || 495,
+      subValue: keyMetric?.totalCustomerNeedMaintenance || 20,
       subText: "khách hàng cần bảo trì hôm nay",
     },
     {
       title: "Tổng số task kiểm tra hôm nay",
-      value: keyMetric?.totalTaskCheck,
-      subValue: keyMetric?.totalTaskCheckDone,
+      value: keyMetric?.totalTaskCheck || 20,
+      subValue: keyMetric?.totalTaskCheckDone || 5,
       subText: "task đã hoàn thành",
     },
     // {
@@ -356,7 +391,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
               Tổng số nhân viên viên
             </Typography>
             <Typography variant="h5" sx={{ color: "#333", fontWeight: "bold" }}>
-              0
+              4
             </Typography>
             <Typography
               variant="overline"
@@ -366,7 +401,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
               mr={0.5}
               fontSize={14}
             >
-              0
+              4
             </Typography>
             <Typography variant="caption" sx={{ color: "#888", mt: 1 }}>
               Số nhân viên có task trong hôm nay
@@ -399,7 +434,7 @@ const MaintainedDevicesLineChart: React.FC = () => {
       <Grid2 size={12} container spacing={2}>
         <Grid2 size={8}>
           <Wrapper title="Danh sách task">
-            <TaskCheckList />
+            <TaskCheckList isViewMode={false} />
           </Wrapper>
         </Grid2>
         <Grid2 size={4}>

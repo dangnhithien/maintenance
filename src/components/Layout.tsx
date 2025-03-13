@@ -1,59 +1,70 @@
-import { Grid2, Grow } from "@mui/material";
-import React, { PropsWithChildren, useState } from "react";
+import { Box, Grow } from "@mui/material";
+import React, { PropsWithChildren, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "./Header";
-import SubMenu from "./SubMenu";
-import TheMenu from "./TheMenu";
+import SidebarMenu from "./TestMenu";
 
 const TheLayout: React.FC<PropsWithChildren> = ({ children }) => {
-  // Quản lý trạng thái mở/đóng của SubMenu
+  const location = useLocation();
   const [submenuOpen, setSubmenuOpen] = useState<boolean>(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
 
   const toggleSubmenu = () => {
     setSubmenuOpen((prev) => !prev);
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setSubmenuOpen(true);
+  }, [location]);
+
   return (
-    <Grid2 container sx={{ height: "100vh", width: "100vw" }}>
+    <Box sx={{ display: "flex", height: "100vh", width: "100vw" }}>
       {/* Sidebar */}
-      <Grid2 size={1} width={80}>
-        <TheMenu />
-      </Grid2>
+      <SidebarMenu
+        isCollapsed={isSidebarCollapsed}
+        toggleSidebar={toggleSidebar}
+      />
 
-      {/* Main content area */}
-      <Grid2 container size={11} flex={1}>
-        <Grid2 size={12} sx={{ height: "100vh", display: "flex" }}>
-          <SubMenu open={submenuOpen} />
+      {/* Main content */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          transition: "margin-left 0.3s ease-in-out",
 
-          <Grid2 size={12} sx={{ display: "flex", flexDirection: "column" }}>
-            {/* Header nhận props để điều khiển SubMenu */}
-            <Header submenuOpen={submenuOpen} toggleSubmenu={toggleSubmenu} />
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+        }}
+      >
+        {/* Header */}
+        <Header submenuOpen={submenuOpen} toggleSubmenu={toggleSubmenu} />
 
-            {/* Nội dung chính scrollable */}
-            <Grid2
-              id="layoutContainer"
-              sx={{
-                flexGrow: 1,
-                p: 2,
-                overflowY: "auto",
-                overflowX: "hidden",
-                scrollbarWidth: "thin",
-                "&::-webkit-scrollbar": {
-                  width: "6px",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  backgroundColor: "#aaa",
-                  borderRadius: "6px",
-                },
-              }}
-            >
-              <Grow in={true} timeout={500}>
-                <div>{children}</div>
-              </Grow>
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+        {/* Nội dung chính scrollable */}
+        <Box
+          id="layoutContainer"
+          sx={{
+            flexGrow: 1,
+            p: 2,
+            overflowY: "auto",
+            overflowX: "hidden",
+            scrollbarWidth: "thin",
+            "&::-webkit-scrollbar": { width: "6px" },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#aaa",
+              borderRadius: "6px",
+            },
+          }}
+        >
+          <Grow in={true} timeout={500}>
+            <div>{children}</div>
+          </Grow>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

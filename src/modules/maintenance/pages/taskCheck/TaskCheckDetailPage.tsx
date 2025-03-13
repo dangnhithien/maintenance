@@ -1,4 +1,3 @@
-import Wrapper from "@modules/maintenance/components/common/Wrapper";
 import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
 import { Link } from "@mui/material";
 import { Helmet } from "react-helmet";
@@ -27,9 +26,7 @@ const TaskCheckDetailPage = () => {
         <meta name="description" content="Create a new device" />
       </Helmet>
 
-      <Wrapper title="Chi tiết">
-        <TaskCheckDetail id={id} />
-      </Wrapper>
+      <TaskCheckDetail id={id} />
     </div>
   );
 };

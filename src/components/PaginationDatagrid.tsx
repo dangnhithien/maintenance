@@ -19,12 +19,13 @@ const PaginatedDataGrid = ({
   ...dataGridProps
 }: PaginatedDataGridProps) => {
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
+    pageSize: 6,
     page: 0,
   });
 
   const handlePageChange = useCallback(
     (_: React.ChangeEvent<unknown>, page: number) => {
+      console.log(page);
       setPaginationModel((prev) => ({
         ...prev,
         page: page - 1, // Chuyển từ base 1 sang base 0
@@ -64,7 +65,7 @@ const PaginatedDataGrid = ({
       rows={rows}
       rowCount={totalCount}
       paginationModel={paginationModel}
-      pageSizeOptions={[10, 25, 50]}
+      pageSizeOptions={[6, 12, 18]}
       checkboxSelection
       disableRowSelectionOnClick
       disableColumnMenu
