@@ -64,7 +64,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./public/index.html", // Template HTML
-      favicon: "./public/favicon-vms.ico",
+      favicon: "./public/favicon-vms.png",
     }),
     new webpack.DefinePlugin({
       "process.env.BASE_URL": JSON.stringify(
@@ -72,7 +72,7 @@ module.exports = {
       ),
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: "public/favicon-vms.ico", to: "favicon-vms.ico" }],
+      patterns: [{ from: "public/favicon-vms.png", to: "favicon-vms.png" }],
     }),
   ],
   devServer: {
