@@ -9,6 +9,7 @@ import {
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import WorkIcon from "@mui/icons-material/Work";
@@ -153,6 +154,12 @@ const SidebarMenu: React.FC<SidebarProps> = ({
     return false;
   };
 
+  // Hàm xử lý đăng xuất: xóa token khỏi localStorage và chuyển hướng về trang đăng nhập
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   return (
     <div style={{ position: "relative", height: "100vh" }}>
       {/* Nút thu/expand sidebar */}
@@ -174,9 +181,9 @@ const SidebarMenu: React.FC<SidebarProps> = ({
         }}
       >
         {isCollapsed ? (
-          <ArrowRightIcon sx={{ fontSize: 20, color: "#10428E" }} />
+          <ArrowRightIcon sx={{ fontSize: 20, color: "#000000" }} />
         ) : (
-          <ChevronLeft sx={{ fontSize: 20, color: "#10428E" }} />
+          <ChevronLeft sx={{ fontSize: 20, color: "#000000" }} />
         )}
       </IconButton>
 
@@ -197,6 +204,7 @@ const SidebarMenu: React.FC<SidebarProps> = ({
             justifyContent: "space-between",
             zIndex: 1,
             height: "100%",
+            overflow: "hidden",
           },
         }}
       >
@@ -247,7 +255,7 @@ const SidebarMenu: React.FC<SidebarProps> = ({
               >
                 <ListItemIcon
                   sx={{
-                    color: "#10428E",
+                    // color: "#10428E",
                     minWidth: 40,
                     justifyContent: "center",
                     display: "flex",
@@ -272,9 +280,9 @@ const SidebarMenu: React.FC<SidebarProps> = ({
                 {!isCollapsed &&
                   item.children &&
                   (openMenus[item.id] ? (
-                    <ArrowDropUpIcon sx={{ color: "#10428E" }} />
+                    <ArrowDropUpIcon sx={{ color: "#000000" }} />
                   ) : (
-                    <ArrowDropDownIcon sx={{ color: "#10428E" }} />
+                    <ArrowDropDownIcon sx={{ color: "#000000" }} />
                   ))}
               </ListItemButton>
 
@@ -297,7 +305,7 @@ const SidebarMenu: React.FC<SidebarProps> = ({
                           <ListItemIcon
                             sx={{
                               minWidth: 40,
-                              color: "#10428E",
+                              color: "#000000",
                               justifyContent: "center",
                             }}
                           >
@@ -312,7 +320,7 @@ const SidebarMenu: React.FC<SidebarProps> = ({
                               textOverflow: "ellipsis",
                               ...(isChildActive && {
                                 fontWeight: "bold",
-                                color: "#10428E",
+                                color: "#000000",
                               }),
                             }}
                           />
@@ -327,6 +335,34 @@ const SidebarMenu: React.FC<SidebarProps> = ({
         </List>
 
         <Divider />
+
+        {/* Item Đăng xuất với hiệu ứng collapse/expand */}
+        <List>
+          <ListItemButton onClick={handleLogout}>
+            <ListItemIcon
+              sx={{
+                color: "#000",
+                minWidth: 40,
+                justifyContent: "center",
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Đăng xuất"
+              sx={{
+                fontSize: "14px",
+                maxWidth: isCollapsed ? 0 : "100%",
+                opacity: isCollapsed ? 0 : 1,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                transition:
+                  "max-width 0.3s ease-in-out, opacity 0.3s ease-in-out",
+              }}
+            />
+          </ListItemButton>
+        </List>
       </Drawer>
     </div>
   );
