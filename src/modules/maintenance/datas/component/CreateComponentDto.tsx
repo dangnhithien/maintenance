@@ -1,8 +1,8 @@
 export interface CreateComponentDto {
-  name: string;
-  productId: string;
-  installationDate: Date;
-  maintenanceCycle: number;
-  lastMaintenanceDate: Date;
-  reminderAdvanceDays: number;
+	name: string
+	deviceId: string
+	installationDate: Date
+	maintenanceCycle: number
+	lastMaintenanceDate: Date
+	reminderAdvanceDays: number
 }

@@ -2,6 +2,8 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 require("dotenv").config();
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+
 
 module.exports = {
   entry: "./src/index.tsx", // Entry chính
@@ -62,11 +64,15 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "./public/index.html", // Template HTML
+      favicon: "./public/favicon-vms.ico",
     }),
     new webpack.DefinePlugin({
       "process.env.BASE_URL": JSON.stringify(
         process.env.BASE_URL || "http://localhost:3001"
       ),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: "public/favicon-vms.ico", to: "favicon-vms.ico" }],
     }),
   ],
   devServer: {

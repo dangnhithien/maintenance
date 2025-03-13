@@ -8,7 +8,7 @@ import { AsyncPaginate } from 'react-select-async-paginate'
 
 interface AsyncPaginateSelectProps {
 	id?: string
-	deviceSKUId: string
+	deviceSKUId?: string
 	disabled?: boolean
 	onChange?: (value: IDeviceModel | null) => void
 }
@@ -22,10 +22,10 @@ const DeviceModelSelect: React.FC<AsyncPaginateSelectProps> = ({
 	const [internalValue, setInternalValue] = useState<IDeviceModel | null>(null)
 	const [key, setKey] = useState(0)
 
-	const handleChange = (val: IDeviceModel | null) => {
-		setInternalValue(val)
-		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
-	}
+	useEffect(() => {
+		setInternalValue(null)
+		setKey((prev) => prev + 1) // Cập nhật key để AsyncPaginate render lại
+	}, [deviceSKUId])
 
 	useEffect(() => {
 		if (id) {
@@ -38,6 +38,11 @@ const DeviceModelSelect: React.FC<AsyncPaginateSelectProps> = ({
 				.catch((err) => {})
 		}
 	}, [id])
+
+	const handleChange = (val: IDeviceModel | null) => {
+		setInternalValue(val)
+		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+	}
 
 	const loadOptionCustomers = async (
 		search: any,
