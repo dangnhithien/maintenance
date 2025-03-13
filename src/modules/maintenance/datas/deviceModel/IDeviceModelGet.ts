@@ -1,3 +1,5 @@
-import { ApiRequest } from "@datas/comon/ApiRequest";
+import { ApiRequest } from '@datas/comon/ApiRequest'
 
-export interface IDeviceModelGet extends ApiRequest {}
+export interface IDeviceModelGet extends ApiRequest {
+	deviceSKUId?: string
+}

@@ -1,28 +1,19 @@
-import Wrapper from "@modules/maintenance/components/common/Wrapper";
-import UserList from "@modules/user/components/user/UserList";
-import { Helmet } from "react-helmet";
-
+import Wrapper from '@modules/maintenance/components/common/Wrapper'
+import UserList from '@modules/user/components/user/UserList'
+import { Helmet } from 'react-helmet'
 const UserListPage = () => {
-  const breadcrumbs = [
-    // <Link key="1" underline="none" component={RouterLink} to="/user">
-    <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-      Danh sách nhân viên
-    </span>,
-    // </Link>,
-  ];
+	return (
+		<div>
+			<Helmet>
+				<title>Danh sách nhân viên</title>
+				<meta name='description' content='Danh sách nhân viên' />
+			</Helmet>
 
-  return (
-    <div>
-      <Helmet>
-        <title>Danh sách nhân viên</title>
-        <meta name="description" content="Danh sách các thiết bị" />
-      </Helmet>
+			<Wrapper title='Danh sách nhân viên'>
+				<UserList />
+			</Wrapper>
+		</div>
+	)
+}
 
-      <Wrapper title="Danh sách nhân viên">
-        <UserList />
-      </Wrapper>
-    </div>
-  );
-};
-
-export default UserListPage;
+export default UserListPage

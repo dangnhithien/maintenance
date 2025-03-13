@@ -1,3 +1,5 @@
-import { ApiRequest } from "@datas/comon/ApiRequest";
+import { ApiRequest } from '@datas/comon/ApiRequest'
 
-export interface IPartTypeGet extends ApiRequest {}
+export interface IPartTypeGet extends ApiRequest {
+	partCategoryId?: string
+}
