@@ -9,14 +9,12 @@ import { UserDto } from "@modules/user/datas/user/UserDto";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
-import WorkIcon from "@mui/icons-material/Work";
 import {
   Avatar,
   Box,
   Grid2,
   IconButton,
   Paper,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -47,10 +45,9 @@ function getOneDayRange(dateStr: string): { fromDate: Date; toDate: Date } {
 
 const EmployeeDetails: React.FC<{ user: UserDto }> = ({ user }) => (
   <Paper
+    variant="outlined"
     sx={{
-      borderRadius: 3,
       overflow: "hidden",
-      boxShadow: 3,
       height: "100%",
       display: "flex",
       flexDirection: "column",
@@ -73,7 +70,7 @@ const EmployeeDetails: React.FC<{ user: UserDto }> = ({ user }) => (
           zIndex: 10,
         }}
       >
-        <Tooltip title="Giao việc">
+        {/* <Tooltip title="Giao việc">
           <IconButton
             size="small"
             sx={{ backgroundColor: "rgba(255,255,255,0.8)" }}
@@ -82,7 +79,7 @@ const EmployeeDetails: React.FC<{ user: UserDto }> = ({ user }) => (
               <WorkIcon fontSize="small" />
             </Link>
           </IconButton>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip title="Chỉnh sửa">
           <IconButton
             size="small"
@@ -261,14 +258,96 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
         .then((response) => setUser(response));
     }
   }, [id]);
+  const userList = [
+    {
+      assigneeName: "11/3/2025",
+      totalTask: 6,
+      totalTaskDone: 2,
+      totalComponentReplaced: 1,
+    },
+    {
+      assigneeName: "12/3/2025",
+      totalTask: 6,
+      totalTaskDone: 2,
+      totalComponentReplaced: 2,
+    },
+    {
+      assigneeName: "13/3/2025",
+      totalTask: 5,
+      totalTaskDone: 0,
+      totalComponentReplaced: 0,
+    },
+    {
+      assigneeName: "14/3/2025",
+      totalTask: 3,
+      totalTaskDone: 1,
+      totalComponentReplaced: 0,
+    },
+  ];
+
+  const barOption: echarts.EChartsOption = useMemo(
+    () => ({
+      tooltip: {
+        trigger: "axis",
+      },
+      legend: {
+        data: [
+          "Task được giao",
+          "Task đã hoàn thành",
+          "thành phần đã thay thế",
+        ],
+        top: 0,
+      },
+      xAxis: {
+        type: "category",
+        data: userList.map((employee) => employee.assigneeName),
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          name: "Task được giao",
+          type: "bar",
+          data: userList.map((employee) => employee.totalTask),
+
+          itemStyle: {
+            color: "#749fdf",
+          },
+        },
+        {
+          name: "Task đã hoàn thành",
+          type: "bar",
+          data: userList.map((employee) => employee.totalTaskDone),
+
+          itemStyle: {
+            color: "#aee8a1",
+          },
+        },
+        {
+          name: "thành phần đã thay thế",
+          type: "bar",
+          data: userList.map((employee) => employee.totalComponentReplaced),
+
+          itemStyle: {
+            color: "#ffc107", // Màu sắc ví dụ cho series này
+          },
+        },
+      ],
+      grid: {
+        top: "40px",
+        left: "16px",
+        right: "16px",
+        bottom: "16px",
+        containLabel: true,
+      },
+    }),
+    [userList]
+  );
 
   return (
     <>
-      {/* Bộ lọc ngày cho toàn bộ trang */}
-      <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
-        <Typography color="primary" variant="subtitle1" fontWeight="bold">
-          Chi tiết nhân viên
-        </Typography>
+      {/* <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
         <TextField
           value={date}
           type="date"
@@ -290,8 +369,7 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
             },
           }}
         />
-      </Box>
-
+      </Box> */}
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, md: 3 }}>
           <EmployeeDetails user={user} />
@@ -301,9 +379,10 @@ const UserDetailPage: React.FC<Props> = ({ id }) => {
             title="Theo dõi công việc
           "
           >
-            {/* <LineChartProduct
-              params={{ ...getSevenDayRange(date), assigneeId: id }}
-            /> */}
+            <ReactECharts
+              option={barOption}
+              style={{ height: "300px", width: "100%" }}
+            />
           </Wrapper>
         </Grid2>
 
