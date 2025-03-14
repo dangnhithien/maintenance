@@ -1,3 +1,5 @@
 import { ApiRequest } from "@datas/comon/ApiRequest";
 
-export interface IPartDetailGet extends ApiRequest {}
+export interface IPartDetailGet extends ApiRequest {
+  deviceId?: string;
+}

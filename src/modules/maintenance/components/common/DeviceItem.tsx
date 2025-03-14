@@ -47,6 +47,8 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
         p: 1,
         position: "relative", // để đặt checkbox ở góc
         ...sx,
+
+        height: "100%",
       }}
     >
       {/* Hiển thị checkbox khi mode === "selection" */}

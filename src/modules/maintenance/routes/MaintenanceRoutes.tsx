@@ -454,6 +454,14 @@ const MaintenanceRoutes = () => (
       }
     />
     <Route
+      path="/part-details/create/device/:deviceId"
+      element={
+        <React.Suspense fallback={<SpinnerLoading />}>
+          <PartDetailCreateUpdatePage />
+        </React.Suspense>
+      }
+    />
+    <Route
       path="/part-details/update/:id"
       element={
         <React.Suspense fallback={<SpinnerLoading />}>

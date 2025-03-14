@@ -17,21 +17,25 @@ interface InfoItemProps {
 }
 
 const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => (
-  <Box display="flex" alignItems="center" justifyContent="flex-start" mb={1}>
-    <Typography variant="body2" color="textSecondary" mr={1}>
+  <Box
+    display="flex"
+    justifyContent="space-between"
+    mb={1}
+    alignItems={"flex-start"}
+  >
+    <Typography variant="body2" color="textSecondary" mr={1} minWidth={100}>
       {label}:
     </Typography>
     <Tooltip title={value}>
       <Typography
-        variant="body2"
+        variant="caption"
         color="info"
         fontWeight="bold"
         sx={{
           textAlign: "right",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          maxWidth: "calc(100% - 120px)", // Giới hạn chiều rộng cho phần value
+          // whiteSpace: "nowrap",
         }}
       >
         {value || "-"}
@@ -64,6 +68,7 @@ const DeviceDetailItem: React.FC<DeviceCardProps> = ({
         display: "flex",
         flexDirection: "row",
         alignItems: "flex-start",
+        overflow: "hidden",
         p: 2,
         ...sx,
         position: "relative",
@@ -112,7 +117,7 @@ const DeviceDetailItem: React.FC<DeviceCardProps> = ({
             {data.name}
           </Typography>
         </Link>
-        <Typography fontWeight="bold" color="primary" mt={2}>
+        <Typography fontWeight="bold" color="primary" my={2}>
           Thông tin
         </Typography>
         <InfoItem label="Số serial" value={data.serialNumber} />

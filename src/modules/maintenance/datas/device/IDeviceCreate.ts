@@ -9,7 +9,7 @@ export interface IDeviceCreate {
   note?: string;
   supplier?: string;
   rfid?: string;
-  installationDate?: string;
+  installationDate?: Date;
   address?: string;
   usageTypeId?: string;
   customerId?: string;
