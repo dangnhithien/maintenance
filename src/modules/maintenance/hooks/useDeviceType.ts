@@ -1,92 +1,98 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useState } from "react";
-import deviceTypeApi from "../apis/deviceTypeApi";
-import { IDeviceType } from "../datas/deviceType/IDeviceType";
-import { IDeviceTypeCreate } from "../datas/deviceType/IDeviceTypeCreate";
-import { IDeviceTypeDelete } from "../datas/deviceType/IDeviceTypeDelete";
-import { IDeviceTypeGet } from "../datas/deviceType/IDeviceTypeGet";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQueryClient,
+} from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import deviceTypeApi from '../apis/deviceTypeApi'
+import { IDeviceType } from '../datas/deviceType/IDeviceType'
+import { IDeviceTypeCreate } from '../datas/deviceType/IDeviceTypeCreate'
+import { IDeviceTypeDelete } from '../datas/deviceType/IDeviceTypeDelete'
+import { IDeviceTypeGet } from '../datas/deviceType/IDeviceTypeGet'
 
-const KEY = "DeviceTypes";
-export const useDeviceType = () => {
-  const queryClient = useQueryClient();
-  const [deviceTypes, setDeviceTypes] = useState<IDeviceType[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<null | string>(null);
+const KEY = 'DeviceTypes'
 
-  // Fetch function to be called manually
-  const fetchDeviceTypes = async (params: IDeviceTypeGet) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await deviceTypeApi.get(params);
-      setDeviceTypes(response?.result?.items || []);
-      setTotalCount(response.result.totalCount);
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (
-        axiosError?.response?.status === 400 ||
-        axiosError?.response?.status === 401
-      ) {
-        setError("Unauthorized or bad request");
-      } else {
-        setError(axiosError.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+// Định nghĩa kiểu dữ liệu của 1 trang kết quả
+interface DeviceTypePage {
+	items: IDeviceType[]
+	nextPage: number | null // Nếu null: đã load hết dữ liệu
+	totalCount: number
+}
 
-  // Create a new checklist
-  const createDeviceType = useMutation({
-    mutationFn: (newData: IDeviceTypeCreate) => deviceTypeApi.post(newData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] }); // Refresh list
-    },
-  });
+export const useDeviceType = (takeCount = 10) => {
+	const queryClient = useQueryClient()
 
-  // Update a checklist
-  const updateDeviceType = useMutation({
-    mutationFn: ({
-      id,
-      updatedData,
-    }: {
-      id: string;
-      updatedData: IDeviceTypeCreate;
-    }) => deviceTypeApi.update(id, updatedData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] });
-    },
-  });
+	// Sử dụng useInfiniteQuery để hỗ trợ Infinite Scroll
+	const infiniteQuery = useInfiniteQuery<DeviceTypePage, AxiosError>({
+		queryKey: [KEY],
+		queryFn: async ({
+			pageParam = 0,
+		}: {
+			pageParam?: unknown
+		}): Promise<DeviceTypePage> => {
+			const params: IDeviceTypeGet = {
+				takeCount,
+				skipCount: pageParam as number,
+				sortBy: 'CreatedDate DESC',
+			}
+			const response = await deviceTypeApi.get(params)
+			const items: IDeviceType[] = response?.result?.items || []
+			const totalCount: number = response.result.totalCount
+			const nextPage =
+				(pageParam as number) + takeCount < totalCount
+					? (pageParam as number) + takeCount
+					: null
+			return { items, nextPage, totalCount }
+		},
+		getNextPageParam: (lastPage) => lastPage.nextPage,
+		initialPageParam: 0,
+	})
 
-  // Delete a checklist
-  const deleteDeviceType = useMutation({
-    mutationFn: (data: IDeviceTypeDelete) =>
-      deviceTypeApi.delete(data.isHardDeleted, data.ids),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] });
-    },
-  });
+	// Các mutation cho Create, Update, Delete, Restore
+	const createDeviceType = useMutation({
+		mutationFn: (newData: IDeviceTypeCreate) => deviceTypeApi.post(newData),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY] }),
+	})
 
-  const restoreDeviceType = useMutation({
-    mutationFn: (ids: string[]) => deviceTypeApi.restore(ids),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] });
-    },
-  });
+	const updateDeviceType = useMutation({
+		mutationFn: ({
+			id,
+			updatedData,
+		}: {
+			id: string
+			updatedData: IDeviceTypeCreate
+		}) => deviceTypeApi.update(id, updatedData),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY] }),
+	})
 
-  return {
-    fetchDeviceTypes, // Function to manually fetch data
-    createDeviceType: createDeviceType.mutateAsync,
-    updateDeviceType: updateDeviceType.mutateAsync,
-    deleteDeviceType: deleteDeviceType.mutateAsync,
-    restoreDeviceType: restoreDeviceType.mutateAsync,
-    deviceTypes,
-    totalCount,
-    loading,
-    error,
-  };
-};
+	const deleteDeviceType = useMutation({
+		mutationFn: (data: IDeviceTypeDelete) =>
+			deviceTypeApi.delete(data.isHardDeleted, data.ids),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY] }),
+	})
 
-export default useDeviceType;
+	const restoreDeviceType = useMutation({
+		mutationFn: (ids: string[]) => deviceTypeApi.restore(ids),
+		onSuccess: () => queryClient.invalidateQueries({ queryKey: [KEY] }),
+	})
+
+	// Gộp tất cả dữ liệu từ các trang thành 1 mảng
+	const deviceTypes =
+		infiniteQuery.data?.pages.flatMap((page) => page.items) || []
+
+	return {
+		deviceTypes,
+		totalCount: infiniteQuery.data?.pages[0]?.totalCount || 0,
+		fetchNextPage: infiniteQuery.fetchNextPage,
+		hasNextPage: infiniteQuery.hasNextPage,
+		isFetchingNextPage: infiniteQuery.isFetchingNextPage,
+		isLoading: infiniteQuery.isLoading,
+		error: infiniteQuery.error,
+		createDeviceType: createDeviceType.mutateAsync,
+		updateDeviceType: updateDeviceType.mutateAsync,
+		deleteDeviceType: deleteDeviceType.mutateAsync,
+		restoreDeviceType: restoreDeviceType.mutateAsync,
+	}
+}
+
+export default useDeviceType
