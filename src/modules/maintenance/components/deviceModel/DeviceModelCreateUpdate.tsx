@@ -86,9 +86,7 @@ const DeviceModelCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await deviceModelApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/device-models')
-					}, 2000)
+					navigate('/device-models')
 				}
 			}
 		} catch (err) {

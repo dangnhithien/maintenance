@@ -71,9 +71,7 @@ const PartCategoryCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await partCategoryApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/part-categories')
-					}, 2000)
+					navigate('/part-categories')
 				}
 			}
 		} catch (err) {

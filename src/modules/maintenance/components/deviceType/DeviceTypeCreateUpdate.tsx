@@ -71,9 +71,7 @@ const DeviceTypeCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await deviceTypeApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/device-types')
-					}, 2000)
+					navigate('/device-types')
 				}
 			}
 		} catch (err) {
