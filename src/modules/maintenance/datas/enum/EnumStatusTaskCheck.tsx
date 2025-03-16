@@ -1,6 +1,6 @@
 export enum EnumStatusTaskCheck {
-  CREATED = "Created",
-  WAITING = "Done",
-  APPROVED = "Approved",
-  REJECTED = "Rejected",
+	CREATED = 'Created',
+	WAITING = 'Waitting',
+	DONE = 'Done',
+	REJECTED = 'Rejected',
 }
