@@ -84,9 +84,7 @@ const PartSKUCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await partSKUApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/part-SKUs')
-					}, 2000)
+					navigate('/part-SKUs')
 				}
 			}
 		} catch (err) {

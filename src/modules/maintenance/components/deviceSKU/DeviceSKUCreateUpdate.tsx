@@ -80,9 +80,7 @@ const DeviceSKUCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await deviceSKUApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/device-SKUs')
-					}, 2000)
+					navigate('/device-SKUs')
 				}
 			}
 		} catch (err) {

@@ -81,9 +81,7 @@ const CustomerCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await customerApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/customer')
-					}, 2000)
+					navigate('/customer')
 				}
 			}
 		} catch (err) {

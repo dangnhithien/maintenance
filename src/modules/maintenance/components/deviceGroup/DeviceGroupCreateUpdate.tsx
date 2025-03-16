@@ -76,9 +76,7 @@ const DeviceGroupCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await deviceGroupApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/device-groups')
-					}, 2000)
+					navigate('/device-groups')
 				}
 			}
 		} catch (err) {

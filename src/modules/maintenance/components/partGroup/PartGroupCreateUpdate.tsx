@@ -79,9 +79,7 @@ const PartGroupCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await partGroupApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/part-Groups')
-					}, 2000)
+					navigate('/part-Groups')
 				}
 			}
 		} catch (err) {

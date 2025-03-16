@@ -74,9 +74,7 @@ const PartTypeCreateUpdate: React.FC<FormProps> = ({ id }) => {
 				const res = await partTypeApi.post(data)
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					setTimeout(() => {
-						navigate('/part-types')
-					}, 2000)
+					navigate('/part-types')
 				}
 			}
 		} catch (err) {
