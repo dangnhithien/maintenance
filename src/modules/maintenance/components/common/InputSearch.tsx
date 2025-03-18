@@ -50,7 +50,7 @@ const InputSearch: React.FC<Props> = ({ onSearch }) => {
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Stack direction='row' alignItems='center' sx={{ width: 250 }}>
 				<TextField
-					size='small'
+					size='medium'
 					fullWidth
 					{...register('searchText')}
 					placeholder='Tìm kiếm thông tin'
@@ -66,7 +66,7 @@ const InputSearch: React.FC<Props> = ({ onSearch }) => {
 								<SearchIcon color='action' fontSize='small' />
 							</InputAdornment>
 						),
-						sx: { height: '32px', fontSize: '14px', padding: '4px 8px' },
+						sx: { height: '40px', fontSize: '14px', padding: '4px 8px' },
 					}}
 					sx={{
 						backgroundColor: 'white',
@@ -74,7 +74,7 @@ const InputSearch: React.FC<Props> = ({ onSearch }) => {
 						'& .MuiOutlinedInput-root': {
 							borderRadius: '16px',
 							fontSize: '14px',
-							height: '32px',
+							height: '40px',
 						},
 						'& .MuiOutlinedInput-notchedOutline': { borderColor: '#ccc' },
 						'&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#999' },
