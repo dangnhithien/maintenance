@@ -10,6 +10,8 @@ interface AsyncPaginateSelectProps {
 	id?: string
 	disabled?: boolean
 	onChange?: (value: ICaseType | null) => void
+	onSelect?: (item: { id: string; name: string }) => void
+	error?: boolean
 }
 
 const customStyles = {
@@ -54,12 +56,15 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 	id,
 	onChange,
 	disabled,
+	onSelect,
+	error,
 }) => {
 	const [internalValue, setInternalValue] = useState<ICaseType | null>(null)
 
 	const handleChange = (val: ICaseType | null) => {
 		setInternalValue(val)
-		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+		onChange?.(val)
+		onSelect?.({ id: val?.id || '', name: val?.name || '' })
 	}
 
 	useEffect(() => {
@@ -123,7 +128,14 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 			menuPortalTarget={document.body}
 			styles={{
 				menuPortal: (base: any) => ({ ...base, zIndex: 5 }),
-				...customStyles, // Thêm styles tùy chỉnh
+				...customStyles,
+				control: (base) => ({
+					...base,
+					minHeight: '40px',
+					height: '40px',
+					borderRadius: '4px',
+					borderColor: error ? '#d32f2f' : base.borderColor, // Viền đỏ khi có lỗi
+				}),
 			}}
 			isDisabled={disabled}
 			placeholder='Chọn loại case'

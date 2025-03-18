@@ -10,6 +10,8 @@ interface AsyncPaginateSelectProps {
 	id?: string
 	disabled?: boolean
 	onChange?: (value: UserDto | null) => void
+	onSelect?: (item: { id: string; name: string }) => void
+	error?: boolean
 }
 const customStyles = {
 	control: (base: any, state: any) => ({
@@ -52,12 +54,15 @@ const UserSelect: React.FC<AsyncPaginateSelectProps> = ({
 	id,
 	onChange,
 	disabled,
+	onSelect,
+	error,
 }) => {
 	const [internalValue, setInternalValue] = useState<UserDto | null>(null)
 
 	const handleChange = (val: UserDto | null) => {
 		setInternalValue(val)
-		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+		onChange?.(val)
+		onSelect?.({ id: val?.id || '', name: val?.fullname || '' })
 	}
 
 	useEffect(() => {
@@ -119,7 +124,17 @@ const UserSelect: React.FC<AsyncPaginateSelectProps> = ({
 			}}
 			debounceTimeout={400}
 			menuPortalTarget={document.body}
-			styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+			styles={{
+				menuPortal: (base: any) => ({ ...base, zIndex: 5 }),
+				...customStyles,
+				control: (base) => ({
+					...base,
+					minHeight: '40px',
+					height: '40px',
+					borderRadius: '4px',
+					borderColor: error ? '#d32f2f' : base.borderColor, // Viền đỏ khi có lỗi
+				}),
+			}}
 			isDisabled={disabled}
 			placeholder='Chọn nhân viên'
 		/>
