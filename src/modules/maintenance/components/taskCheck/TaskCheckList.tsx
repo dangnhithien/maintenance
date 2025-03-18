@@ -2,31 +2,38 @@ import PaginatedDataGrid from '@components/PaginationDatagrid'
 import { EnumStatusTaskCheck } from '@modules/maintenance/datas/enum/EnumStatusTaskCheck'
 import { GetTaskCheckDto } from '@modules/maintenance/datas/taskCheck/GetTaskCheckDto'
 import useTaskCheck from '@modules/maintenance/hooks/useTaskCheck'
-import { Warning } from '@mui/icons-material'
+import { Add, Warning } from '@mui/icons-material'
 import {
 	Box,
+	Button,
 	FormControl,
 	Grid2,
 	InputLabel,
 	MenuItem,
 	Select,
+	Stack,
 	Tooltip,
 } from '@mui/material'
 import { GridColDef } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ChipTaskCheckStatus from '../common/chip/ChipTaskCheckStatus'
-import DateRangeFilter from '../common/DateFilter'
 import InputSearch from '../common/InputSearch'
 import { useNotification } from '../common/Notistack'
 import PopupConfirm from '../common/PopupConfirm'
+import DateFilter from '@components/DateFilter'
 
 interface Props {
 	param?: GetTaskCheckDto
 	isViewMode?: boolean
+	mode?: string
 }
 
-const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
+const TaskCheckList: React.FC<Props> = ({
+	param,
+	isViewMode = false,
+	mode,
+}) => {
 	const [openPopupTemplateWarning, setOpenPopupTemplateWarning] =
 		useState(false)
 	const { notify } = useNotification()
@@ -38,25 +45,16 @@ const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
 	const [params, setParams] = useState<GetTaskCheckDto>({
 		...param,
 		includeProperties: 'Customer,Device',
-		takeCount: 10,
+		takeCount: 6,
 		sortBy: 'CreatedDate DESC',
 	})
 
-	const {
-		taskChecks,
-		fetchTaskChecks,
-		deleteTaskCheck,
-		restoreTaskCheck,
-		error,
-		loading,
-		totalCount,
-	} = useTaskCheck()
+	const { taskChecks, fetchTaskChecks, loading, totalCount } = useTaskCheck()
 
 	useEffect(() => {
 		fetchTaskChecks(params)
 	}, [params])
 
-	// Hàm dùng để mở popup cảnh báo nếu không có templateCheckId
 	const handleOpenTemplateWarning = () => {
 		setOpenPopupTemplateWarning(true)
 	}
@@ -120,7 +118,7 @@ const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
 			field: 'scheduledTime',
 			align: 'center',
 			headerAlign: 'center',
-			headerName: 'Ngày bảo trì',
+			headerName: 'Ngày tiến hành',
 			flex: 1,
 			renderCell: (params: any) =>
 				renderConditionalLink(
@@ -133,16 +131,16 @@ const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
 						}),
 				),
 		},
-		// {
-		// 	field: 'taskCreator',
-		// 	headerName: 'Người tạo',
-		// 	align: 'center',
-		// 	headerAlign: 'center',
-		// 	flex: 1,
-		// },
 		{
 			field: 'assigneeName',
-			headerName: 'Kĩ thuật viên',
+			headerName: 'Người phụ trách',
+			align: 'center',
+			headerAlign: 'center',
+			flex: 1,
+		},
+		{
+			field: 'taskCheckType',
+			headerName: 'Loại',
 			align: 'center',
 			headerAlign: 'center',
 			flex: 1,
@@ -157,11 +155,51 @@ const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
 		},
 	]
 
+	const handleFilter = (
+		formattedStart: string | null,
+		formattedEnd: string | null,
+	) => {
+		setParams((prev) => ({
+			...prev,
+			fromDate: formattedStart ? new Date(formattedStart) : new Date(),
+			toDate: formattedEnd ? new Date(formattedEnd) : new Date(),
+		}))
+
+		console.log('Bộ lọc ngày:', { start: formattedStart, end: formattedEnd })
+	}
+
+	const filteredColumns = columns.filter(
+		(col) =>
+			!(
+				mode === 'ticketView' &&
+				(col.field === 'productName' || col.field === 'customerName')
+			),
+	)
+
 	return (
 		<>
 			<Grid2 container direction='column' spacing={2}>
-				{/* Filter Controls */}
-
+				<Grid2 container justifyContent={'space-between'}>
+					<Stack direction='row' spacing={2}>
+						<InputSearch
+							onSearch={(searchText) => {
+								setParams({ ...params, searchTerm: searchText })
+							}}
+						/>
+						<DateFilter onFilter={handleFilter} />
+					</Stack>
+					{mode === 'ticketView' && (
+						<Button
+							variant='contained'
+							color='success'
+							component={Link}
+							to={`/tasks/assignee/create/${param?.caseTaskId}`}
+							size='small'
+						>
+							<Add />
+						</Button>
+					)}
+				</Grid2>
 				{isViewMode && (
 					<Grid2 container spacing={2}>
 						<Grid2>
@@ -208,26 +246,12 @@ const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
 								</Select>
 							</FormControl>
 						</Grid2>
-
-						<DateRangeFilter
-						// onChange={(fromDayjs, toDayjs) => {
-						//   // Nếu fromDayjs là Dayjs, chuyển sang Date bằng fromDayjs.toDate()
-						//   // Nếu cần fallback, bạn có thể set undefined hoặc new Date() tuỳ ý
-						//   setParams({
-						//     ...params,
-						//     // fromDate: fromDayjs ? fromDayjs.toDate() : undefined,
-						//     // toDate: toDayjs ? toDayjs.toDate() : new Date(),
-						//   });
-						// }}
-						/>
 					</Grid2>
 				)}
-
-				{/* DataGrid */}
 				<Grid2>
 					<Box>
 						<PaginatedDataGrid
-							columns={columns}
+							columns={filteredColumns}
 							rows={taskChecks}
 							totalCount={totalCount}
 							setParams={setParams}
@@ -239,7 +263,6 @@ const TaskCheckList: React.FC<Props> = ({ param, isViewMode = false }) => {
 					</Box>
 				</Grid2>
 			</Grid2>
-
 			<PopupConfirm
 				haveButtons={false}
 				open={openPopupTemplateWarning}
