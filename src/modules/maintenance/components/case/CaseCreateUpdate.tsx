@@ -116,6 +116,7 @@ const CaseCreateUpdate: React.FC<FormProps> = ({ id }) => {
 
 				if (res.statusCode === 200) {
 					notify(res.message, 'success')
+					navigate('/cases')
 				}
 			}
 		} catch (err) {
