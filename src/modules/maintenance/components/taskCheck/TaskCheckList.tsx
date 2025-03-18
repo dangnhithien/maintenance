@@ -19,7 +19,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ChipTaskCheckStatus from '../common/chip/ChipTaskCheckStatus'
 import InputSearch from '../common/InputSearch'
-import { useNotification } from '../common/Notistack'
 import PopupConfirm from '../common/PopupConfirm'
 import DateFilter from '@components/DateFilter'
 
@@ -36,20 +35,14 @@ const TaskCheckList: React.FC<Props> = ({
 }) => {
 	const [openPopupTemplateWarning, setOpenPopupTemplateWarning] =
 		useState(false)
-	const { notify } = useNotification()
-
-	// Local state for new filters
-	const [filterDate, setFilterDate] = useState({ start: '', end: '' })
 	const [filterStatus, setFilterStatus] = useState('0')
-
+	const { taskChecks, fetchTaskChecks, loading, totalCount } = useTaskCheck()
 	const [params, setParams] = useState<GetTaskCheckDto>({
 		...param,
 		includeProperties: 'Customer,Device',
-		takeCount: 6,
+		takeCount: param?.takeCount ?? 6,
 		sortBy: 'CreatedDate DESC',
 	})
-
-	const { taskChecks, fetchTaskChecks, loading, totalCount } = useTaskCheck()
 
 	useEffect(() => {
 		fetchTaskChecks(params)
@@ -127,7 +120,7 @@ const TaskCheckList: React.FC<Props> = ({
 						new Date(params.row.scheduledTime).toLocaleDateString('vi-VN', {
 							day: '2-digit',
 							month: '2-digit',
-							year: '2-digit',
+							year: 'numeric',
 						}),
 				),
 		},
@@ -164,8 +157,6 @@ const TaskCheckList: React.FC<Props> = ({
 			fromDate: formattedStart ? new Date(formattedStart) : new Date(),
 			toDate: formattedEnd ? new Date(formattedEnd) : new Date(),
 		}))
-
-		console.log('Bộ lọc ngày:', { start: formattedStart, end: formattedEnd })
 	}
 
 	const filteredColumns = columns.filter(
@@ -259,6 +250,7 @@ const TaskCheckList: React.FC<Props> = ({
 							loading={loading}
 							disableRowSelectionOnClick
 							checkboxSelection={false}
+							initialTakeCount={params.takeCount}
 						/>
 					</Box>
 				</Grid2>
