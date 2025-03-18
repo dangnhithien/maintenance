@@ -45,7 +45,7 @@ const menuItems: MenuItem[] = [
 		label: 'Công việc',
 		icon: <WorkIcon />,
 		children: [
-			{ id: 'case', label: 'Case', path: '/cases' },
+			{ id: 'ticket', label: 'Ticket', path: '/cases' },
 			{ id: 'dieu-phoi', label: 'Điều phối', path: '/tasks/assignee' },
 		],
 	},
