@@ -16,7 +16,7 @@ import InputSearch from '../common/InputSearch'
 import { useNotification } from '../common/Notistack'
 import PopupConfirm from '../common/PopupConfirm'
 import TrashButton from '../common/TrashButton'
-import DateFilter, { IFilterDate } from '@components/DateFilter'
+import DateFilter from '@components/DateFilter'
 interface Props {
 	isViewMode?: boolean
 }
@@ -27,7 +27,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 	const [caseIdApprove, setCaseIdApprove] = useState('')
 	const { notify } = useNotification()
 	const [params, setParams] = useState<ICaseGet>({
-		takeCount: 6,
+		takeCount: 10,
 		fromDate: undefined,
 		toDate: undefined,
 	})
@@ -75,10 +75,10 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 		{
 			field: 'customerCode',
 			headerName: 'Khách hàng',
-			width: 400,
+			// width: 300,
 			editable: false,
 			sortable: false,
-			// flex: 1,
+			flex: 1,
 			renderCell: (params: any) => (
 				<Link to={`/cases/detail/${params.row.id}`}>
 					<Tooltip title={params.row.customerCode}>
@@ -90,7 +90,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 		{
 			field: 'scheduledTime',
 			headerName: 'Ngày tiến hành',
-			minWidth: 300,
+			// minWidth: 300,
 			headerAlign: 'center',
 			align: 'center',
 			editable: false,
@@ -112,7 +112,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 			headerName: 'Trạng thái',
 			headerAlign: 'center',
 			align: 'center',
-			minWidth: 300,
+			// minWidth: 300,
 			editable: false,
 			sortable: false,
 			flex: 1,
@@ -207,11 +207,9 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 	) => {
 		setParams((prev) => ({
 			...prev,
-			fromDate: formattedStart ? new Date(formattedStart) : new Date(),
-			toDate: formattedEnd ? new Date(formattedEnd) : new Date(),
+			...(formattedStart && { fromDate: new Date(formattedStart) }), // ✅ Chỉ cập nhật nếu có giá trị
+			...(formattedEnd && { toDate: new Date(formattedEnd) }), // ✅ Chỉ cập nhật nếu có giá trị
 		}))
-
-		console.log('Bộ lọc ngày:', { start: formattedStart, end: formattedEnd })
 	}
 
 	return (
@@ -278,6 +276,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 							setRowSelectionModel(newRowSelectionModel)
 						}}
 						loading={loading}
+						initialTakeCount={params.takeCount}
 					/>
 				</Grid2>
 			</Grid2>
