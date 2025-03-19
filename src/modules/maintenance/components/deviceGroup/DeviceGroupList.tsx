@@ -70,7 +70,12 @@ const DeviceGroup: React.FC = () => {
 
 	return (
 		<div>
-			<Grid2 container direction={'row'} justifyContent={'space-between'}>
+			<Grid2
+				container
+				direction={'row'}
+				justifyContent={'space-between'}
+				mb={2}
+			>
 				<Grid2>
 					<InputSearch
 						onSearch={(searchText) => {

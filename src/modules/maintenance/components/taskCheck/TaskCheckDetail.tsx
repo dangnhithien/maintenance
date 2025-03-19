@@ -1,5 +1,5 @@
 import { Grid2, Typography } from '@mui/material'
-import IMG1 from '../../../../assets/images/Icon_may_bang_tai.png'
+import DEFAULT from '../../../../assets/images/Icon_Default.jpg'
 import ChipTaskCheckStatus from '../common/chip/ChipTaskCheckStatus'
 import { EnumStatusTaskCheck } from '@modules/maintenance/datas/enum/EnumStatusTaskCheck'
 import useTaskCheck from '@modules/maintenance/hooks/useTaskCheck'
@@ -32,10 +32,10 @@ const TaskCheckDetail: React.FC<Props> = ({ id, onSelect }) => {
 		<Grid2 container spacing={3}>
 			<Grid2 size={{ xs: 2 }}>
 				<img
-					src={IMG1}
+					src={taskDetail?.device?.imageUrl || DEFAULT}
 					style={{
 						maxWidth: '100%',
-						height: 'auto',
+						height: '200px',
 						objectFit: 'contain',
 					}}
 				/>
