@@ -194,6 +194,7 @@ const TemplateCheckList: React.FC<Props> = ({ deviceId }) => {
 							setRowSelectionModel(newRowSelectionModel)
 						}}
 						loading={loading}
+						initialTakeCount={params.takeCount}
 					/>
 				</Grid2>
 			</Grid2>
