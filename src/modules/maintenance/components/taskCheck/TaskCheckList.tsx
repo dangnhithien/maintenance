@@ -39,7 +39,7 @@ const TaskCheckList: React.FC<Props> = ({
 	const { taskChecks, fetchTaskChecks, loading, totalCount } = useTaskCheck()
 	const [params, setParams] = useState<GetTaskCheckDto>({
 		...param,
-		includeProperties: 'Customer,Device',
+		includeProperties: 'Customer,Device,TaskCheckType',
 		takeCount: param?.takeCount ?? 6,
 		sortBy: 'CreatedDate DESC',
 	})
@@ -137,6 +137,8 @@ const TaskCheckList: React.FC<Props> = ({
 			align: 'center',
 			headerAlign: 'center',
 			flex: 1,
+			renderCell: (params: any) =>
+				renderConditionalLink(params, params.row.taskCheckType?.name),
 		},
 		{
 			field: 'taskCheckStatus',
