@@ -6,4 +6,5 @@ export interface TaskCheckCreateDTO {
 	note?: string
 	scheduledTime: string
 	caseTaskId: string
+	deviceId: string
 }
