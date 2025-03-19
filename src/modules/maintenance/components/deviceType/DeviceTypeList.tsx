@@ -120,7 +120,7 @@ const DeviceType: React.FC = () => {
 						<DeviceCard
 							linkBaseUrl='/device-types/update'
 							deviceId={device.id}
-							image='https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg'
+							image={device?.imageUrl!}
 							deviceName={device.name}
 							mode={mode}
 							onCheckDelete={handleSelectionChange}

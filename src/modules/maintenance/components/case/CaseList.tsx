@@ -120,16 +120,18 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 					{params.row.caseTaskStatus === 'Closed' ? (
 						'Đã duyệt'
 					) : (
-						<Button
-							component='label'
-							onClick={handleClickApprove.bind(null, params.row.id)}
-							role={undefined}
-							variant='contained'
-							tabIndex={-1}
-							startIcon={<TaskAltIcon />}
-						>
-							Phê duyệt
-						</Button>
+						<Tooltip title='Xác nhận và duyệt yêu cầu này'>
+							<Button
+								component='label'
+								onClick={handleClickApprove.bind(null, params.row.id)}
+								role={undefined}
+								variant='contained'
+								tabIndex={-1}
+								startIcon={<TaskAltIcon />}
+							>
+								Xác nhận
+							</Button>
+						</Tooltip>
 					)}
 				</>
 			),

@@ -11,6 +11,7 @@ import {
 	Typography,
 } from '@mui/material'
 import React from 'react'
+import ICON_DEFAULT from '@assets/images/Icon_Default.jpg'
 
 interface DeviceCardProps {
 	deviceId: string // ID của thiết bị
@@ -37,6 +38,7 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 	const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		onCheckDelete?.(deviceId, event.target.checked)
 	}
+	console.log(image)
 
 	return (
 		<Card
@@ -63,11 +65,17 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 				<Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
 					<CardMedia
 						component='img'
-						image={image}
+						image={
+							!image
+								? ICON_DEFAULT // Ảnh mặc định nếu null
+								: image.startsWith('http')
+								? encodeURI(`http://${image}`) // Nếu đã có tiền tố http, encode toàn bộ URL
+								: encodeURI(`http://${image}`) // Thêm http:// vào đầu URL trước khi encode
+						}
 						alt={deviceName}
 						sx={{
 							maxWidth: '100%',
-							maxHeight: 250,
+							maxHeight: 200,
 							objectFit: 'contain',
 						}}
 					/>
