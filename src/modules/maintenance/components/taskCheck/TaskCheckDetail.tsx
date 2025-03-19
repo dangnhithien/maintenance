@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
 import { useEffect } from 'react'
+import SpinnerLoading from '@components/SpinerLoading'
 interface Props {
 	id?: string
 	onSelect?: (taskCheck: TaskCheckDto) => void
@@ -25,11 +26,7 @@ const TaskCheckDetail: React.FC<Props> = ({ id, onSelect }) => {
 	}, [taskDetail, onSelect])
 
 	if (isLoading) {
-		return (
-			<Typography variant='body1' fontWeight={600}>
-				Loading
-			</Typography>
-		)
+		return <SpinnerLoading />
 	}
 	return (
 		<Grid2 container spacing={3}>

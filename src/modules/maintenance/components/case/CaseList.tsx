@@ -49,7 +49,6 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 	}, [params])
 
 	const columns: GridColDef[] = [
-		// { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
 		{
 			field: 'code',
 			headerName: 'Mã',
@@ -118,7 +117,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 			flex: 1,
 			renderCell: (params: any) => (
 				<>
-					{params.row.caseTaskStatus === 'Done' ? (
+					{params.row.caseTaskStatus === 'Closed' ? (
 						'Đã duyệt'
 					) : (
 						<Button
@@ -129,7 +128,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 							tabIndex={-1}
 							startIcon={<TaskAltIcon />}
 						>
-							Duyệt
+							Phê duyệt
 						</Button>
 					)}
 				</>
