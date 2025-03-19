@@ -3,10 +3,9 @@ import { ICaseGet } from '@modules/maintenance/datas/case/ICaseGet'
 import useCase from '@modules/maintenance/hooks/useCase'
 import { Add, Warning } from '@mui/icons-material'
 import RestoreIcon from '@mui/icons-material/Restore'
-import { Button, Divider, Grid2 } from '@mui/material'
+import { Button, Divider, Grid2, Stack, Tooltip } from '@mui/material'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import {
-	GridCheckCircleIcon,
 	GridColDef,
 	GridDeleteIcon,
 	GridRowSelectionModel,
@@ -17,6 +16,7 @@ import InputSearch from '../common/InputSearch'
 import { useNotification } from '../common/Notistack'
 import PopupConfirm from '../common/PopupConfirm'
 import TrashButton from '../common/TrashButton'
+import DateFilter from '@components/DateFilter'
 interface Props {
 	isViewMode?: boolean
 }
@@ -27,9 +27,9 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 	const [caseIdApprove, setCaseIdApprove] = useState('')
 	const { notify } = useNotification()
 	const [params, setParams] = useState<ICaseGet>({
-		takeCount: 6,
-		fromDate: new Date('2025-1-1'),
-		toDate: new Date('2025-5-1'),
+		takeCount: 10,
+		fromDate: undefined,
+		toDate: undefined,
 	})
 	const [rowSelectionModel, setRowSelectionModel] =
 		useState<GridRowSelectionModel>([])
@@ -49,7 +49,6 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 	}, [params])
 
 	const columns: GridColDef[] = [
-		// { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
 		{
 			field: 'code',
 			headerName: 'Mã',
@@ -62,18 +61,35 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 		},
 		{
 			field: 'name',
-			headerName: 'Tên biểu mẫu ',
+			headerName: 'Tên',
 			editable: false,
 			sortable: false,
 			flex: 1,
 			renderCell: (params: any) => (
-				<Link to={`/cases/detail/${params.row.id}`}>{params.row.name}</Link>
+				<Link to={`/cases/detail/${params.row.id}`}>
+					<Tooltip title={params.row.name}>{params.row.name}</Tooltip>
+				</Link>
+			),
+		},
+		{
+			field: 'customerCode',
+			headerName: 'Khách hàng',
+			// width: 300,
+			editable: false,
+			sortable: false,
+			flex: 1,
+			renderCell: (params: any) => (
+				<Link to={`/cases/detail/${params.row.id}`}>
+					<Tooltip title={params.row.customerCode}>
+						{params.row.customerCode}
+					</Tooltip>
+				</Link>
 			),
 		},
 		{
 			field: 'scheduledTime',
 			headerName: 'Ngày tiến hành',
-			minWidth: 300,
+			// minWidth: 300,
 			headerAlign: 'center',
 			align: 'center',
 			editable: false,
@@ -95,25 +111,27 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 			headerName: 'Trạng thái',
 			headerAlign: 'center',
 			align: 'center',
-			minWidth: 300,
+			// minWidth: 300,
 			editable: false,
 			sortable: false,
 			flex: 1,
 			renderCell: (params: any) => (
 				<>
-					{params.row.caseTaskStatus === 'Done' ? (
+					{params.row.caseTaskStatus === 'Closed' ? (
 						'Đã duyệt'
 					) : (
-						<Button
-							component='label'
-							onClick={handleClickApprove.bind(null, params.row.id)}
-							role={undefined}
-							variant='contained'
-							tabIndex={-1}
-							startIcon={<TaskAltIcon />}
-						>
-							Duyệt
-						</Button>
+						<Tooltip title='Xác nhận và duyệt yêu cầu này'>
+							<Button
+								component='label'
+								onClick={handleClickApprove.bind(null, params.row.id)}
+								role={undefined}
+								variant='contained'
+								tabIndex={-1}
+								startIcon={<TaskAltIcon />}
+							>
+								Xác nhận
+							</Button>
+						</Tooltip>
 					)}
 				</>
 			),
@@ -165,7 +183,6 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 			})
 			.catch(() => {})
 	}
-	console.log('CaseList', loading)
 
 	const handleConfirmHardDelete = async () => {
 		await deleteCase({
@@ -185,15 +202,29 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 			})
 			.catch(() => {})
 	}
+	const handleFilter = (
+		formattedStart: string | null,
+		formattedEnd: string | null,
+	) => {
+		setParams((prev) => ({
+			...prev,
+			...(formattedStart && { fromDate: new Date(formattedStart) }), // ✅ Chỉ cập nhật nếu có giá trị
+			...(formattedEnd && { toDate: new Date(formattedEnd) }), // ✅ Chỉ cập nhật nếu có giá trị
+		}))
+	}
+
 	return (
 		<>
 			<Grid2 container direction={'column'} spacing={2}>
 				<Grid2 container justifyContent={'space-between'}>
-					<InputSearch
-						onSearch={(searchText) => {
-							setParams({ ...params, searchTerm: searchText })
-						}}
-					/>
+					<Stack direction='row' spacing={2}>
+						<InputSearch
+							onSearch={(searchText) => {
+								setParams({ ...params, searchTerm: searchText })
+							}}
+						/>
+						<DateFilter onFilter={handleFilter} />
+					</Stack>
 					{!isViewMode && (
 						<Grid2 container spacing={1}>
 							<Button
@@ -246,6 +277,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 							setRowSelectionModel(newRowSelectionModel)
 						}}
 						loading={loading}
+						initialTakeCount={params.takeCount}
 					/>
 				</Grid2>
 			</Grid2>

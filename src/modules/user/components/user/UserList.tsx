@@ -200,6 +200,7 @@ const UserList = () => {
 							setRowSelectionModel(newRowSelectionModel)
 						}}
 						loading={loading}
+						initialTakeCount={params.takeCount}
 					/>
 				</Grid2>
 			</Grid2>

@@ -1,19 +1,17 @@
-import { unwrapObjectReponse } from '@datas/comon/ApiResponse'
-import caseTypeApi from '@modules/maintenance/apis/caseTypeApi'
-import { ICaseType } from '@modules/maintenance/datas/caseType/ICaseType'
-import { ICaseTypeGet } from '@modules/maintenance/datas/caseType/ICaseTypeGet'
-
-import React, { useEffect, useState } from 'react'
+import { ApiRequest } from '@datas/comon/ApiRequest'
+// import { unwrapObjectReponse } from '@datas/comon/ApiResponse'
+import taskCheckTypeApi from '@modules/maintenance/apis/taskCheckTypeApi'
+import { ITaskCheckType } from '@modules/maintenance/datas/taskCheckType/ITaskCheckType'
+import React, { useState } from 'react'
 import { AsyncPaginate } from 'react-select-async-paginate'
 
 interface AsyncPaginateSelectProps {
 	id?: string
 	disabled?: boolean
-	onChange?: (value: ICaseType | null) => void
+	onChange?: (value: ITaskCheckType | null) => void
 	onSelect?: (item: { id: string; name: string }) => void
 	error?: boolean
 }
-
 const customStyles = {
 	control: (base: any, state: any) => ({
 		...base,
@@ -51,33 +49,34 @@ const customStyles = {
 		fontSize: '14px', // Giữ menu đồng bộ với text
 	}),
 }
-
-const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
+const TaskCheckTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 	id,
 	onChange,
 	disabled,
 	onSelect,
 	error,
 }) => {
-	const [internalValue, setInternalValue] = useState<ICaseType | null>(null)
+	const [internalValue, setInternalValue] = useState<ITaskCheckType | null>(
+		null,
+	)
 
-	const handleChange = (val: ICaseType | null) => {
+	const handleChange = (val: ITaskCheckType | null) => {
 		setInternalValue(val)
-		onChange?.(val)
+		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
 		onSelect?.({ id: val?.id || '', name: val?.name || '' })
 	}
 
-	useEffect(() => {
-		if (id) {
-			caseTypeApi
-				.getById(id)
-				.then(unwrapObjectReponse)
-				.then((res) => {
-					setInternalValue(res)
-				})
-				.catch((err) => {})
-		}
-	}, [id])
+	// useEffect(() => {
+	// 	if (id) {
+	// 		taskCheckTypeApi
+	// 			.get()
+	// 			.then(unwrapObjectReponse)
+	// 			.then((res) => {
+	// 				setInternalValue(res)
+	// 			})
+	// 			.catch((err) => {})
+	// 	}
+	// }, [id])
 
 	const loadOptionCustomers = async (
 		search: any,
@@ -86,14 +85,14 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 	) => {
 		const page = additional?.page || 1 // Nếu `additional` là undefined, mặc định `page = 1`
 
-		const paramsObj: ICaseTypeGet = {
+		const paramsObj: ApiRequest = {
 			searchTerm: search,
 			takeCount: 20,
 			skipCount: (page - 1) * 20,
 		}
 
 		try {
-			const result = await caseTypeApi.get(paramsObj) // Gọi API với tham số
+			const result = await taskCheckTypeApi.get(paramsObj) // Gọi API với tham số
 			return {
 				options: result.result.items,
 				hasMore: page * 10 < result.result.totalCount,
@@ -119,8 +118,8 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 			value={internalValue}
 			onChange={handleChange}
 			loadOptions={loadOptionCustomers}
-			getOptionLabel={(option: ICaseType) => option.name}
-			getOptionValue={(option: ICaseType) => option.id}
+			getOptionLabel={(option: ITaskCheckType) => option.name}
+			getOptionValue={(option: ITaskCheckType) => option.id}
 			additional={{
 				page: 1,
 			}}
@@ -138,9 +137,9 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 				}),
 			}}
 			isDisabled={disabled}
-			placeholder='Chọn loại case'
+			placeholder='Chọn loại task'
 		/>
 	)
 }
 
-export default CaseTypeSelect
+export default TaskCheckTypeSelect

@@ -10,7 +10,7 @@ const CaseCreateUpdatePage = () => {
 				<title>Create Device</title>
 				<meta name='description' content='Create a new device' />
 			</Helmet>
-			<Wrapper title='Tạo Case'>
+			<Wrapper title='Tạo mới Ticket'>
 				<CaseCreateUpdate id={id} />
 			</Wrapper>
 		</>

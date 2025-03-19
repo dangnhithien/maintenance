@@ -69,7 +69,12 @@ const PartCategoryList: React.FC = () => {
 
 	return (
 		<div>
-			<Grid2 container direction={'row'} justifyContent={'space-between'}>
+			<Grid2
+				container
+				direction={'row'}
+				justifyContent={'space-between'}
+				mb={2}
+			>
 				<Grid2>
 					<InputSearch
 						onSearch={(searchText) => {
@@ -114,9 +119,6 @@ const PartCategoryList: React.FC = () => {
 						<DeviceCard
 							linkBaseUrl='/device-types/update'
 							deviceId={device.id}
-							image={
-								'https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg'
-							}
 							deviceName={device.name}
 							mode={mode} // Truyền mode cho DeviceCard để hiển thị checkbox nếu cần
 							onCheckDelete={handleSelectionChange}

@@ -1,19 +1,17 @@
-import { unwrapObjectReponse } from '@datas/comon/ApiResponse'
-import caseTypeApi from '@modules/maintenance/apis/caseTypeApi'
-import { ICaseType } from '@modules/maintenance/datas/caseType/ICaseType'
-import { ICaseTypeGet } from '@modules/maintenance/datas/caseType/ICaseTypeGet'
-
 import React, { useEffect, useState } from 'react'
+import { unwrapObjectReponse } from '@datas/comon/ApiResponse'
+import templateCheckListApi from '@modules/maintenance/apis/templateCheckListApi'
+import { GetTemplateCheckListDto } from '@modules/maintenance/datas/templateCheckList/GetTemplateCheckListDto'
+import { TemplateCheckListDto } from '@modules/maintenance/datas/templateCheckList/TemplateCheckListDto'
 import { AsyncPaginate } from 'react-select-async-paginate'
 
 interface AsyncPaginateSelectProps {
 	id?: string
 	disabled?: boolean
-	onChange?: (value: ICaseType | null) => void
+	onChange?: (value: TemplateCheckListDto | null) => void
 	onSelect?: (item: { id: string; name: string }) => void
 	error?: boolean
 }
-
 const customStyles = {
 	control: (base: any, state: any) => ({
 		...base,
@@ -51,17 +49,17 @@ const customStyles = {
 		fontSize: '14px', // Giữ menu đồng bộ với text
 	}),
 }
-
-const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
+const TemplateSelect: React.FC<AsyncPaginateSelectProps> = ({
 	id,
 	onChange,
 	disabled,
 	onSelect,
 	error,
 }) => {
-	const [internalValue, setInternalValue] = useState<ICaseType | null>(null)
+	const [internalValue, setInternalValue] =
+		useState<TemplateCheckListDto | null>(null)
 
-	const handleChange = (val: ICaseType | null) => {
+	const handleChange = (val: TemplateCheckListDto | null) => {
 		setInternalValue(val)
 		onChange?.(val)
 		onSelect?.({ id: val?.id || '', name: val?.name || '' })
@@ -69,7 +67,7 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 
 	useEffect(() => {
 		if (id) {
-			caseTypeApi
+			templateCheckListApi
 				.getById(id)
 				.then(unwrapObjectReponse)
 				.then((res) => {
@@ -79,21 +77,21 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 		}
 	}, [id])
 
-	const loadOptionCustomers = async (
+	const loadOptionUsers = async (
 		search: any,
 		loadedOptions: any,
 		additional: any,
 	) => {
 		const page = additional?.page || 1 // Nếu `additional` là undefined, mặc định `page = 1`
 
-		const paramsObj: ICaseTypeGet = {
+		const paramsObj: GetTemplateCheckListDto = {
 			searchTerm: search,
 			takeCount: 20,
 			skipCount: (page - 1) * 20,
 		}
 
 		try {
-			const result = await caseTypeApi.get(paramsObj) // Gọi API với tham số
+			const result = await templateCheckListApi.get(paramsObj) // Gọi API với tham số
 			return {
 				options: result.result.items,
 				hasMore: page * 10 < result.result.totalCount,
@@ -102,7 +100,7 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 				},
 			}
 		} catch (error) {
-			console.error('Error loading Customer options:', error)
+			console.error('Error loading User options:', error)
 			return {
 				options: [],
 				hasMore: false,
@@ -118,9 +116,9 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 			isClearable
 			value={internalValue}
 			onChange={handleChange}
-			loadOptions={loadOptionCustomers}
-			getOptionLabel={(option: ICaseType) => option.name}
-			getOptionValue={(option: ICaseType) => option.id}
+			loadOptions={loadOptionUsers}
+			getOptionLabel={(option: TemplateCheckListDto) => option.name}
+			getOptionValue={(option: TemplateCheckListDto) => option.id}
 			additional={{
 				page: 1,
 			}}
@@ -138,9 +136,9 @@ const CaseTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 				}),
 			}}
 			isDisabled={disabled}
-			placeholder='Chọn loại case'
+			placeholder='Chọn loại phiếu'
 		/>
 	)
 }
 
-export default CaseTypeSelect
+export default TemplateSelect

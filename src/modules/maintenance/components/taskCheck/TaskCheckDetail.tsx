@@ -1,72 +1,122 @@
-import { unwrapObjectReponse } from "@datas/comon/ApiResponse";
-import taskCheckApi from "@modules/maintenance/apis/taskCheckApi";
-import { RowCheckValueDto } from "@modules/maintenance/datas/rowCheckValue/RowCheckValueDto";
-import { TaskCheckDto } from "@modules/maintenance/datas/taskCheck/TaskCheckDto";
-import { Box, Grid2, Paper, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
-// import InfoProduct from "../common/InfoProduct";
-import Wrapper from "../common/Wrapper";
-import RowCheckValue from "../survey/RowCheckValue";
+import { Grid2, Typography } from '@mui/material'
+import DEFAULT from '../../../../assets/images/Icon_Default.jpg'
+import ChipTaskCheckStatus from '../common/chip/ChipTaskCheckStatus'
+import { EnumStatusTaskCheck } from '@modules/maintenance/datas/enum/EnumStatusTaskCheck'
+import useTaskCheck from '@modules/maintenance/hooks/useTaskCheck'
+import { format } from 'date-fns'
+import { vi } from 'date-fns/locale'
+import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
+import { useEffect } from 'react'
+import SpinnerLoading from '@components/SpinerLoading'
 interface Props {
-  id?: string;
+	id?: string
+	onSelect?: (taskCheck: TaskCheckDto) => void
 }
-const TaskCheckDetail: React.FC<Props> = ({ id }) => {
-  const [rowCheckValues, setRowCheckValues] = useState<RowCheckValueDto[]>([]);
-  const [taskCheck, setTaskCheck] = useState<TaskCheckDto>();
-  useEffect(() => {
-    if (id) {
-      taskCheckApi
-        .getById(id, {
-          includeProperties: "TemplateCheck",
-        })
-        .then(unwrapObjectReponse)
-        .then((res) => {
-          setTaskCheck(res);
-          setRowCheckValues(res.rowCheckValues);
-        })
-        .catch((err) => {});
-    }
-  }, []);
-  return (
-    <>
-      <Grid2 container spacing={2}>
-        {/* {taskCheck?.product && <InfoProduct product={taskCheck?.product} />} */}
-        <Grid2 flex={1}>
-          <Paper
-            variant="outlined"
-            sx={{ p: 3, width: "100%", height: "100%", borderRadius: 4 }}
-          >
-            <Typography variant="h6" color="primary" mb={2} fontWeight={"bold"}>
-              {taskCheck?.templateCheck?.name}
-            </Typography>
-            <Box
-              sx={{
-                overflowY: "auto",
-                overflowX: "hidden",
-                height: "600px",
-                pl: 2,
-              }}
-            >
-              <Grid2 container size={12} spacing={1} direction={"column"}>
-                {rowCheckValues.map((rowCheckValue, index) => (
-                  <Grid2 key={index} size={12} spacing={1}>
-                    <RowCheckValue data={rowCheckValue} />
-                  </Grid2>
-                ))}
-              </Grid2>
-            </Box>
-          </Paper>
-        </Grid2>
-      </Grid2>
-      <Grid2 size={12} container spacing={2}>
-        {taskCheck?.reason && (
-          <Wrapper title="Lí do" sx={{ mt: 2 }}>
-            {taskCheck?.reason}
-          </Wrapper>
-        )}
-      </Grid2>
-    </>
-  );
-};
+const TaskCheckDetail: React.FC<Props> = ({ id, onSelect }) => {
+	const { getTaskCheckById } = useTaskCheck()
+	const { data: taskDetail, isLoading } = getTaskCheckById(id || '', {
+		includeProperties:
+			'Device,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
+	})
 
-export default TaskCheckDetail;
+	useEffect(() => {
+		if (taskDetail && onSelect) {
+			onSelect(taskDetail)
+		}
+	}, [taskDetail, onSelect])
+
+	if (isLoading) {
+		return <SpinnerLoading />
+	}
+	return (
+		<Grid2 container spacing={3}>
+			<Grid2 size={{ xs: 2 }}>
+				<img
+					src={taskDetail?.device?.imageUrl || DEFAULT}
+					style={{
+						maxWidth: '100%',
+						height: '200px',
+						objectFit: 'contain',
+					}}
+				/>
+			</Grid2>
+			<Grid2 size={{ xs: 10 }}>
+				<Grid2 container spacing={3}>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Tên task
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.name}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Tên thiết bị
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.device?.name}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Code
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.code}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Khách hàng
+						</Typography>
+						<Typography variant='body2'>
+							{taskDetail?.customer?.name}
+						</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Người phụ trách
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.assigneeName}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Ticket code
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.caseTaskCode}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Ngày bắt đầu
+						</Typography>
+						<Typography variant='body2'>
+							{taskDetail?.scheduledTime &&
+								format(new Date(taskDetail.scheduledTime), 'dd/MM/yyyy', {
+									locale: vi,
+								})}
+						</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Tình trạng
+						</Typography>
+						<ChipTaskCheckStatus
+							status={
+								taskDetail?.taskCheckStatus ?? EnumStatusTaskCheck.DEFAULT
+							}
+						/>
+					</Grid2>
+					<Grid2 size={{ xs: 4 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Serial number
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.serialNumber}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 12 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Ghi chú
+						</Typography>
+						<Typography variant='body2'>{taskDetail?.note || '-'}</Typography>
+					</Grid2>
+				</Grid2>
+			</Grid2>
+		</Grid2>
+	)
+}
+
+export default TaskCheckDetail

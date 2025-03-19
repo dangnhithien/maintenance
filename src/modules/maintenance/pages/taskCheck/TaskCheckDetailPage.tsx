@@ -1,34 +1,58 @@
-import TaskCheckDetail from "@modules/maintenance/components/taskCheck/TaskCheckDetail";
-import { Link } from "@mui/material";
-import { Helmet } from "react-helmet";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import Wrapper from '@modules/maintenance/components/common/Wrapper'
+import TaskCheckDetail from '@modules/maintenance/components/taskCheck/TaskCheckDetail'
+import { Helmet } from 'react-helmet'
+import { useParams } from 'react-router-dom'
+import AssignmentIcon from '@mui/icons-material/Assignment'
+import FrameVMS from '@components/FrameVMS'
+import TabHistory from '@modules/maintenance/components/taskCheck/TabHistory'
+import { Button } from '@mui/material'
+import { useState } from 'react'
+import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
+import TaskCheckVote from '@modules/maintenance/components/taskCheck/TaskCheckVote'
 
-const TaskCheckDetailPage = () => {
-  const { id } = useParams();
+const TaskCheckDetailPage: React.FC = () => {
+	const { id } = useParams()
+	const [activeTab, setActiveTab] = useState(0)
+	const [taskCheck, setTaskCheck] = useState<TaskCheckDto>({} as TaskCheckDto)
+	const onSelectTaskCheck = (taskCheck: TaskCheckDto) => {
+		setTaskCheck(taskCheck)
+	}
+	return (
+		<>
+			<Helmet>
+				<title>Thông tin Task</title>
+				<meta name='Thông tin Task' content='Thông tin Task' />
+			</Helmet>
+			<Wrapper sx={{ mb: 2 }}>
+				<FrameVMS
+					title='Thông tin Task'
+					icon={<AssignmentIcon />}
+					action={
+						<Button
+							onClick={() => setActiveTab((prev) => (prev === 0 ? 1 : 0))}
+							sx={{ fontWeight: 600 }}
+						>
+							{activeTab === 0 ? 'Xem lịch sử' : 'Xem Phiếu'}
+						</Button>
+					}
+				>
+					<TaskCheckDetail id={id} onSelect={onSelectTaskCheck} />
+				</FrameVMS>
+			</Wrapper>
 
-  const breadcrumbs = [
-    <Link key="1" underline="none" component={RouterLink} to="/task-check">
-      <span style={{ color: "#10428e", fontSize: "18px", fontWeight: 600 }}>
-        Lịch sử quét
-      </span>
-    </Link>,
-    <Link key="2" underline="none" component={RouterLink} to="">
-      <span style={{ color: "#c3c3c3", fontSize: "18px", fontWeight: 600 }}>
-        Chi tiết
-      </span>
-    </Link>,
-  ];
+			{activeTab === 0 && (
+				<Wrapper>
+					<TaskCheckVote data={taskCheck} />
+				</Wrapper>
+			)}
 
-  return (
-    <div>
-      <Helmet>
-        <title>Create Device</title>
-        <meta name="description" content="Create a new device" />
-      </Helmet>
+			{activeTab === 1 && (
+				<Wrapper>
+					<TabHistory data={taskCheck} />
+				</Wrapper>
+			)}
+		</>
+	)
+}
 
-      <TaskCheckDetail id={id} />
-    </div>
-  );
-};
-
-export default TaskCheckDetailPage;
+export default TaskCheckDetailPage
