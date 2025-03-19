@@ -14,7 +14,8 @@ interface Props {
 const TaskCheckDetail: React.FC<Props> = ({ id, onSelect }) => {
 	const { getTaskCheckById } = useTaskCheck()
 	const { data: taskDetail, isLoading } = getTaskCheckById(id || '', {
-		includeProperties: 'Device,Customer,TemplateCheck',
+		includeProperties:
+			'Device,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
 	})
 
 	useEffect(() => {

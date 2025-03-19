@@ -42,7 +42,11 @@ class TaskCheckApi {
 		params?: ApiRequest,
 	): Promise<ApiResponseWithObject<TaskCheckDto>> => {
 		return await axiosInstance.get(`${BASE_URL}/${id}`, {
-			params: { ...params, includeProperties: 'Device,Customer,TemplateCheck' },
+			params: {
+				...params,
+				includeProperties:
+					'Device,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
+			},
 		})
 	}
 	update = async (

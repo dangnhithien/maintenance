@@ -32,4 +32,19 @@ export interface TaskCheckDto extends TrackingDataDto {
 	rowCheckValues: RowCheckValueDto[]
 	reason?: string
 	device?: IDevice
+	taskCheckMaintenanceHistories?: MaintenanceHistoryDto[]
+}
+
+export interface MaintenanceHistoryDto {
+	maintenanceHistoryId: string
+	maintenanceHistory: {
+		fieldName: string
+		oldValue: string
+		newValue: string
+		updateByUsername: string
+		updateByUserId: string
+		maintenanceUpdateType: string
+		maintenanceUpdateAt: string
+		description: string
+	}
 }

@@ -10,6 +10,7 @@ interface PaginatedDataGridProps extends DataGridProps {
 	totalCount: number
 	setParams: (params: any) => void
 	initialTakeCount: number | undefined
+	checkboxSelection?: boolean
 }
 
 const PaginatedDataGrid = ({
@@ -18,6 +19,7 @@ const PaginatedDataGrid = ({
 	totalCount,
 	setParams,
 	initialTakeCount,
+	checkboxSelection,
 	...dataGridProps
 }: PaginatedDataGridProps) => {
 	const [paginationModel, setPaginationModel] = useState({
@@ -68,7 +70,7 @@ const PaginatedDataGrid = ({
 			rowCount={totalCount}
 			paginationModel={paginationModel}
 			pageSizeOptions={[6, 10, 12, 18]}
-			checkboxSelection
+			checkboxSelection={checkboxSelection}
 			disableRowSelectionOnClick
 			disableColumnMenu
 			paginationMode='server'
