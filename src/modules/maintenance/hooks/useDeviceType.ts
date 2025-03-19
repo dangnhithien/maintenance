@@ -1,6 +1,7 @@
 import {
 	useInfiniteQuery,
 	useMutation,
+	useQuery,
 	useQueryClient,
 } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
@@ -19,21 +20,17 @@ interface DeviceTypePage {
 	totalCount: number
 }
 
-export const useDeviceType = (takeCount = 10) => {
+export const useDeviceType = (takeCount = 10, searchTerm?: string) => {
 	const queryClient = useQueryClient()
 
-	// Sử dụng useInfiniteQuery để hỗ trợ Infinite Scroll
 	const infiniteQuery = useInfiniteQuery<DeviceTypePage, AxiosError>({
-		queryKey: [KEY],
-		queryFn: async ({
-			pageParam = 0,
-		}: {
-			pageParam?: unknown
-		}): Promise<DeviceTypePage> => {
+		queryKey: [KEY, searchTerm], // Thay đổi queryKey khi searchTerm thay đổi
+		queryFn: async ({ pageParam = 0 }) => {
 			const params: IDeviceTypeGet = {
 				takeCount,
 				skipCount: pageParam as number,
 				sortBy: 'CreatedDate DESC',
+				searchTerm: searchTerm || undefined, // Tránh gửi searchTerm rỗng
 			}
 			const response = await deviceTypeApi.get(params)
 			const items: IDeviceType[] = response?.result?.items || []
@@ -46,6 +43,7 @@ export const useDeviceType = (takeCount = 10) => {
 		},
 		getNextPageParam: (lastPage) => lastPage.nextPage,
 		initialPageParam: 0,
+		enabled: !!searchTerm || true,
 	})
 
 	// Các mutation cho Create, Update, Delete, Restore
@@ -79,7 +77,6 @@ export const useDeviceType = (takeCount = 10) => {
 	// Gộp tất cả dữ liệu từ các trang thành 1 mảng
 	const deviceTypes =
 		infiniteQuery.data?.pages.flatMap((page) => page.items) || []
-
 	return {
 		deviceTypes,
 		totalCount: infiniteQuery.data?.pages[0]?.totalCount || 0,
@@ -92,6 +89,7 @@ export const useDeviceType = (takeCount = 10) => {
 		updateDeviceType: updateDeviceType.mutateAsync,
 		deleteDeviceType: deleteDeviceType.mutateAsync,
 		restoreDeviceType: restoreDeviceType.mutateAsync,
+		refetch: infiniteQuery.refetch,
 	}
 }
 

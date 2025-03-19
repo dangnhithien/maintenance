@@ -15,7 +15,7 @@ import ICON_DEFAULT from '@assets/images/Icon_Default.jpg'
 
 interface DeviceCardProps {
 	deviceId: string // ID của thiết bị
-	image: string // Đường dẫn ảnh thiết bị
+	image?: string // Đường dẫn ảnh thiết bị
 	chips?: string[] // Các nhãn chip
 	deviceName: string // Tên thiết bị
 	mode: string // Chế độ hiện tại (vd: "selection", "chế độ khác", ...)
@@ -38,7 +38,6 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 	const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		onCheckDelete?.(deviceId, event.target.checked)
 	}
-	console.log(image)
 
 	return (
 		<Card
@@ -61,25 +60,26 @@ const DeviceCard: React.FC<DeviceCardProps> = ({
 			)}
 
 			<CardContent>
-				{/* Hình ảnh thiết bị */}
-				<Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
-					<CardMedia
-						component='img'
-						image={
-							!image
-								? ICON_DEFAULT // Ảnh mặc định nếu null
-								: image.startsWith('http')
-								? encodeURI(`http://${image}`) // Nếu đã có tiền tố http, encode toàn bộ URL
-								: encodeURI(`http://${image}`) // Thêm http:// vào đầu URL trước khi encode
-						}
-						alt={deviceName}
-						sx={{
-							maxWidth: '100%',
-							maxHeight: 200,
-							objectFit: 'contain',
-						}}
-					/>
-				</Box>
+				{image && (
+					<Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+						<CardMedia
+							component='img'
+							image={
+								!image
+									? ICON_DEFAULT // Ảnh mặc định nếu null
+									: image.startsWith('http')
+									? encodeURI(image) // Nếu đã có "http", chỉ encode URL
+									: encodeURI(`http://${image}`) // Nếu chưa có, thêm "http://" rồi encode
+							}
+							alt={deviceName}
+							sx={{
+								maxWidth: '100%',
+								maxHeight: 200,
+								objectFit: 'contain',
+							}}
+						/>
+					</Box>
+				)}
 
 				{/* Danh sách chip */}
 				{chips &&

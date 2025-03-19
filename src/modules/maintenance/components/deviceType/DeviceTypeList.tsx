@@ -2,7 +2,7 @@ import { Warning } from '@mui/icons-material'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { Box, Button, IconButton, CircularProgress, Grid2 } from '@mui/material'
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DeviceCard from '../common/DeviceItem'
 import InputSearch from '../common/InputSearch'
@@ -12,8 +12,7 @@ import useDeviceType from '@modules/maintenance/hooks/useDeviceType'
 
 const DeviceType: React.FC = () => {
 	const { notify } = useNotification()
-
-	// Sử dụng hook useDeviceType với Infinite Query (lấy 3 phần tử mỗi trang)
+	const [searchTerm, setSearchTerm] = useState('')
 	const {
 		deviceTypes,
 		fetchNextPage,
@@ -21,12 +20,15 @@ const DeviceType: React.FC = () => {
 		isFetchingNextPage,
 		isLoading,
 		deleteDeviceType,
-	} = useDeviceType(10)
-
-	// State cho chế độ selection và popup xóa
+	} = useDeviceType(10, searchTerm)
 	const [mode, setMode] = React.useState<string>('')
 	const [openPopupHardDelete, setOpenPopupHardDelete] = React.useState(false)
 	const [selectedDevices, setSelectedDevices] = React.useState<string[]>([])
+
+	const handleSearch = (searchText: string) => {
+		setSearchTerm(searchText)
+	}
+	console.log(deviceTypes)
 
 	// IntersectionObserver để kích hoạt load thêm khi cuộn tới phần tử cuối cùng
 	const observer = useRef<IntersectionObserver | null>(null)
@@ -74,7 +76,7 @@ const DeviceType: React.FC = () => {
 			{/* Header: Tìm kiếm & Nút Thêm/Xóa */}
 			<Grid2 container justifyContent='space-between' alignItems='center'>
 				<Grid2 size={{ xs: 6 }}>
-					<InputSearch onSearch={(searchText) => console.log(searchText)} />
+					<InputSearch onSearch={handleSearch} />
 				</Grid2>
 				<Grid2>
 					<Box display='flex' alignItems='center'>
@@ -130,7 +132,7 @@ const DeviceType: React.FC = () => {
 			</Grid2>
 
 			{/* Hiển thị icon loading khi tải thêm dữ liệu */}
-			{(isLoading || isFetchingNextPage) && (
+			{(isLoading || isFetchingNextPage || deviceTypes.length === 0) && (
 				<Box display='flex' justifyContent='center' mt={2}>
 					<CircularProgress />
 				</Box>

@@ -118,9 +118,6 @@ const PartSKUList: React.FC = () => {
 						<DeviceCard
 							linkBaseUrl='/device-SKUs/update'
 							deviceId={device.id}
-							image={
-								'https://linx.com.vn/wp-content/uploads/2022/10/may-in-date-linx-8830.jpg'
-							}
 							chips={['abc']}
 							deviceName={device.name}
 							mode={mode} // Truyền mode cho DeviceCard để hiển thị checkbox nếu cần
