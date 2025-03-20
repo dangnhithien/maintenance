@@ -19,13 +19,13 @@ import UsageTypeSelect from '../common/select/UsageTypeSelect'
 
 // Updated schema: removed validations for note and address
 const schema = yup.object({
-	name: yup.string().required('Không được bỏ trống'),
-	serialNumber: yup.string().required('Không được bỏ trống'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	serialNumber: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	note: yup.string().max(255, 'Giới hạn 255 ký tự'),
-	deviceTypeId: yup.string().required('Không được bỏ trống'),
-	deviceGroupId: yup.string().required('Không được bỏ trống'),
-	deviceSKUId: yup.string().required('Không được bỏ trống'),
-	deviceModelId: yup.string().required('Không được bỏ trống'),
+	deviceTypeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceGroupId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceSKUId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceModelId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	image: yup.string(),
 })
 

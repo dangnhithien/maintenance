@@ -18,14 +18,14 @@ import PartTypeSelect from '../common/select/PartTypeSelect'
 import UsageTypeSelect from '../common/select/UsageTypeSelect'
 
 const schema = yup.object({
-	name: yup.string().required('Không được bỏ trống'),
-	partCategoryId: yup.string().required('Không được bỏ trống'),
-	partTypeId: yup.string().required('Không được bỏ trống'),
-	partGroupId: yup.string().required('Không được bỏ trống'),
-	partSKUId: yup.string().required('Không được bỏ trống'),
-	deviceId: yup.string().required('Không được bỏ trống'),
-	usageTypeId: yup.string().required('Không được bỏ trống'),
-	serialNumber: yup.string().required('Không được bỏ trống'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	partCategoryId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	partTypeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	partGroupId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	partSKUId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	usageTypeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	serialNumber: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	description: yup.string().max(255, 'Giới hạn 255 ký tự'),
 	image: yup.string(),
 })

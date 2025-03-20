@@ -19,13 +19,13 @@ import useTaskCheck from '@modules/maintenance/hooks/useTaskCheck'
 import DeviceSelect from '@modules/maintenance/components/common/select/DeviceSelect'
 
 const schema = yup.object({
-	name: yup.string().required('Không được bỏ trống'),
-	assigneeId: yup.string().required('Không được bỏ trống'),
-	templateCheckId: yup.string().required('Không được bỏ trống'),
-	taskCheckTypeId: yup.string().required('Không được bỏ trống'),
-	scheduledTime: yup.string().required('Không được bỏ trống'),
-	deviceId: yup.string().required('Không được bỏ trống'),
-	caseTaskId: yup.string().required('Không được bỏ trống'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	assigneeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	templateCheckId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	taskCheckTypeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	scheduledTime: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	caseTaskId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 })
 const TaskCheckCreatePage = () => {
 	const { id } = useParams()

@@ -38,9 +38,9 @@ const schema = yup.object({
 	name: yup.string(), // Tùy chọn
 	note: yup.string(), // Tùy chọn
 	templateCheckId: yup.string().required('Phiếu là bắt buộc'),
-	deviceId: yup.string().required('Không được bỏ trống'),
-	assigneeId: yup.string().required('Không được bỏ trống'),
-	caseTaskId: yup.string().required('Không được bỏ trống'),
+	deviceId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	assigneeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	caseTaskId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	scheduledTime: yup
 		.string()
 		.typeError('Ngày đến bảo trì không hợp lệ')
