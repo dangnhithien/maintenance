@@ -1,13 +1,14 @@
 import { EnumStatusTaskCheck } from '@modules/maintenance/datas/enum/EnumStatusTaskCheck'
+import { EnumStatusTicket } from '@modules/maintenance/datas/enum/EnumStatusTicketCheck'
 import { Chip } from '@mui/material'
 import React from 'react'
 
 interface StatusChipProps {
-	status: EnumStatusTaskCheck
+	status: EnumStatusTicket
 	size?: 'small' | 'medium'
 }
 
-const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({
+const ChipTicketStatus: React.FC<StatusChipProps> = ({
 	status,
 	size = 'medium',
 }) => {
@@ -15,15 +16,19 @@ const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({
 	let color: 'info' | 'warning' | 'success' | 'error' | 'default'
 
 	switch (status) {
-		case EnumStatusTaskCheck.CREATED:
+		case EnumStatusTicket.WAITING:
+			label = 'Chờ duyệt'
+			color = 'warning'
+			break
+		case EnumStatusTicket.CREATED:
 			label = 'Đang xử lý'
 			color = 'info'
 			break
-		case EnumStatusTaskCheck.DONE:
+		case EnumStatusTicket.CLOSED:
 			label = 'Hoàn thành'
 			color = 'success'
 			break
-		case EnumStatusTaskCheck.CANCEL:
+		case EnumStatusTicket.CANCEL:
 			label = 'Đã hủy'
 			color = 'error'
 			break
@@ -36,4 +41,4 @@ const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({
 	return <Chip label={label} color={color} size={size} />
 }
 
-export default ChipTaskCheckStatus
+export default ChipTicketStatus

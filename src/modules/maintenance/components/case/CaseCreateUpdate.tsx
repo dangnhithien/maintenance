@@ -20,13 +20,13 @@ import * as yup from 'yup'
 import { useNotification } from '../common/Notistack'
 import CaseTypeSelect from '../common/select/CaseTypeSelect'
 import CustomerSelect from '../common/select/CustomerSelect'
-import DeviceSelect from '../common/select/DeviceSelect'
 import UserSelect from '../common/select/UserSelect'
 import { useNavigate } from 'react-router-dom'
 import SaveIcon from '@mui/icons-material/Save'
 import ManageSearchIcon from '@mui/icons-material/ManageSearch'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import useCustomer from '@modules/maintenance/hooks/useCustomer'
+import SerialNumberSelect from '../common/select/SerialNumberSelect'
 
 const schema = yup.object({
 	name: yup.string().required('Không được bỏ trống'),
@@ -68,6 +68,10 @@ const CaseCreateUpdate: React.FC<FormProps> = ({ id }) => {
 		},
 		resolver: yupResolver(schema),
 	})
+	const customerId = watch('customerId')
+	const { getCustomerById } = useCustomer()
+	const { data: customerData } = getCustomerById(customerId ?? '')
+	console.log('createdTicket', createdTicket)
 
 	useEffect(() => {
 		if (id) {
@@ -102,9 +106,6 @@ const CaseCreateUpdate: React.FC<FormProps> = ({ id }) => {
 		}))
 	}
 
-	const { getCustomerById } = useCustomer()
-
-	const { data: customerData } = getCustomerById(watch('customerId') ?? '')
 	const onSubmit = async (data: ICaseCreate) => {
 		setLoading(true)
 		try {
@@ -187,6 +188,8 @@ const CaseCreateUpdate: React.FC<FormProps> = ({ id }) => {
 						control={control}
 						errors={errors}
 						updateCreatedTicket={updateCreatedTicket}
+						customerId={customerId}
+						createdTicket={createdTicket}
 					/>
 				)}
 				{activeStep === 1 && (
@@ -235,6 +238,8 @@ interface TicketFormProps {
 	errors: any
 	handleNext: () => void
 	updateCreatedTicket: (key: keyof ICaseCreate, value: string) => void
+	customerId: string | undefined
+	createdTicket: ICaseCreate | null
 }
 
 const TicketForm: React.FC<TicketFormProps> = ({
@@ -242,6 +247,8 @@ const TicketForm: React.FC<TicketFormProps> = ({
 	errors,
 	handleNext,
 	updateCreatedTicket,
+	customerId,
+	createdTicket,
 }) => {
 	return (
 		<Grid2 container spacing={4}>
@@ -332,27 +339,6 @@ const TicketForm: React.FC<TicketFormProps> = ({
 			</Grid2>
 			<Grid2 size={{ xs: 6 }}>
 				<Controller
-					name='deviceId'
-					control={control}
-					render={({ field }) => (
-						<DeviceSelect
-							id={field.value}
-							onChange={(value) => field.onChange(value?.id)}
-							onSelect={(item) => {
-								updateCreatedTicket('deviceName', item.name)
-							}}
-							error={!!errors.deviceId}
-						/>
-					)}
-				/>
-				{errors.deviceId && (
-					<Typography color='error' fontSize={12} margin={'4px 14px 0'}>
-						{errors.deviceId.message}
-					</Typography>
-				)}
-			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
-				<Controller
 					name='assigneeId'
 					control={control}
 					render={({ field }) => (
@@ -374,6 +360,36 @@ const TicketForm: React.FC<TicketFormProps> = ({
 			</Grid2>
 			<Grid2 size={{ xs: 6 }}>
 				<Controller
+					name='deviceId'
+					control={control}
+					render={({ field }) => (
+						<SerialNumberSelect
+							id={customerId}
+							onChange={(value) => field.onChange(value?.id)}
+							error={!!errors.customerId}
+							onSelect={(item) => {
+								updateCreatedTicket('deviceId', item.id)
+								updateCreatedTicket('deviceName', item.name)
+							}}
+							disabled={!customerId}
+						/>
+					)}
+				/>
+				{errors.serialNumber && (
+					<Typography color='error' fontSize={12} margin={'4px 14px 0'}>
+						{errors.serialNumber.message}
+					</Typography>
+				)}
+			</Grid2>
+			<Grid2 size={{ xs: 6 }} alignItems={'center'} p={1}>
+				{createdTicket?.deviceName && (
+					<Typography variant='body1' fontWeight={600}>
+						{createdTicket?.deviceName}
+					</Typography>
+				)}
+			</Grid2>
+			<Grid2 size={{ xs: 6 }}>
+				<Controller
 					name='scheduledTime'
 					control={control}
 					render={({ field }) => (
@@ -390,7 +406,7 @@ const TicketForm: React.FC<TicketFormProps> = ({
 					)}
 				/>
 			</Grid2>
-			<Grid2 size={{ xs: 12 }}>
+			<Grid2 size={{ xs: 6 }}>
 				<Controller
 					name='address'
 					control={control}
