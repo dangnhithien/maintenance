@@ -61,7 +61,7 @@ const TabHistory: React.FC<Props> = ({ data }) => {
 		[data],
 	)
 	const deviceAttributeData = React.useMemo(
-		() => getFilteredData(EnumTaskHistory.UPDATE_DEVICE_ATTRIBUTE),
+		() => getFilteredData(EnumTaskHistory.UPDATE_LAST_ATTRIBUTE_DEVICE_VALUE),
 		[data],
 	)
 
