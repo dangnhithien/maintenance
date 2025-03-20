@@ -45,7 +45,7 @@ class TaskCheckApi {
 			params: {
 				...params,
 				includeProperties:
-					'Device,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
+					'Device.DeviceType,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
 			},
 		})
 	}

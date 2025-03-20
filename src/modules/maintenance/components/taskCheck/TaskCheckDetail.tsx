@@ -16,7 +16,7 @@ const TaskCheckDetail: React.FC<Props> = ({ id, onSelect }) => {
 	const { getTaskCheckById } = useTaskCheck()
 	const { data: taskDetail, isLoading } = getTaskCheckById(id || '', {
 		includeProperties:
-			'Device,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
+			'Device.DeviceType,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
 	})
 
 	useEffect(() => {
@@ -32,7 +32,13 @@ const TaskCheckDetail: React.FC<Props> = ({ id, onSelect }) => {
 		<Grid2 container spacing={3}>
 			<Grid2 size={{ xs: 2 }}>
 				<img
-					src={taskDetail?.device?.imageUrl || DEFAULT}
+					src={
+						!taskDetail?.device?.deviceType?.imageUrl
+							? DEFAULT // Ảnh mặc định nếu null
+							: taskDetail?.device?.deviceType?.imageUrl.startsWith('http')
+							? encodeURI(taskDetail?.device?.deviceType?.imageUrl) // Nếu đã có "http", chỉ encode URL
+							: encodeURI(`http://${taskDetail?.device?.deviceType?.imageUrl}`) // Nếu chưa có, thêm "http://" rồi encode
+					}
 					style={{
 						maxWidth: '100%',
 						height: '200px',
