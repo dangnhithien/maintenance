@@ -12,8 +12,8 @@ import { useNavigate } from 'react-router-dom'
 import SaveIcon from '@mui/icons-material/Save'
 
 const schema = yup.object({
-	name: yup.string().required('Không được bỏ trống'),
-	code: yup.string().required('Không được bỏ trống'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	code: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	description: yup.string().max(255, 'Giới hạn 255 ký tự'),
 	image: yup.string(),
 })

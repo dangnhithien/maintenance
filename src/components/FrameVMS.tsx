@@ -25,7 +25,7 @@ const FrameVMS: React.FC<Props> = ({ title, icon, children, action }) => {
 					border: '1px solid #E0E0E0',
 					borderRadius: 4,
 					padding: 1.4,
-					mb: 1.4,
+					mb: 2,
 				}}
 				gap={1}
 			>
