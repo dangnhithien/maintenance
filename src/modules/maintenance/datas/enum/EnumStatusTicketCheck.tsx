@@ -1,6 +1,6 @@
 export enum EnumStatusTicket {
 	DEFAULT = 'Default',
-	WAITING = 'Waitting',
+	WAITING = 'Waiting',
 	CREATED = 'Created',
 	CLOSED = 'Closed',
 	CANCEL = 'Cancel',

@@ -16,7 +16,7 @@ const ChipTaskCheckStatus: React.FC<StatusChipProps> = ({
 
 	switch (status) {
 		case EnumStatusTaskCheck.CREATED:
-			label = 'Mới tạo'
+			label = 'Đang xử lý'
 			color = 'info'
 			break
 		case EnumStatusTaskCheck.DONE:

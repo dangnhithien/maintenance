@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useState } from 'react'
 import caseApi from '../apis/caseApi'
@@ -36,6 +36,14 @@ export const useCase = () => {
 		} finally {
 			setLoading(false)
 		}
+	}
+
+	const getCaseById = (id: string, params?: any) => {
+		return useQuery<ICase, AxiosError>({
+			queryKey: [KEY, id], // Cache theo từng ID case
+			queryFn: () => caseApi.getById(id, params).then((res) => res.result),
+			enabled: !!id, // Chỉ gọi API khi có ID
+		})
 	}
 
 	// Create a new checklist
@@ -85,7 +93,8 @@ export const useCase = () => {
 	})
 
 	return {
-		fetchCases, // Function to manually fetch data
+		fetchCases,
+		getCaseById,
 		createCase: createCase.mutateAsync,
 		updateCase: updateCase.mutateAsync,
 		approveCase: approveCase.mutateAsync,
