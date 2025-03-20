@@ -30,7 +30,6 @@ const Approval: React.FC<Props> = ({ productId }) => {
 	const [params, setParams] = useState<GetTaskCheckDto>({
 		includeProperties: 'TemplateCheck,Customer',
 		takeCount: 10,
-		taskCheckStatus: EnumStatusTaskCheck.WAITING,
 		productId: productId || undefined,
 		sortBy: 'CreatedDate DESC',
 	})
@@ -52,7 +51,6 @@ const Approval: React.FC<Props> = ({ productId }) => {
 	}, [params])
 
 	const columns: GridColDef[] = [
-		// { field: "id", headerName: "ID", width: 90, editable: false, sortable: false },
 		{
 			field: 'code',
 			headerName: 'Mã',

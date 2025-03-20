@@ -4,7 +4,6 @@ import useCase from '@modules/maintenance/hooks/useCase'
 import { Add, Warning } from '@mui/icons-material'
 import RestoreIcon from '@mui/icons-material/Restore'
 import { Button, Divider, Grid2, Stack, Tooltip } from '@mui/material'
-import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import {
 	GridColDef,
 	GridDeleteIcon,
@@ -17,6 +16,7 @@ import { useNotification } from '../common/Notistack'
 import PopupConfirm from '../common/PopupConfirm'
 import TrashButton from '../common/TrashButton'
 import DateFilter from '@components/DateFilter'
+import ChipTicketStatus from '../common/chip/ChipTicketStatus'
 interface Props {
 	isViewMode?: boolean
 }
@@ -116,32 +116,15 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 			sortable: false,
 			flex: 1,
 			renderCell: (params: any) => (
-				<>
-					{params.row.caseTaskStatus === 'Closed' ? (
-						'Đã duyệt'
-					) : (
-						<Tooltip title='Xác nhận và duyệt yêu cầu này'>
-							<Button
-								component='label'
-								onClick={handleClickApprove.bind(null, params.row.id)}
-								role={undefined}
-								variant='contained'
-								tabIndex={-1}
-								startIcon={<TaskAltIcon />}
-							>
-								Xác nhận
-							</Button>
-						</Tooltip>
-					)}
-				</>
+				<ChipTicketStatus status={params.row.caseTaskStatus} size='small' />
 			),
 		},
 	]
 
-	const handleClickApprove = (id: string) => {
-		setCaseIdApprove(id)
-		setOpenPopupApprove(true)
-	}
+	// const handleClickApprove = (id: string) => {
+	// 	setCaseIdApprove(id)
+	// 	setOpenPopupApprove(true)
+	// }
 
 	const handleApprove = async () => {
 		await approveCase(caseIdApprove)
