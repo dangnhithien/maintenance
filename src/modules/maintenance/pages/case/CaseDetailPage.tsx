@@ -35,7 +35,6 @@ const CaseDetailPage = () => {
 		}
 		setOpenConfirm(false)
 	}
-	console.log(caseDetail)
 
 	const handleCancel = () => {
 		setOpenConfirm(false)
@@ -60,7 +59,7 @@ const CaseDetailPage = () => {
 						caseDetail?.caseTaskStatus !== EnumStatusTicket.CANCEL && (
 							<Button
 								onClick={handleStatusTicketAction}
-								variant='contained'
+								variant='outlined'
 								color='primary'
 								loading={loading}
 							>
