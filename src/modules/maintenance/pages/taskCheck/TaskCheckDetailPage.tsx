@@ -48,7 +48,7 @@ const TaskCheckDetailPage: React.FC = () => {
 
 			{activeTab === 1 && (
 				<Wrapper>
-					<TabHistory data={taskCheck} />
+					<TabHistory type='TaskCheck' payload={taskCheck} />
 				</Wrapper>
 			)}
 		</>
