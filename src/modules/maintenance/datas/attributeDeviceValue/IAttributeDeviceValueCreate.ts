@@ -25,7 +25,7 @@ export interface IAttributeDeviceValueCreate {
 
 export interface IAttributeDeviceValueCommand {
 	deviceId: string
-	attributeDeviceGroupId: string
+	attributeDeviceGroupId?: string
 	attributeName: string
 	value?: string
 }

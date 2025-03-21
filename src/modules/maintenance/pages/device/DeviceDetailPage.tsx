@@ -5,13 +5,14 @@ import type { IDevice } from '@modules/maintenance/datas/device/IDevice'
 import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router-dom'
+import DeviceAttributeTable from '../../components/device/DeviceAttributeTable'
 const DeviceDetailPage = () => {
 	const { id } = useParams<{ id: string }>()
-	const [history, setHistory] = useState<IDevice>({} as IDevice)
+	const [device, setDevice] = useState<IDevice>({} as IDevice)
 	const page = {
 		title: 'Chi tiết thiết bị',
 		url: '/devices/:id',
-		component: <DeviceDetail onSelect={setHistory} id={id} />,
+		component: <DeviceDetail onSelect={setDevice} id={id} />,
 	}
 	return (
 		<>
@@ -22,8 +23,17 @@ const DeviceDetailPage = () => {
 
 			<Wrapper title={page.title}>{page.component}</Wrapper>
 
+			<Wrapper sx={{ mt: 2 }} title='Thông số thiết bị'>
+				<DeviceAttributeTable
+					data={(device.attributeDeviceValues || []).map((attr) => ({
+						...attr,
+						value: attr.value || '',
+					}))}
+				/>
+			</Wrapper>
+
 			<Wrapper sx={{ mt: 2 }} title='Lịch sử bảo dưỡng'>
-				<TabHistory type='Device' payload={history} />
+				<TabHistory type='Device' payload={device} />
 			</Wrapper>
 		</>
 	)
