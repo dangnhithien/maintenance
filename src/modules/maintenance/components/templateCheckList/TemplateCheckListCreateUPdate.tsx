@@ -5,7 +5,18 @@ import { EnumTypeValue } from '@modules/maintenance/datas/enum/EnumTypeValue'
 import { CreateRowCheckListDto } from '@modules/maintenance/datas/rowCheckList/CreateRowCheckListDto'
 import { CreateTemplateCheckListDto } from '@modules/maintenance/datas/templateCheckList/CreateTemplateCheckListDto'
 import useTemplateCheckList from '@modules/maintenance/hooks/useTemplateCheckList'
-import { Button, Grid2, Stack, TextField, Typography } from '@mui/material'
+import {
+	Button,
+	Chip,
+	FormControl,
+	Grid2,
+	InputLabel,
+	MenuItem,
+	Select,
+	Stack,
+	TextField,
+	Typography,
+} from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -14,13 +25,12 @@ import { useNotification } from '../common/Notistack'
 import QuestionComponent from './QuestionComponent'
 import SaveIcon from '@mui/icons-material/Save'
 import { useNavigate } from 'react-router-dom'
+import { FunctionConfig } from '@modules/maintenance/datas/enum/EnumFunctionConfig'
 
 const schema = yup.object({
-	code: yup.string().required('Mã là bắt buộc'),
-	name: yup.string().required('Nội dung là bắt buộc'),
-	description: yup
-		.string()
-		.max(255, 'Description must be under 255 characters'),
+	code: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	description: yup.string().max(255, 'Mô tả không được vượt quá 255 ký tự'),
 })
 
 interface FormProps {
@@ -29,15 +39,15 @@ interface FormProps {
 
 const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 	const {
-		templateCheckLists,
-		deleteChecklist,
-		restoreChecklist,
-		createChecklist,
+		// templateCheckLists,
+		// deleteChecklist,
+		// restoreChecklist,
+		// createChecklist,
 		updateChecklist,
 		getChecklistById,
-		error,
+		// error,
 		loading,
-		totalCount,
+		// totalCount,
 	} = useTemplateCheckList()
 	const { notify } = useNotification()
 
@@ -52,6 +62,7 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 			code: '',
 			name: '',
 			description: '',
+			functionConfigs: [],
 		},
 	})
 	const navigate = useNavigate()
@@ -211,6 +222,18 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 		return valid
 	}
 
+	const functionConfigOptions = [
+		{ value: FunctionConfig.ReplacePartDetail, label: 'Thay thế linh kiện' },
+		{
+			value: FunctionConfig.UpdateLastMaintenanceDate,
+			label: 'Cập nhật ngày cuối cùng bảo trì',
+		},
+		{
+			value: FunctionConfig.UpdateLastAttributeDeviceValue,
+			label: 'Cập nhật thuộc tính thiết bị cuối',
+		},
+	]
+
 	const onSubmit = async (data: CreateTemplateCheckListDto) => {
 		if (!validateQuestions()) {
 			setLocalErrors((prev) => ({
@@ -220,7 +243,6 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 			return
 		}
 		setLocalErrors({})
-
 		try {
 			if (id) {
 				const res = await updateChecklist({
@@ -262,18 +284,19 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 		>
 			<Grid2 container spacing={2} sx={{ mb: 2, p: 2 }}>
 				<Grid2 size={4}>
-					<Stack direction='row' spacing={1}>
+					{/* <Stack direction='row' spacing={1}>
 						<Typography variant='body2' color='primary' fontWeight={'bold'}>
 							Mã
 						</Typography>
 						<Typography color='error'>*</Typography>
-					</Stack>
+					</Stack> */}
 					<Controller
 						name='code'
 						control={control}
 						render={({ field }) => (
 							<TextField
 								{...field}
+								label='Mã'
 								fullWidth
 								size='small'
 								error={!!errors.code}
@@ -284,18 +307,19 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 					/>
 				</Grid2>
 				<Grid2 size={4}>
-					<Stack direction='row' spacing={1}>
+					{/* <Stack direction='row' spacing={1}>
 						<Typography variant='body2' color='primary' fontWeight={'bold'}>
 							Tên
 						</Typography>
 						<Typography color='error'>*</Typography>
-					</Stack>
+					</Stack> */}
 					<Controller
 						name='name'
 						control={control}
 						render={({ field }) => (
 							<TextField
 								{...field}
+								label='Tên'
 								fullWidth
 								size='small'
 								error={!!errors.name}
@@ -305,12 +329,63 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 					/>
 				</Grid2>
 				<Grid2 size={4}>
-					<Stack direction='row' spacing={1}>
+					{/* <Stack direction='row' spacing={1}>
+						<Typography variant='body2' color='primary' fontWeight={'bold'}>
+							Cấu hình
+						</Typography>
+						<Typography sx={{ color: 'white' }}>*</Typography>
+					</Stack> */}
+					<Controller
+						name='functionConfigs'
+						control={control}
+						render={({ field }) => (
+							<FormControl fullWidth size='small'>
+								<InputLabel id='function-configs-label'>
+									Chọn cấu hình
+								</InputLabel>
+								<Select
+									{...field}
+									multiple
+									labelId='function-configs-label'
+									label='Chọn cấu hình'
+									renderValue={(selected) => (
+										<Stack direction='row' spacing={0.5}>
+											{(selected as number[]).map((value) => (
+												<Chip
+													key={value}
+													label={
+														functionConfigOptions.find(
+															(item) => item.value === value,
+														)?.label
+													}
+													size='small'
+												/>
+											))}
+										</Stack>
+									)}
+								>
+									{functionConfigOptions.map((option) => (
+										<MenuItem key={option.value} value={option.value}>
+											{option.label}
+										</MenuItem>
+									))}
+								</Select>
+								{errors.functionConfigs && (
+									<Typography color='error' fontSize={12} margin={'4px 14px 0'}>
+										{errors.functionConfigs.message}
+									</Typography>
+								)}
+							</FormControl>
+						)}
+					/>
+				</Grid2>
+				<Grid2 size={12}>
+					{/* <Stack direction='row' spacing={1}>
 						<Typography variant='body2' color='primary' fontWeight={'bold'}>
 							Mô tả
 						</Typography>
 						<Typography sx={{ color: 'white' }}>*</Typography>
-					</Stack>
+					</Stack> */}
 					<Controller
 						name='description'
 						control={control}
@@ -318,6 +393,9 @@ const TemplateCheckListCreateUpdate: React.FC<FormProps> = ({ id }) => {
 							<TextField
 								{...field}
 								fullWidth
+								multiline
+								rows={4}
+								label='Mô tả'
 								size='small'
 								error={!!errors.description}
 								helperText={errors.description?.message}

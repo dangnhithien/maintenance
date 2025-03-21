@@ -219,7 +219,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 							>
 								<Add />
 							</Button>
-							{rowSelectionModel.length > 0 && (
+							{/* {rowSelectionModel.length > 0 && (
 								<Button
 									variant='contained'
 									color='error'
@@ -246,7 +246,7 @@ const CaseList: React.FC<Props> = ({ isViewMode = false }) => {
 								onClick={(isDeleted) =>
 									setParams({ ...params, isDeleted: isDeleted })
 								}
-							/>
+							/> */}
 						</Grid2>
 					)}
 				</Grid2>

@@ -18,8 +18,6 @@ const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 		includeProperties: 'DeviceType,Customer,UsageType',
 	})
 
-	console.log(data, isLoading)
-
 	useEffect(() => {
 		if (data && onSelect) {
 			onSelect(data)
