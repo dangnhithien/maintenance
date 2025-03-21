@@ -36,7 +36,7 @@ import SpinnerLoading from '@components/SpinerLoading'
 import DeviceGroupItemsModal from './DeviceGroupItemsModal'
 import { IAttributeDeviceGroup } from '@modules/maintenance/datas/attributeDeviceGroup/IAttributeDeviceGroup'
 import { Settings } from '@mui/icons-material'
-import attributeDeviceValueApi from '@modules/maintenance/apis/AttributeDeviceValueApi'
+import attributeDeviceValueApi from '@modules/maintenance/apis/attributeDeviceValueApi'
 import { IAttributeDeviceValueCreate } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
 
 const schema = yup.object({
