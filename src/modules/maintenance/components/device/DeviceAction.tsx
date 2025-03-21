@@ -4,11 +4,18 @@ import {
 	Button,
 	Grid2,
 	IconButton,
+	Paper,
 	Stack,
 	Step,
 	StepIconProps,
 	StepLabel,
 	Stepper,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
 	TextField,
 	Typography,
 } from '@mui/material'
@@ -40,6 +47,7 @@ import {
 	IAttributeDeviceValueCreate,
 } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
 import { de } from 'date-fns/locale'
+import { unwrapError } from '@datas/comon/ApiResponse'
 
 const schema = yup.object({
 	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
@@ -155,27 +163,26 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 				deviceId = res.result.id
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-
-					// Nếu có selectedGroupItems thì tiến hành POST
 					if (selectedGroupItems && selectedGroupItems.length > 0) {
-						const attributeParams: IAttributeDeviceValueCreate = {
-							attributeDeviceValueCommands: selectedGroupItems.map((item) => ({
-								deviceId: deviceId,
-								attributeDeviceGroupId: item.id,
+						const attributeDeviceValueCommands = selectedGroupItems.map(
+							(item) => ({
+								deviceId: deviceId, // ID thiết bị cần gắn
+								// attributeDeviceGroupId: item.deviceGroupId,
 								attributeName: item.attributeName,
-							})),
-						}
+								value: item.value || '-',
+							}),
+						)
 
 						// Gọi API POST để lưu attribute device values
-						await attributeDeviceValueApi.post(attributeParams)
+						await attributeDeviceValueApi.post({ attributeDeviceValueCommands })
 					}
 					navigate('/devices')
 				}
 			}
 		} catch (err) {
 			console.log(err)
-			// const { message } = unwrapError(err)
-			// notify(message, 'error')
+			const { message } = unwrapError(err)
+			notify(message, 'error')
 		} finally {
 			setLoading(false)
 		}
@@ -596,7 +603,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 							id: id.id,
 							deviceId: '',
 							attributeName: id.attributeName,
-							attributeDeviceGroupId: id.id,
+							value: id.value,
 						})),
 					)
 				}}
@@ -653,21 +660,7 @@ const PreviewDevice = ({
 						</Typography>
 					</Stack>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
-					<Controller
-						name='serialNumber'
-						control={control}
-						render={({ field }) => (
-							<>
-								<Typography variant='body1' color='primary' fontWeight={600}>
-									Seri
-								</Typography>
-								<Typography variant='body2'>{field.value || '-'}</Typography>
-							</>
-						)}
-					/>
-				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Controller
 						name='name'
 						control={control}
@@ -681,7 +674,21 @@ const PreviewDevice = ({
 						)}
 					/>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
+					<Controller
+						name='serialNumber'
+						control={control}
+						render={({ field }) => (
+							<>
+								<Typography variant='body1' color='primary' fontWeight={600}>
+									Seri
+								</Typography>
+								<Typography variant='body2'>{field.value || '-'}</Typography>
+							</>
+						)}
+					/>
+				</Grid2>
+				<Grid2 size={{ xs: 4 }}>
 					<Controller
 						name='rfid'
 						control={control}
@@ -695,7 +702,7 @@ const PreviewDevice = ({
 						)}
 					/>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						Hình thức sử dụng
 					</Typography>
@@ -703,13 +710,13 @@ const PreviewDevice = ({
 				</Grid2>
 
 				{/* Loại thiết bị */}
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						Loại thiết bị
 					</Typography>
 					<Typography variant='body2'>{device?.deviceTypeId || '-'}</Typography>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						Nhóm thiết bị
 					</Typography>
@@ -717,13 +724,13 @@ const PreviewDevice = ({
 						{device?.deviceGroupId || '-'}
 					</Typography>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						SKU thiết bị
 					</Typography>
 					<Typography variant='body2'>{device?.deviceSKUId || '-'}</Typography>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						Model thiết bị
 					</Typography>
@@ -731,13 +738,13 @@ const PreviewDevice = ({
 						{device?.deviceModelId || '-'}
 					</Typography>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						Khách hàng
 					</Typography>
 					<Typography variant='body2'>{device?.customerId || '-'}</Typography>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Controller
 						name='address'
 						control={control}
@@ -751,7 +758,7 @@ const PreviewDevice = ({
 						)}
 					/>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Controller
 						name='installationDate'
 						control={control}
@@ -769,7 +776,7 @@ const PreviewDevice = ({
 						)}
 					/>
 				</Grid2>
-				<Grid2 size={{ xs: 6 }}>
+				<Grid2 size={{ xs: 4 }}>
 					<Controller
 						name='note'
 						control={control}
@@ -783,25 +790,66 @@ const PreviewDevice = ({
 						)}
 					/>
 				</Grid2>
-				<Grid2 size={{ xs: 12 }}>
+				<Grid2 size={{ xs: 8 }}>
 					<Typography variant='body1' color='primary' fontWeight={600}>
 						Thông số thiết bị được chọn
 					</Typography>
 
 					{selectedGroupItems.length > 0 ? (
-						<Box sx={{ mt: 1 }}>
-							{selectedGroupItems.map((item) => (
-								<Typography key={item.id} variant='body2' sx={{ pl: 1 }}>
-									• {item.attributeName}
-								</Typography>
-							))}
-						</Box>
+						<TableContainer
+							component={Paper}
+							sx={{ mt: 1, maxHeight: 300, overflow: 'auto' }}
+						>
+							<Table stickyHeader>
+								<TableHead>
+									<TableRow>
+										<TableCell
+											sx={{
+												fontWeight: 'bold',
+												backgroundColor: '#648CC8',
+												color: 'white',
+											}}
+										>
+											STT
+										</TableCell>
+										<TableCell
+											sx={{
+												fontWeight: 'bold',
+												backgroundColor: '#648CC8',
+												color: 'white',
+											}}
+										>
+											Thông số
+										</TableCell>
+										<TableCell
+											sx={{
+												fontWeight: 'bold',
+												backgroundColor: '#648CC8',
+												color: 'white',
+											}}
+										>
+											Giá trị
+										</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{selectedGroupItems.map((item, index) => (
+										<TableRow key={item.id}>
+											<TableCell>{index + 1}</TableCell>
+											<TableCell>{item.attributeName}</TableCell>
+											<TableCell>{item.value || '-'}</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</TableContainer>
 					) : (
-						<Typography variant='body2' sx={{ pl: 1 }}>
+						<Typography variant='body2' sx={{ pl: 1, mt: 1 }}>
 							Không có thông số nào được chọn
 						</Typography>
 					)}
 				</Grid2>
+
 				<Grid2 container justifyContent={'flex-end'} width={'100%'}>
 					<Stack direction={'row'} gap={1}>
 						<Button onClick={handleBack}>Quay lại</Button>

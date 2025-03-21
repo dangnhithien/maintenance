@@ -25,7 +25,7 @@ const RowCheckValue: React.FC<Props> = ({ data }) => {
 	}
 
 	return (
-		<Box sx={{ p: 1, mb: 1, pl: 5 }}>
+		<Box sx={{ px: 4, mb: 1 }}>
 			<Grid2 container spacing={2}>
 				<Grid2 size={{ xs: 6 }}>
 					<Typography

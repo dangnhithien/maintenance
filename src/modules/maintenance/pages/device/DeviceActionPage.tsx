@@ -15,7 +15,7 @@ const DeviceActionPage = () => {
 				<meta name='description' content={page.title} />
 			</Helmet>
 
-			<Wrapper title={page.title}>{page.component}</Wrapper>
+			<Wrapper>{page.component}</Wrapper>
 		</>
 	)
 }

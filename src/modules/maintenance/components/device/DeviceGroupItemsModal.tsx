@@ -33,8 +33,12 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 }) => {
 	const [items, setItems] = useState<IAttributeDeviceGroup[]>([])
 	const [selectedIds, setSelectedIds] = useState<string[]>([])
+	const [editingId, setEditingId] = useState<string | null>(null)
+	const [editValue, setEditValue] = useState<string>('')
+
 	const [openCreateModal, setOpenCreateModal] = useState(false)
 	const [newAttributeName, setNewAttributeName] = useState('')
+	const [newAttributeValue, setNewAttributeValue] = useState('')
 
 	useEffect(() => {
 		if (deviceGroupId) {
@@ -45,7 +49,7 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 					setItems(data)
 					const allIds = data.map((item) => item.id)
 					setSelectedIds(allIds)
-					onSelectionChange(data) // mặc định chọn hết
+					onSelectionChange(data)
 				})
 				.catch((error: any) => {
 					console.error('Error fetching items:', error)
@@ -54,47 +58,65 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 	}, [deviceGroupId])
 
 	const handleToggle = (item: IAttributeDeviceGroup) => {
-		const isSelected = selectedIds.includes(item.id)
-		let newSelectedIds: string[]
-		let newSelectedItems: IAttributeDeviceGroup[]
+		setSelectedIds((prev) =>
+			prev.includes(item.id)
+				? prev.filter((id) => id !== item.id)
+				: [...prev, item.id],
+		)
 
-		if (isSelected) {
-			newSelectedIds = selectedIds.filter((id) => id !== item.id)
-			newSelectedItems = items.filter((i) => newSelectedIds.includes(i.id))
-		} else {
-			newSelectedIds = [...selectedIds, item.id]
-			newSelectedItems = items.filter((i) => newSelectedIds.includes(i.id))
-		}
+		const newSelected = selectedIds.includes(item.id)
+			? selectedIds.filter((id) => id !== item.id)
+			: [...selectedIds, item.id]
 
-		setSelectedIds(newSelectedIds)
-		onSelectionChange(newSelectedItems)
+		const selectedItems = items.filter((i) => newSelected.includes(i.id))
+		onSelectionChange(selectedItems)
 	}
 
 	const handleToggleAll = (checked: boolean) => {
-		if (checked) {
-			const allIds = items.map((item) => item.id)
-			setSelectedIds(allIds)
-			onSelectionChange(items)
-		} else {
-			setSelectedIds([])
-			onSelectionChange([])
-		}
+		const newSelected = checked ? items.map((item) => item.id) : []
+		setSelectedIds(newSelected)
+		onSelectionChange(checked ? items : [])
 	}
 
-	const handleCreateNewAttribute = async () => {
-		try {
-			await attributeDeviceGroupApi.post({
-				deviceGroupId,
-				attributeName: newAttributeName,
-			})
-			setNewAttributeName('')
-			setOpenCreateModal(false)
-			// Reload items after creation
-			const response = await attributeDeviceGroupApi.get({ deviceGroupId })
-			setItems(response.result.items)
-		} catch (error) {
-			console.error('Error creating attribute:', error)
+	const handleEdit = (id: string, currentValue: string) => {
+		setEditingId(id)
+		setEditValue(currentValue)
+	}
+
+	const handleSave = (id: string) => {
+		const updatedItems = items.map((item) =>
+			item.id === id ? { ...item, value: editValue } : item,
+		)
+		setItems(updatedItems)
+
+		const selectedItems = updatedItems.filter((i) => selectedIds.includes(i.id))
+		onSelectionChange(selectedItems)
+
+		setEditingId(null)
+	}
+
+	const handleCreateNewAttribute = () => {
+		const newItem: IAttributeDeviceGroup = {
+			id: crypto.randomUUID(),
+			deviceId: '',
+			deviceGroupId,
+			attributeName: newAttributeName,
+			attributeDescription: '',
+			value: newAttributeValue,
 		}
+
+		const updatedItems = [...items, newItem]
+		const updatedSelected = [...selectedIds, newItem.id]
+
+		setItems(updatedItems)
+		setSelectedIds(updatedSelected)
+		onSelectionChange(
+			updatedItems.filter((i) => updatedSelected.includes(i.id)),
+		)
+
+		setNewAttributeName('')
+		setNewAttributeValue('')
+		setOpenCreateModal(false)
 	}
 
 	return (
@@ -106,17 +128,20 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 						top: '50%',
 						left: '50%',
 						transform: 'translate(-50%, -50%)',
-						width: 500,
+						width: 600,
 						bgcolor: 'background.paper',
 						boxShadow: 24,
 						p: 4,
 					}}
 				>
-					<TableContainer component={Paper}>
-						<Table>
-							<TableHead sx={{ backgroundColor: '#648CC8' }}>
+					<TableContainer
+						component={Paper}
+						sx={{ maxHeight: 400, overflow: 'auto' }}
+					>
+						<Table stickyHeader>
+							<TableHead>
 								<TableRow>
-									<TableCell padding='checkbox'>
+									<TableCell sx={{ bgcolor: '#648CC8', color: 'white' }}>
 										<Checkbox
 											checked={
 												items.length > 0 && selectedIds.length === items.length
@@ -128,8 +153,12 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 											onChange={(e) => handleToggleAll(e.target.checked)}
 										/>
 									</TableCell>
-									<TableCell>Thông số máy</TableCell>
-									{/* <TableCell>Giá trị</TableCell> */}
+									<TableCell sx={{ bgcolor: '#648CC8', color: 'white' }}>
+										Thông số máy
+									</TableCell>
+									<TableCell sx={{ bgcolor: '#648CC8', color: 'white' }}>
+										Giá trị
+									</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
@@ -142,18 +171,50 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 											/>
 										</TableCell>
 										<TableCell>{item.attributeName}</TableCell>
-										{/* <TableCell>{item.value ?? '-'}</TableCell> */}
+										<TableCell
+											onClick={() => handleEdit(item.id, item.value || '')}
+											sx={{
+												cursor: 'pointer',
+												minWidth: 200,
+												maxWidth: 200,
+												display: 'flex',
+												alignItems: 'center',
+											}}
+										>
+											{editingId === item.id ? (
+												<TextField
+													value={editValue}
+													onChange={(e) => setEditValue(e.target.value)}
+													onBlur={() => handleSave(item.id)}
+													autoFocus
+													fullWidth
+													variant='standard'
+													sx={{
+														width: '100%', // Đảm bảo input không thay đổi kích thước
+														border: 'none',
+														outline: 'none',
+														'& .MuiInputBase-input': {
+															p: 0,
+															textAlign: 'left',
+														},
+														'& .MuiInput-underline:before, & .MuiInput-underline:after':
+															{
+																borderBottom: 'none !important',
+															},
+													}}
+												/>
+											) : (
+												<Typography sx={{ width: '100%' }}>
+													{item.value || '-'}
+												</Typography>
+											)}
+										</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
 						</Table>
 					</TableContainer>
-					<Stack
-						direction='row'
-						justifyContent='flex-end'
-						gap={1}
-						sx={{ mt: 2 }}
-					>
+					<Stack direction='row' justifyContent='space-between' sx={{ mt: 2 }}>
 						<Button onClick={() => setOpenCreateModal(true)}>
 							Tạo thông số mới
 						</Button>
@@ -163,6 +224,8 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 					</Stack>
 				</Box>
 			</Modal>
+
+			{/* Modal tạo mới */}
 			<Modal open={openCreateModal} onClose={() => setOpenCreateModal(false)}>
 				<Box
 					sx={{
@@ -183,6 +246,13 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 						sx={{ mt: 2 }}
 						value={newAttributeName}
 						onChange={(e) => setNewAttributeName(e.target.value)}
+					/>
+					<TextField
+						label='Giá trị'
+						fullWidth
+						sx={{ mt: 2 }}
+						value={newAttributeValue}
+						onChange={(e) => setNewAttributeValue(e.target.value)}
 					/>
 					<Button
 						fullWidth

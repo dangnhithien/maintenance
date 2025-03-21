@@ -137,32 +137,6 @@ const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 						</Typography>
 						<Typography variant='body2'>{data?.note || '-'}</Typography>
 					</Grid2>
-					<Grid2 size={{ xs: 12 }}>
-						<Typography variant='body1' color='primary' fontWeight={600}>
-							Thông số máy
-						</Typography>
-
-						{data?.attributeDeviceValues &&
-						data.attributeDeviceValues.length > 0 ? (
-							<Stack
-								direction='row'
-								spacing={1}
-								sx={{ mt: 1, flexWrap: 'wrap' }}
-							>
-								{data.attributeDeviceValues.map((item) => (
-									<Chip
-										key={item.id}
-										label={`${item.attributeName}`}
-										color='primary'
-										variant='outlined'
-										sx={{ mb: 1 }}
-									/>
-								))}
-							</Stack>
-						) : (
-							<Typography variant='body2'>-</Typography>
-						)}
-					</Grid2>
 				</Grid2>
 			</Grid2>
 		</Grid2>

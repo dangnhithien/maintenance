@@ -12,7 +12,7 @@ const TaskCheckVote: React.FC<Props> = ({ data }) => {
 				<Grid2 flex={1}>
 					<Paper
 						variant='outlined'
-						sx={{ p: 3, width: '100%', height: '100%', borderRadius: 4 }}
+						sx={{ p: 4, width: '100%', height: '100%', borderRadius: 4 }}
 					>
 						<Typography variant='h6' color='primary' mb={2} fontWeight={'bold'}>
 							{data?.templateCheck?.name}
@@ -22,7 +22,7 @@ const TaskCheckVote: React.FC<Props> = ({ data }) => {
 								overflowY: 'auto',
 								overflowX: 'hidden',
 								height: '600px',
-								pl: 2,
+								p: 2,
 							}}
 						>
 							<Grid2 container size={12} spacing={1} direction={'column'}>
