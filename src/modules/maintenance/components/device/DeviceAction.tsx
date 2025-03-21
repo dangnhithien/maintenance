@@ -37,7 +37,10 @@ import DeviceGroupItemsModal from './DeviceGroupItemsModal'
 import { IAttributeDeviceGroup } from '@modules/maintenance/datas/attributeDeviceGroup/IAttributeDeviceGroup'
 import { Settings } from '@mui/icons-material'
 import attributeDeviceValueApi from '@modules/maintenance/apis/attributeDeviceValueApi'
-import { IAttributeDeviceValueCreate } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
+import {
+	IAttributeDeviceValue,
+	IAttributeDeviceValueCreate,
+} from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
 
 const schema = yup.object({
 	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
@@ -62,7 +65,7 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 	const [activeStep, setActiveStep] = useState(0)
 	const [createdDevice, setCreatedDevice] = useState<IDeviceCreate | null>(null)
 	const [selectedGroupItems, setSelectedGroupItems] = useState<
-		IAttributeDeviceGroup[]
+		IAttributeDeviceValue[]
 	>([])
 	const [loading, setLoading] = useState(false)
 	const { notify } = useNotification()
@@ -290,7 +293,7 @@ interface DeviceFormProps {
 	updateCreatedDevice: (key: keyof IDeviceCreate, value: string) => void
 	customerId: string | undefined
 	createdDevice: IDeviceCreate | null
-	setSelectedGroupItems: (items: IAttributeDeviceGroup[]) => void
+	setSelectedGroupItems: (items: IAttributeDeviceValue[]) => void
 }
 
 const DeviceForm: React.FC<DeviceFormProps> = ({
@@ -579,8 +582,14 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 				onClose={() => setModalOpen(false)}
 				deviceGroupId={control._formValues.deviceGroupId}
 				onSelectionChange={(selectedIds) => {
-					// Lưu danh sách item được chọn, bạn có thể cập nhật state hoặc gọi updateCreatedDevice nếu cần
-					setSelectedGroupItems(selectedIds)
+					setSelectedGroupItems(
+						selectedIds.map((id) => ({
+							id: id.id,
+							deviceId: '',
+							attributeName: id.attributeName,
+							attributeDeviceGroupId: id.id,
+						})),
+					)
 				}}
 			/>
 		</Grid2>
@@ -600,7 +609,7 @@ const PreviewDevice = ({
 	control: any
 	handleBack: () => void
 	handleSubmit: () => void
-	selectedGroupItems: IAttributeDeviceGroup[]
+	selectedGroupItems: IAttributeDeviceValue[]
 }) => {
 	return (
 		<Box>

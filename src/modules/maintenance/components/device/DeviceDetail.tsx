@@ -1,6 +1,4 @@
-import { Grid2, Typography } from '@mui/material'
-import ChipTaskCheckStatus from '../common/chip/ChipTaskCheckStatus'
-import { EnumStatusTaskCheck } from '@modules/maintenance/datas/enum/EnumStatusTaskCheck'
+import { Chip, Grid2, Stack, Typography } from '@mui/material'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 import { useEffect } from 'react'
@@ -15,20 +13,21 @@ interface Props {
 const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 	const { getDeviceById } = useDevice()
 	const { data, isLoading } = getDeviceById(id || '', {
-		includeProperties: 'DeviceType,Customer,UsageType',
+		includeProperties:
+			'DeviceType,Customer,UsageType,MaintenanceHistories,AttributeDeviceValues',
 	})
 
 	useEffect(() => {
 		if (data && onSelect) {
 			onSelect(data)
 		}
-	}, [data, onSelect])
+	}, [data])
 
 	if (isLoading) {
 		return <SpinnerLoading />
 	}
 	return (
-		<Grid2 container spacing={3}>
+		<Grid2 container spacing={4}>
 			<Grid2 size={{ xs: 2 }}>
 				<img
 					src={
@@ -40,7 +39,7 @@ const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 					}
 					style={{
 						maxWidth: '100%',
-						height: '200px',
+						height: '300px',
 						objectFit: 'contain',
 					}}
 				/>
@@ -51,55 +50,67 @@ const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Tên
 						</Typography>
-						<Typography variant='body2'>{data?.name}</Typography>
+						<Typography variant='body2'>{data?.name || '-'}</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Số seri
 						</Typography>
-						<Typography variant='body2'>{data?.serialNumber}</Typography>
+						<Typography variant='body2'>{data?.serialNumber || '-'}</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							RFID
 						</Typography>
-						<Typography variant='body2'>{data?.rfid}</Typography>
+						<Typography variant='body2'>{data?.rfid || '-'}</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Khách hàng
 						</Typography>
-						<Typography variant='body2'>{data?.customer?.name}</Typography>
+						<Typography variant='body2'>
+							{data?.customer?.name || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Địa chỉ
 						</Typography>
-						<Typography variant='body2'>{data?.address}</Typography>
+						<Typography variant='body2'>
+							{data?.address ? data?.address : data?.customer?.address || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Model
 						</Typography>
-						<Typography variant='body2'>{data?.deviceTypeCode}</Typography>
+						<Typography variant='body2'>
+							{data?.deviceTypeCode || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							SKU
 						</Typography>
-						<Typography variant='body2'>{data?.deviceSKUCode}</Typography>
+						<Typography variant='body2'>
+							{data?.deviceSKUCode || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Nhóm
 						</Typography>
-						<Typography variant='body2'>{data?.deviceGroupCode}</Typography>
+						<Typography variant='body2'>
+							{data?.deviceGroupCode || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Loại
 						</Typography>
-						<Typography variant='body2'>{data?.deviceTypeCode}</Typography>
+						<Typography variant='body2'>
+							{data?.deviceTypeCode || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
@@ -107,7 +118,7 @@ const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 						</Typography>
 						<Typography variant='body2'>
 							{data?.installationDate &&
-								format(new Date(data.installationDate), 'dd/MM/yyyy', {
+								format(new Date(data.installationDate || '-'), 'dd/MM/yyyy', {
 									locale: vi,
 								})}
 						</Typography>
@@ -116,13 +127,41 @@ const DeviceDetail: React.FC<Props> = ({ id, onSelect }) => {
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Hình thức sử dụng
 						</Typography>
-						<Typography variant='body2'>{data?.usageType?.name}</Typography>
+						<Typography variant='body2'>
+							{data?.usageType?.name || '-'}
+						</Typography>
 					</Grid2>
 					<Grid2 size={{ xs: 4 }}>
 						<Typography variant='body1' color='primary' fontWeight={600}>
 							Ghi chú
 						</Typography>
 						<Typography variant='body2'>{data?.note || '-'}</Typography>
+					</Grid2>
+					<Grid2 size={{ xs: 12 }}>
+						<Typography variant='body1' color='primary' fontWeight={600}>
+							Thông số máy
+						</Typography>
+
+						{data?.attributeDeviceValues &&
+						data.attributeDeviceValues.length > 0 ? (
+							<Stack
+								direction='row'
+								spacing={1}
+								sx={{ mt: 1, flexWrap: 'wrap' }}
+							>
+								{data.attributeDeviceValues.map((item) => (
+									<Chip
+										key={item.id}
+										label={`${item.attributeName}`}
+										color='primary'
+										variant='outlined'
+										sx={{ mb: 1 }}
+									/>
+								))}
+							</Stack>
+						) : (
+							<Typography variant='body2'>-</Typography>
+						)}
 					</Grid2>
 				</Grid2>
 			</Grid2>

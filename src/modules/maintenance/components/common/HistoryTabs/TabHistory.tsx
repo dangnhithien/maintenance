@@ -3,11 +3,15 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
-
 import { EnumTaskHistory } from '@modules/maintenance/datas/enum/EnumTaskHistory'
 import PartChangeHistory from './PartChangeHistory'
 import MaintenanceDateUpdateHistory from './MaintenanceDateUpdateHistory'
 import MachineParameterChangeHistory from './MachineParameterChangeHistory'
+import { IDevice } from '@modules/maintenance/datas/device/IDevice'
+import { Stack } from '@mui/material'
+import InputSearch from '../InputSearch'
+import { MaintenanceHistoryDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
+import DateFilter from '@components/DateFilter'
 
 interface TabPanelProps {
 	children?: React.ReactNode
@@ -15,9 +19,17 @@ interface TabPanelProps {
 	value: number
 }
 
-interface Props {
-	data?: TaskCheckDto
+interface TaskCheckData {
+	type: 'TaskCheck'
+	payload: TaskCheckDto
 }
+
+interface DeviceData {
+	type: 'Device'
+	payload: IDevice
+}
+
+type Props = TaskCheckData | DeviceData
 
 function CustomTabPanel(props: TabPanelProps) {
 	const { children, value, index, ...other } = props
@@ -41,29 +53,64 @@ function a11yProps(index: number) {
 		'aria-controls': `simple-tabpanel-${index}`,
 	}
 }
-
-const TabHistory: React.FC<Props> = ({ data }) => {
+const TabHistory: React.FC<Props> = (props) => {
 	const [value, setValue] = React.useState(0)
+	const [dateFilter, setDateFilter] = React.useState<{
+		fromDate: Date | null
+		toDate: Date | null
+	}>({
+		fromDate: null,
+		toDate: null,
+	})
 
-	const getFilteredData = (type: string) => {
-		return (
-			data?.taskCheckMaintenanceHistories?.filter(
-				(h) => h.maintenanceHistory.maintenanceUpdateType === type,
-			) || []
-		)
+	const getFilteredData = React.useCallback(
+		(type: string) => {
+			let data: MaintenanceHistoryDto[] = []
+			if (props.type === 'TaskCheck') {
+				data = props.payload.maintenanceHistories || []
+			} else if (props.type === 'Device') {
+				data = props.payload.maintenanceHistories || []
+			}
+
+			// filter theo loại lịch sử
+			let filtered = data.filter((h) => h?.maintenanceUpdateType === type)
+
+			// filter thêm theo date nếu có
+			if (dateFilter.fromDate && dateFilter.toDate) {
+				filtered = filtered.filter((item) => {
+					const itemDate = new Date(item.maintenanceUpdateAt)
+					return (
+						itemDate >= dateFilter.fromDate! && itemDate <= dateFilter.toDate!
+					)
+				})
+			}
+
+			return filtered
+		},
+		[props, dateFilter],
+	)
+
+	const handleFilter = (
+		formattedStart: string | null,
+		formattedEnd: string | null,
+	) => {
+		setDateFilter({
+			fromDate: formattedStart ? new Date(formattedStart) : null,
+			toDate: formattedEnd ? new Date(formattedEnd) : null,
+		})
 	}
 
 	const partChangeData = React.useMemo(
 		() => getFilteredData(EnumTaskHistory.REPLACE_PART_DETAIL),
-		[data],
+		[getFilteredData],
 	)
 	const maintenanceDateData = React.useMemo(
 		() => getFilteredData(EnumTaskHistory.UPDATE_LAST_MAINTENANCE_DATE),
-		[data],
+		[getFilteredData],
 	)
 	const deviceAttributeData = React.useMemo(
 		() => getFilteredData(EnumTaskHistory.UPDATE_LAST_ATTRIBUTE_DEVICE_VALUE),
-		[data],
+		[getFilteredData],
 	)
 
 	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -83,6 +130,15 @@ const TabHistory: React.FC<Props> = ({ data }) => {
 					<Tab label='Lịch sử thay đổi thông số máy' {...a11yProps(2)} />
 				</Tabs>
 			</Box>
+			<Stack
+				direction='row'
+				spacing={2}
+				sx={{ mt: 2, mb: 2 }}
+				justifyContent={'flex-end'}
+			>
+				<DateFilter onFilter={handleFilter} />
+			</Stack>
+
 			<CustomTabPanel value={value} index={0}>
 				<PartChangeHistory data={partChangeData} />
 			</CustomTabPanel>

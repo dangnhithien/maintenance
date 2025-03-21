@@ -1,15 +1,15 @@
 import axiosInstance from '../../../apis/axiosInstance'
 import { ApiResponseWithList } from '../../../datas/comon/ApiResponse'
-import { IAttributeDeviceGroup } from '../datas/attributeDeviceGroup/IAttributeDeviceGroup'
+import { IDeviceAttributeValue } from '../datas/attributeDeviceValue/IAttributeDeviceValue'
 import { IAttributeDeviceValueCreate } from '../datas/attributeDeviceValue/IAttributeDeviceValueCreate'
 import { IAttributeDeviceValueGet } from '../datas/attributeDeviceValue/IAttributeDeviceValueGet'
 
-const BASE_URL = '/api/attribute-device-group'
+const BASE_URL = '/api/attribute-device-value'
 
 class AttributeDeviceValueApi {
 	get = async (
 		params?: IAttributeDeviceValueGet,
-	): Promise<ApiResponseWithList<IAttributeDeviceGroup>> => {
+	): Promise<ApiResponseWithList<IDeviceAttributeValue>> => {
 		return await axiosInstance.get(BASE_URL, {
 			params,
 		})
@@ -17,7 +17,7 @@ class AttributeDeviceValueApi {
 
 	post = async (
 		params?: IAttributeDeviceValueCreate,
-	): Promise<ApiResponseWithList<IAttributeDeviceGroup>> => {
+	): Promise<ApiResponseWithList<IDeviceAttributeValue>> => {
 		return await axiosInstance.post(BASE_URL, params)
 	}
 }

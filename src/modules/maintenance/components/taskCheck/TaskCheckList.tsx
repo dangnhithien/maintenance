@@ -202,7 +202,7 @@ const TaskCheckList: React.FC<Props> = ({
 								}}
 							/>
 						</Grid2>
-						<Grid2 width={150}>
+						{/* <Grid2 width={150}>
 							<FormControl fullWidth>
 								<InputLabel id='status-filter-label'>Trạng thái</InputLabel>
 								<Select
@@ -238,7 +238,7 @@ const TaskCheckList: React.FC<Props> = ({
 									</MenuItem>
 								</Select>
 							</FormControl>
-						</Grid2>
+						</Grid2> */}
 					</Grid2>
 				)}
 				<Grid2>
