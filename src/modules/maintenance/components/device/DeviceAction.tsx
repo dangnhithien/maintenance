@@ -1,4 +1,3 @@
-import { unwrapError } from '@datas/comon/ApiResponse'
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Box,
@@ -34,13 +33,13 @@ import { DatePicker } from '@mui/x-date-pickers'
 import FrameVMS from '@components/FrameVMS'
 import SpinnerLoading from '@components/SpinerLoading'
 import DeviceGroupItemsModal from './DeviceGroupItemsModal'
-import { IAttributeDeviceGroup } from '@modules/maintenance/datas/attributeDeviceGroup/IAttributeDeviceGroup'
 import { Settings } from '@mui/icons-material'
 import attributeDeviceValueApi from '@modules/maintenance/apis/attributeDeviceValueApi'
 import {
 	IAttributeDeviceValue,
 	IAttributeDeviceValueCreate,
 } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
+import { de } from 'date-fns/locale'
 
 const schema = yup.object({
 	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
@@ -95,6 +94,9 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 		},
 		resolver: yupResolver(schema),
 	})
+	const deviceTypeId = watch('deviceTypeId')
+	const deviceGroupId = watch('deviceGroupId')
+	const deviceSKUId = watch('deviceSKUId')
 	const customerId = watch('customerId')
 	const { getCustomerById } = useCustomer()
 	const { data: customerData } = getCustomerById(customerId ?? '')
@@ -241,6 +243,9 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 							customerId={customerId}
 							createdDevice={createdDevice}
 							setSelectedGroupItems={setSelectedGroupItems}
+							deviceTypeId={deviceTypeId}
+							deviceGroupId={deviceGroupId}
+							deviceSKUId={deviceSKUId}
 						/>
 					</FrameVMS>
 				)}
@@ -294,6 +299,9 @@ interface DeviceFormProps {
 	customerId: string | undefined
 	createdDevice: IDeviceCreate | null
 	setSelectedGroupItems: (items: IAttributeDeviceValue[]) => void
+	deviceTypeId: string | undefined
+	deviceGroupId: string | undefined
+	deviceSKUId: string | undefined
 }
 
 const DeviceForm: React.FC<DeviceFormProps> = ({
@@ -302,8 +310,9 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 	handleNext,
 	updateCreatedDevice,
 	setSelectedGroupItems,
-	// customerId,
-	// createdDevice,
+	deviceTypeId,
+	deviceGroupId,
+	deviceSKUId,
 }) => {
 	const [modalOpen, setModalOpen] = useState(false)
 
@@ -417,13 +426,13 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 							render={({ field }) => (
 								<DeviceGroupSelect
 									id={field?.value}
-									// deviceTypeId={deviceTypeId} // Truyền deviceTypeId vào component select
+									deviceTypeId={deviceTypeId} // Truyền deviceTypeId vào component select
 									onChange={(value) => field.onChange(value?.id)}
 									onSelect={(value) =>
 										updateCreatedDevice('deviceGroupId', value?.name)
 									}
 									error={!!errors.deviceGroupId}
-									// disabled={!deviceTypeId} // Vô hiệu hóa nếu chưa chọn loại thiết bị
+									disabled={!deviceTypeId} // Vô hiệu hóa nếu chưa chọn loại thiết bị
 								/>
 							)}
 						/>
@@ -454,8 +463,8 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 						<DeviceSKUSelect
 							id={field?.value}
 							onChange={(value) => field.onChange(value?.id)}
-							// deviceGroupId={deviceGroupId}
-							// disabled={!deviceGroupId}
+							deviceGroupId={deviceGroupId}
+							disabled={!deviceGroupId}
 							onSelect={(value) =>
 								updateCreatedDevice('deviceSKUId', value?.name)
 							}
@@ -480,8 +489,8 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 						<DeviceModelSelect
 							id={field?.value}
 							onChange={(value) => field.onChange(value?.id)}
-							// deviceSKUId={deviceSKUId}
-							// disabled={!deviceSKUId}
+							deviceSKUId={deviceSKUId}
+							disabled={!deviceSKUId}
 							onSelect={(value) =>
 								updateCreatedDevice('deviceModelId', value?.name)
 							}
