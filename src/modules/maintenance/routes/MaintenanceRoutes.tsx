@@ -64,6 +64,12 @@ const DeviceListPage = React.lazy(
 const DeviceCreateUpdatePage = React.lazy(
 	() => import('../pages/device/DeviceCreateUpdatePage'),
 )
+const DeviceDetailPage = React.lazy(
+	() => import('../pages/device/DeviceDetailPage'),
+)
+const DeviceActionPage = React.lazy(
+	() => import('../pages/device/DeviceActionPage'),
+)
 const PartCategoryListPage = React.lazy(
 	() => import('../pages/partCategory/PartCategoryListPage'),
 )
@@ -327,10 +333,18 @@ const MaintenanceRoutes = () => (
 			}
 		/>
 		<Route
+			path='/devices/:id'
+			element={
+				<React.Suspense fallback={<SpinnerLoading />}>
+					<DeviceDetailPage />
+				</React.Suspense>
+			}
+		/>
+		<Route
 			path='/devices/create'
 			element={
 				<React.Suspense fallback={<SpinnerLoading />}>
-					<DeviceCreateUpdatePage />
+					<DeviceActionPage />
 				</React.Suspense>
 			}
 		/>

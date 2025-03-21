@@ -147,34 +147,30 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 			} else {
 				// Tạo thiết bị mới
 				const res = await deviceApi.post(data)
-
+				deviceId = res.result.id
 				if (res.statusCode === 200) {
-					notify(res.message, 'success')
+					notify('Tạo mới thành công', 'success')
 
 					// Nếu có selectedGroupItems thì tiến hành POST
 					if (selectedGroupItems && selectedGroupItems.length > 0) {
 						const attributeParams: IAttributeDeviceValueCreate = {
 							attributeDeviceValueCommands: selectedGroupItems.map((item) => ({
-								deviceId: id ?? '',
+								deviceId: deviceId,
 								attributeDeviceGroupId: item.id,
 								attributeName: item.attributeName,
 							})),
 						}
 
 						// Gọi API POST để lưu attribute device values
-						const attrRes = await attributeDeviceValueApi.post(attributeParams)
-						if (attrRes.statusCode === 200) {
-							notify('Lưu thông số thiết bị thành công', 'success')
-						} else {
-							notify('Lưu thông số thiết bị thất bại', 'error')
-						}
+						await attributeDeviceValueApi.post(attributeParams)
 					}
 					navigate('/devices')
 				}
 			}
 		} catch (err) {
-			const { message } = unwrapError(err)
-			notify(message, 'error')
+			console.log(err)
+			// const { message } = unwrapError(err)
+			// notify(message, 'error')
 		} finally {
 			setLoading(false)
 		}

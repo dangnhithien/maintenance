@@ -37,7 +37,7 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 	const [newAttributeName, setNewAttributeName] = useState('')
 
 	useEffect(() => {
-		if (open && deviceGroupId) {
+		if (deviceGroupId) {
 			attributeDeviceGroupApi
 				.get({ deviceGroupId })
 				.then((response) => {
@@ -51,7 +51,7 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 					console.error('Error fetching items:', error)
 				})
 		}
-	}, [deviceGroupId, open])
+	}, [deviceGroupId])
 
 	const handleToggle = (item: IAttributeDeviceGroup) => {
 		const isSelected = selectedIds.includes(item.id)
