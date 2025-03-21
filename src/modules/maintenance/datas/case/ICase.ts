@@ -7,6 +7,7 @@ export interface ICase {
 	id: string
 	code: string
 	name: string
+	address?: string
 	note?: string
 	scheduledTime: string
 	customerId: string

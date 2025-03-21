@@ -67,7 +67,9 @@ const CaseDetail: React.FC<Props> = ({ data }) => {
 				<Typography variant='body1' color='primary' fontWeight={600}>
 					Địa chỉ
 				</Typography>
-				<Typography variant='body2'>{data.customer?.address}</Typography>
+				<Typography variant='body2'>
+					{data.address ? data.address : data.customer?.address || '-'}
+				</Typography>
 			</Grid2>
 		</Grid2>
 	)

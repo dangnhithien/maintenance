@@ -2,7 +2,7 @@ import { TrackingDataDto } from '../../../../datas/comon/TrackingDataDto'
 import { CustomerDto } from '../customer/CustomerDto'
 import { IDevice } from '../device/IDevice'
 import { EnumStatusTaskCheck } from '../enum/EnumStatusTaskCheck'
-// import { ProductDto } from '../product/ProductDto'
+import { MaintenanceUpdateType } from '../enum/EnumTaskHistory'
 import { RowCheckValueDto } from '../rowCheckValue/RowCheckValueDto'
 import { TemplateCheckListDto } from '../templateCheckList/TemplateCheckListDto'
 
@@ -32,19 +32,17 @@ export interface TaskCheckDto extends TrackingDataDto {
 	rowCheckValues: RowCheckValueDto[]
 	reason?: string
 	device?: IDevice
-	taskCheckMaintenanceHistories?: MaintenanceHistoryDto[]
+	maintenanceHistories?: MaintenanceHistoryDto[]
 }
 
 export interface MaintenanceHistoryDto {
-	maintenanceHistoryId: string
-	maintenanceHistory: {
-		fieldName: string
-		oldValue: string
-		newValue: string
-		updateByUsername: string
-		updateByUserId: string
-		maintenanceUpdateType: string
-		maintenanceUpdateAt: string
-		description: string
-	}
+	id: string
+	fieldName: string
+	oldValue: string
+	newValue: string
+	updateByUsername: string
+	updateByUserId: string
+	maintenanceUpdateType: MaintenanceUpdateType
+	maintenanceUpdateAt: string // ISO date string
+	description: string
 }

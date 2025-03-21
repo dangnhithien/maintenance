@@ -16,12 +16,12 @@ import { useNavigate } from 'react-router-dom'
 
 // Updated schema: removed validations for note and address
 const schema = yup.object({
-	name: yup.string().required('Không được bỏ trống'),
-	code: yup.string().required('Không được bỏ trống'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	code: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	description: yup.string().max(255, 'Giới hạn 255 ký tự'),
-	deviceTypeId: yup.string().required('Không được bỏ trống'),
-	deviceGroupId: yup.string().required('Không được bỏ trống'),
-	deviceSKUId: yup.string().required('Không được bỏ trống'),
+	deviceTypeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceGroupId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceSKUId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	image: yup.string(),
 })
 

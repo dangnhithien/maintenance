@@ -53,8 +53,22 @@ class CaseApi {
 		})
 	}
 
-	updateStatus = async (id: string): Promise<ApiResponseWithList<ICase>> => {
-		return await axiosInstance.put(`${BASE_URL}/done-case-task/${id}`)
+	updateApproveStatus = async (
+		id: string,
+	): Promise<ApiResponseWithList<ICase>> => {
+		return await axiosInstance.put(`${BASE_URL}/approve-case-task/${id}`)
+	}
+
+	updateClosedStatus = async (
+		id: string,
+	): Promise<ApiResponseWithList<ICase>> => {
+		return await axiosInstance.put(`${BASE_URL}/close-case-task/${id}`)
+	}
+
+	updateCancelStatus = async (
+		id: string,
+	): Promise<ApiResponseWithList<ICase>> => {
+		return await axiosInstance.put(`${BASE_URL}/cancel-case-task/${id}`)
 	}
 }
 

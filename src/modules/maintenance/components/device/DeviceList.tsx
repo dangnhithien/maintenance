@@ -176,7 +176,7 @@ const DeviceListDetail = () => {
 					<Grid2 key={item.id} size={{ xs: 12, md: 6 }}>
 						<DeviceDetailItem
 							data={item}
-							linkBaseUrl={'/devices/update'}
+							linkBaseUrl={'/devices'}
 							mode={mode}
 							onCheckDelete={handleSelectionChange}
 						/>

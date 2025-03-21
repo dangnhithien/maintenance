@@ -29,13 +29,13 @@ import useCustomer from '@modules/maintenance/hooks/useCustomer'
 import SerialNumberSelect from '../common/select/SerialNumberSelect'
 
 const schema = yup.object({
-	name: yup.string().required('Không được bỏ trống'),
-	assigneeId: yup.string().required('Không được bỏ trống'),
-	caseTypeId: yup.string().required('Không được bỏ trống'),
-	customerId: yup.string().required('Không được bỏ trống'),
-	deviceId: yup.string().required('Không được bỏ trống'),
-	scheduledTime: yup.string().required('Không được bỏ trống'),
-	address: yup.string().required('Không được bỏ trống'),
+	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	assigneeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	caseTypeId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	customerId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	deviceId: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	scheduledTime: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
+	address: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
 	description: yup.string().max(255, 'Giới hạn 255 ký tự'),
 })
 

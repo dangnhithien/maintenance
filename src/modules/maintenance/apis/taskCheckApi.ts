@@ -44,8 +44,7 @@ class TaskCheckApi {
 		return await axiosInstance.get(`${BASE_URL}/${id}`, {
 			params: {
 				...params,
-				includeProperties:
-					'Device,Customer,TemplateCheck,TaskCheckMaintenanceHistories.MaintenanceHistory',
+				includeProperties: 'Device,Customer,TemplateCheck,MaintenanceHistories',
 			},
 		})
 	}

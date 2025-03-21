@@ -1,8 +1,13 @@
+import {
+	IAttributeDeviceValue,
+	IAttributeDeviceValueCommand,
+} from '../attributeDeviceValue/IAttributeDeviceValueCreate'
 import { CustomerDto } from '../customer/CustomerDto'
 import { IDeviceGroup } from '../deviceGroup/IDeviceGroup'
 import { IDeviceModel } from '../deviceModel/IDeviceModel'
 import { IDeviceSKU } from '../deviceSKU/IDeviceSKU'
 import { IDeviceType } from '../deviceType/IDeviceType'
+import { MaintenanceHistoryDto } from '../taskCheck/TaskCheckDto'
 import { IUsageType } from '../usageType/IUsageType'
 
 export interface IDevice {
@@ -32,4 +37,6 @@ export interface IDevice {
 	deviceTypeId?: string
 	deviceTypeCode?: string
 	deviceType?: IDeviceType
+	attributeDeviceValues?: IAttributeDeviceValue[]
+	maintenanceHistories?: MaintenanceHistoryDto[]
 }

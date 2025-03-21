@@ -4,11 +4,11 @@ import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router-dom'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import FrameVMS from '@components/FrameVMS'
-import TabHistory from '@modules/maintenance/components/taskCheck/TabHistory'
 import { Button } from '@mui/material'
 import { useState } from 'react'
 import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
 import TaskCheckVote from '@modules/maintenance/components/taskCheck/TaskCheckVote'
+import TabHistory from '@modules/maintenance/components/common/HistoryTabs/TabHistory'
 
 const TaskCheckDetailPage: React.FC = () => {
 	const { id } = useParams()
@@ -48,7 +48,7 @@ const TaskCheckDetailPage: React.FC = () => {
 
 			{activeTab === 1 && (
 				<Wrapper>
-					<TabHistory data={taskCheck} />
+					<TabHistory type='TaskCheck' payload={taskCheck} />
 				</Wrapper>
 			)}
 		</>

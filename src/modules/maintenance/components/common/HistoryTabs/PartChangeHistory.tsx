@@ -9,7 +9,7 @@ interface Props {
 	data?: MaintenanceHistoryDto[]
 }
 
-const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
+const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 	const [params, setParams] = useState({
 		takeCount: 5,
 		skipCount: 0,
@@ -19,27 +19,35 @@ const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
 	const columns: GridColDef[] = [
 		{
 			field: 'fieldName',
-			headerName: 'Tên thông số',
+			headerName: 'Tên linh kiện',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.fieldName,
+			renderCell: (params) => {
+				return params.row.fieldName
+			},
 		},
 		{
 			field: 'oldValue',
 			headerName: 'Giá trị cũ',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.oldValue,
+			renderCell: (params) => {
+				return params.row.oldValue
+			},
 		},
 		{
 			field: 'newValue',
 			headerName: 'Giá trị mới',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.newValue,
+			renderCell: (params) => {
+				return params.row.newValue
+			},
 		},
 		{
 			field: 'updateByUsername',
 			headerName: 'Người cập nhật',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.updateByUsername,
+			renderCell: (params) => {
+				return params.row.updateByUsername
+			},
 		},
 		{
 			field: 'maintenanceUpdateAt',
@@ -47,11 +55,12 @@ const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			flex: 1,
 			renderCell: (params) => {
 				if (!params.row.maintenanceHistory.maintenanceUpdateAt) return '-'
-				return format(
-					parseISO(params.row.maintenanceHistory.maintenanceUpdateAt),
+				const formattedDate = format(
+					parseISO(params.row.maintenanceUpdateAt),
 					'dd/MM/yyyy',
 					{ locale: vi },
 				)
+				return formattedDate
 			},
 		},
 	]
@@ -63,10 +72,10 @@ const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			totalCount={data.length}
 			setParams={setParams}
 			initialTakeCount={params.takeCount}
-			getRowId={(row) => row.maintenanceHistoryId}
+			getRowId={(row) => row.id}
 			checkboxSelection={false}
 		/>
 	)
 }
 
-export default MachineParameterChangeHistory
+export default PartChangeHistory

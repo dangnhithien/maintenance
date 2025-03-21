@@ -9,7 +9,7 @@ interface Props {
 	data?: MaintenanceHistoryDto[]
 }
 
-const MaintenanceDateUpdateHistory: React.FC<Props> = ({ data = [] }) => {
+const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
 	const [params, setParams] = useState({
 		takeCount: 5,
 		skipCount: 0,
@@ -19,48 +19,37 @@ const MaintenanceDateUpdateHistory: React.FC<Props> = ({ data = [] }) => {
 	const columns: GridColDef[] = [
 		{
 			field: 'fieldName',
-			headerName: 'Tên',
+			headerName: 'Tên thông số',
 			flex: 1,
-			renderCell: (params) => {
-				return params.row.maintenanceHistory.fieldName
-			},
+			renderCell: (params) => params.row.fieldName,
 		},
 		{
 			field: 'oldValue',
 			headerName: 'Giá trị cũ',
 			flex: 1,
-			renderCell: (params) => {
-				return params.row.maintenanceHistory.oldValue
-			},
+			renderCell: (params) => params.row.oldValue,
 		},
 		{
 			field: 'newValue',
 			headerName: 'Giá trị mới',
 			flex: 1,
-			renderCell: (params) => {
-				return params.row.maintenanceHistory.newValue
-			},
+			renderCell: (params) => params.row.newValue,
 		},
 		{
 			field: 'updateByUsername',
 			headerName: 'Người cập nhật',
 			flex: 1,
-			renderCell: (params) => {
-				return params.row.maintenanceHistory.updateByUsername
-			},
+			renderCell: (params) => params.row.updateByUsername,
 		},
 		{
 			field: 'maintenanceUpdateAt',
 			headerName: 'Ngày cập nhật',
 			flex: 1,
 			renderCell: (params) => {
-				if (!params.row.maintenanceHistory.maintenanceUpdateAt) return '-'
-				const formattedDate = format(
-					parseISO(params.row.maintenanceHistory.maintenanceUpdateAt),
-					'dd/MM/yyyy',
-					{ locale: vi },
-				)
-				return formattedDate
+				if (!params.row.maintenanceUpdateAt) return '-'
+				return format(parseISO(params.row.maintenanceUpdateAt), 'dd/MM/yyyy', {
+					locale: vi,
+				})
 			},
 		},
 	]
@@ -72,10 +61,10 @@ const MaintenanceDateUpdateHistory: React.FC<Props> = ({ data = [] }) => {
 			totalCount={data.length}
 			setParams={setParams}
 			initialTakeCount={params.takeCount}
-			getRowId={(row) => row.maintenanceHistoryId}
+			getRowId={(row) => row.id}
 			checkboxSelection={false}
 		/>
 	)
 }
 
-export default MaintenanceDateUpdateHistory
+export default MachineParameterChangeHistory
