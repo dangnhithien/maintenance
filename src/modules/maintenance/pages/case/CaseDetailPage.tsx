@@ -16,7 +16,7 @@ import { useParams } from 'react-router-dom'
 const CaseDetailPage = () => {
 	const { id } = useParams()
 	const [openConfirm, setOpenConfirm] = useState(false)
-	const { getCaseById, approveCase, loading } = useCase()
+	const { getCaseById, approveCase, closeCase, loading } = useCase()
 	const { data: caseDetail, isLoading } = getCaseById(id || '', {
 		includeProperties: 'CaseType,Customer',
 	})
@@ -30,8 +30,9 @@ const CaseDetailPage = () => {
 		if (!id) return
 		if (caseDetail!.caseTaskStatus === EnumStatusTicket.WAITING) {
 			//TODO: Confirm case
-		} else if (caseDetail!.caseTaskStatus === EnumStatusTicket.CREATED) {
 			approveCase(id)
+		} else if (caseDetail!.caseTaskStatus === EnumStatusTicket.CREATED) {
+			closeCase(id)
 		}
 		setOpenConfirm(false)
 	}

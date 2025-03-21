@@ -70,7 +70,21 @@ export const useCase = () => {
 
 	// Approve a checklist
 	const approveCase = useMutation({
-		mutationFn: (id: string) => caseApi.updateStatus(id),
+		mutationFn: (id: string) => caseApi.updateApproveStatus(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [KEY] })
+		},
+	})
+
+	const closeCase = useMutation({
+		mutationFn: (id: string) => caseApi.updateClosedStatus(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [KEY] })
+		},
+	})
+
+	const cancelCase = useMutation({
+		mutationFn: (id: string) => caseApi.updateCancelStatus(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [KEY] })
 		},
@@ -98,6 +112,8 @@ export const useCase = () => {
 		createCase: createCase.mutateAsync,
 		updateCase: updateCase.mutateAsync,
 		approveCase: approveCase.mutateAsync,
+		closeCase: closeCase.mutateAsync,
+		cancelCase: cancelCase.mutateAsync,
 		deleteCase: deleteCase.mutateAsync,
 		restoreCase: restoreCase.mutateAsync,
 		cases,
