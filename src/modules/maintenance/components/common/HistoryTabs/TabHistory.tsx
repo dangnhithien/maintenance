@@ -3,10 +3,11 @@ import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
-import PartChangeHistory from './components/PartChangeHistory'
-import MaintenanceDateUpdateHistory from './components/MaintenanceDateUpdateHistory'
-import MachineParameterChangeHistory from './components/MachineParameterChangeHistory'
+
 import { EnumTaskHistory } from '@modules/maintenance/datas/enum/EnumTaskHistory'
+import PartChangeHistory from './PartChangeHistory'
+import MaintenanceDateUpdateHistory from './MaintenanceDateUpdateHistory'
+import MachineParameterChangeHistory from './MachineParameterChangeHistory'
 
 interface TabPanelProps {
 	children?: React.ReactNode
