@@ -21,37 +21,35 @@ const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			field: 'fieldName',
 			headerName: 'Tên thông số',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.fieldName,
+			renderCell: (params) => params.row.fieldName,
 		},
 		{
 			field: 'oldValue',
 			headerName: 'Giá trị cũ',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.oldValue,
+			renderCell: (params) => params.row.oldValue,
 		},
 		{
 			field: 'newValue',
 			headerName: 'Giá trị mới',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.newValue,
+			renderCell: (params) => params.row.newValue,
 		},
 		{
 			field: 'updateByUsername',
 			headerName: 'Người cập nhật',
 			flex: 1,
-			renderCell: (params) => params.row.maintenanceHistory.updateByUsername,
+			renderCell: (params) => params.row.updateByUsername,
 		},
 		{
 			field: 'maintenanceUpdateAt',
 			headerName: 'Ngày cập nhật',
 			flex: 1,
 			renderCell: (params) => {
-				if (!params.row.maintenanceHistory.maintenanceUpdateAt) return '-'
-				return format(
-					parseISO(params.row.maintenanceHistory.maintenanceUpdateAt),
-					'dd/MM/yyyy',
-					{ locale: vi },
-				)
+				if (!params.row.maintenanceUpdateAt) return '-'
+				return format(parseISO(params.row.maintenanceUpdateAt), 'dd/MM/yyyy', {
+					locale: vi,
+				})
 			},
 		},
 	]
@@ -63,7 +61,7 @@ const MachineParameterChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			totalCount={data.length}
 			setParams={setParams}
 			initialTakeCount={params.takeCount}
-			getRowId={(row) => row.maintenanceHistoryId}
+			getRowId={(row) => row.id}
 			checkboxSelection={false}
 		/>
 	)

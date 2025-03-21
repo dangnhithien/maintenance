@@ -22,7 +22,7 @@ const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			headerName: 'Tên linh kiện',
 			flex: 1,
 			renderCell: (params) => {
-				return params.row.maintenanceHistory.fieldName
+				return params.row.fieldName
 			},
 		},
 		{
@@ -30,7 +30,7 @@ const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			headerName: 'Giá trị cũ',
 			flex: 1,
 			renderCell: (params) => {
-				return params.row.maintenanceHistory.oldValue
+				return params.row.oldValue
 			},
 		},
 		{
@@ -38,7 +38,7 @@ const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			headerName: 'Giá trị mới',
 			flex: 1,
 			renderCell: (params) => {
-				return params.row.maintenanceHistory.newValue
+				return params.row.newValue
 			},
 		},
 		{
@@ -46,7 +46,7 @@ const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			headerName: 'Người cập nhật',
 			flex: 1,
 			renderCell: (params) => {
-				return params.row.maintenanceHistory.updateByUsername
+				return params.row.updateByUsername
 			},
 		},
 		{
@@ -56,7 +56,7 @@ const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			renderCell: (params) => {
 				if (!params.row.maintenanceHistory.maintenanceUpdateAt) return '-'
 				const formattedDate = format(
-					parseISO(params.row.maintenanceHistory.maintenanceUpdateAt),
+					parseISO(params.row.maintenanceUpdateAt),
 					'dd/MM/yyyy',
 					{ locale: vi },
 				)
@@ -72,7 +72,7 @@ const PartChangeHistory: React.FC<Props> = ({ data = [] }) => {
 			totalCount={data.length}
 			setParams={setParams}
 			initialTakeCount={params.takeCount}
-			getRowId={(row) => row.maintenanceHistoryId}
+			getRowId={(row) => row.id}
 			checkboxSelection={false}
 		/>
 	)
