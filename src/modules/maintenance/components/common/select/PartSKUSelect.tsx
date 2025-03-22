@@ -5,12 +5,15 @@ import { IPartSKUGet } from '@modules/maintenance/datas/partSKU/IPartSKUGet'
 
 import React, { useEffect, useState } from 'react'
 import { AsyncPaginate } from 'react-select-async-paginate'
+import { customSelectStyle } from './StyleSelect'
 
 interface AsyncPaginateSelectProps {
 	id?: string
 	partGroupId?: string
 	disabled?: boolean
 	onChange?: (value: IPartSKU | null) => void
+	onSelect?: (item: { id: string; name: string }) => void
+	error?: boolean
 }
 
 const PartSKUSelect: React.FC<AsyncPaginateSelectProps> = ({
@@ -18,6 +21,8 @@ const PartSKUSelect: React.FC<AsyncPaginateSelectProps> = ({
 	partGroupId,
 	onChange,
 	disabled,
+	onSelect,
+	error,
 }) => {
 	const [internalValue, setInternalValue] = useState<IPartSKU | null>(null)
 	const [key, setKey] = useState(0)
@@ -25,6 +30,7 @@ const PartSKUSelect: React.FC<AsyncPaginateSelectProps> = ({
 	const handleChange = (val: IPartSKU | null) => {
 		setInternalValue(val)
 		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+		onSelect?.({ id: val?.id || '', name: val?.name || '' })
 	}
 
 	useEffect(() => {
@@ -81,6 +87,7 @@ const PartSKUSelect: React.FC<AsyncPaginateSelectProps> = ({
 
 	return (
 		<AsyncPaginate
+			key={key}
 			isClearable
 			value={internalValue}
 			onChange={handleChange}
@@ -92,7 +99,17 @@ const PartSKUSelect: React.FC<AsyncPaginateSelectProps> = ({
 			}}
 			debounceTimeout={400}
 			menuPortalTarget={document.body}
-			styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+			styles={{
+				menuPortal: (base: any) => ({ ...base, zIndex: 1600 }),
+				...customSelectStyle,
+				control: (base) => ({
+					...base,
+					minHeight: '40px',
+					height: '40px',
+					borderRadius: '4px',
+					borderColor: error ? '#d32f2f' : base.borderColor,
+				}),
+			}}
 			isDisabled={disabled}
 			placeholder='Chọn SKU thành phần'
 		/>

@@ -8,16 +8,16 @@ import {
 	Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import InputSearch from '../common/InputSearch'
+import InputSearch from '../../common/InputSearch'
 import deviceApi from '@modules/maintenance/apis/deviceApi'
 import { IDevice } from '@modules/maintenance/datas/device/IDevice'
 import { IDeviceGet } from '@modules/maintenance/datas/device/IDeviceGet'
 import { Warning } from '@mui/icons-material'
 import { GridDeleteIcon } from '@mui/x-data-grid'
 import { Link } from 'react-router-dom'
-import DeviceDetailItem from '../common/DeviceDetailItem'
-import { useNotification } from '../common/Notistack'
-import PopupConfirm from '../common/PopupConfirm'
+import DeviceDetailItem from '../../common/DeviceDetailItem'
+import { useNotification } from '../../common/Notistack'
+import PopupConfirm from '../../common/PopupConfirm'
 import SpinnerLoading from '@components/SpinerLoading'
 
 const DeviceListDetail = () => {

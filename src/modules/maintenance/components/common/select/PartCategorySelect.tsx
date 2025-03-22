@@ -5,23 +5,29 @@ import { IPartCategoryGet } from '@modules/maintenance/datas/partCategory/IPartC
 
 import React, { useEffect, useState } from 'react'
 import { AsyncPaginate } from 'react-select-async-paginate'
+import { customSelectStyle } from './StyleSelect'
 
 interface AsyncPaginateSelectProps {
 	id?: string
 	disabled?: boolean
 	onChange?: (value: IPartCategory | null) => void
+	onSelect?: (item: { id: string; name: string }) => void
+	error?: boolean
 }
 
 const PartCategorySelect: React.FC<AsyncPaginateSelectProps> = ({
 	id,
 	onChange,
 	disabled,
+	onSelect,
+	error,
 }) => {
 	const [internalValue, setInternalValue] = useState<IPartCategory | null>(null)
 
 	const handleChange = (val: IPartCategory | null) => {
 		setInternalValue(val)
 		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+		onSelect?.({ id: val?.id || '', name: val?.name || '' })
 	}
 
 	useEffect(() => {
@@ -83,7 +89,17 @@ const PartCategorySelect: React.FC<AsyncPaginateSelectProps> = ({
 			}}
 			debounceTimeout={400}
 			menuPortalTarget={document.body}
-			styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+			styles={{
+				menuPortal: (base: any) => ({ ...base, zIndex: 1600 }),
+				...customSelectStyle,
+				control: (base) => ({
+					...base,
+					minHeight: '40px',
+					height: '40px',
+					borderRadius: '4px',
+					borderColor: error ? '#d32f2f' : base.borderColor,
+				}),
+			}}
 			isDisabled={disabled}
 			placeholder='Chọn danh mục thành phần'
 		/>

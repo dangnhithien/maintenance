@@ -4,12 +4,15 @@ import { IPartGroup } from '@modules/maintenance/datas/partGroup/IPartGroup'
 import { IPartGroupGet } from '@modules/maintenance/datas/partGroup/IPartGroupGet'
 import React, { useEffect, useState } from 'react'
 import { AsyncPaginate } from 'react-select-async-paginate'
+import { customSelectStyle } from './StyleSelect'
 
 interface AsyncPaginateSelectProps {
 	id?: string
 	partTypeId?: string
 	disabled?: boolean
 	onChange?: (value: IPartGroup | null) => void
+	onSelect?: (item: { id: string; name: string }) => void
+	error?: boolean
 }
 
 const PartGroupSelect: React.FC<AsyncPaginateSelectProps> = ({
@@ -17,6 +20,8 @@ const PartGroupSelect: React.FC<AsyncPaginateSelectProps> = ({
 	partTypeId,
 	onChange,
 	disabled,
+	onSelect,
+	error,
 }) => {
 	const [internalValue, setInternalValue] = useState<IPartGroup | null>(null)
 	const [key, setKey] = useState(0)
@@ -41,6 +46,7 @@ const PartGroupSelect: React.FC<AsyncPaginateSelectProps> = ({
 	const handleChange = (val: IPartGroup | null) => {
 		setInternalValue(val)
 		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+		onSelect?.({ id: val?.id || '', name: val?.name || '' })
 	}
 
 	const loadOptionCustomers = async (
@@ -92,7 +98,17 @@ const PartGroupSelect: React.FC<AsyncPaginateSelectProps> = ({
 			}}
 			debounceTimeout={400}
 			menuPortalTarget={document.body}
-			styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+			styles={{
+				menuPortal: (base: any) => ({ ...base, zIndex: 1600 }),
+				...customSelectStyle,
+				control: (base) => ({
+					...base,
+					minHeight: '40px',
+					height: '40px',
+					borderRadius: '4px',
+					borderColor: error ? '#d32f2f' : base.borderColor,
+				}),
+			}}
 			isDisabled={disabled}
 			placeholder='Chọn nhóm thành phần'
 		/>

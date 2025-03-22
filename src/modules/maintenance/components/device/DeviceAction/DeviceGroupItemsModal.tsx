@@ -15,6 +15,7 @@ import {
 	Stack,
 	TextField,
 } from '@mui/material'
+import { v4 as uuidv4 } from 'uuid'
 import { IAttributeDeviceGroup } from '@modules/maintenance/datas/attributeDeviceGroup/IAttributeDeviceGroup'
 import attributeDeviceGroupApi from '@modules/maintenance/apis/attributeDeviceGroupApi'
 
@@ -97,7 +98,7 @@ const DeviceGroupItemsModal: React.FC<DeviceGroupItemsModalProps> = ({
 
 	const handleCreateNewAttribute = () => {
 		const newItem: IAttributeDeviceGroup = {
-			id: crypto.randomUUID(),
+			id: uuidv4(),
 			deviceId: '',
 			deviceGroupId,
 			attributeName: newAttributeName,

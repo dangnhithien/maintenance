@@ -17,11 +17,6 @@ const CustomerListPage = React.lazy(
 const CustomerDetailPage = React.lazy(
 	() => import('../pages/customer/CustomerDetailPage'),
 )
-const ApprovalPage = React.lazy(() => import('../pages/approval/ApprovalPage'))
-const ApprovalDetailPage = React.lazy(
-	() => import('../pages/approval/ApprovalDetailPage'),
-)
-
 const TaskCheckDetailPage = React.lazy(
 	() => import('../pages/taskCheck/TaskCheckDetailPage'),
 )
@@ -61,9 +56,6 @@ const DeviceModelCreateUpdatePage = React.lazy(
 const DeviceListPage = React.lazy(
 	() => import('../pages/device/DeviceListPage'),
 )
-const DeviceCreateUpdatePage = React.lazy(
-	() => import('../pages/device/DeviceCreateUpdatePage'),
-)
 const DeviceDetailPage = React.lazy(
 	() => import('../pages/device/DeviceDetailPage'),
 )
@@ -102,7 +94,7 @@ const PartDetailCreateUpdatePage = React.lazy(
 )
 const CaseListPage = React.lazy(() => import('../pages/case/CaseListPage'))
 const CaseCreateUpdatePage = React.lazy(
-	() => import('../pages/case/CaseCreateUpdatePage'),
+	() => import('../pages/case/CaseAction'),
 )
 const CaseDetailPage = React.lazy(() => import('../pages/case/CaseDetailPage'))
 const TaskCheckCreatePage = React.lazy(
@@ -128,24 +120,6 @@ const MaintenanceRoutes = () => (
 				</React.Suspense>
 			}
 		/>
-
-		<Route
-			path='/approval'
-			element={
-				<React.Suspense fallback={<SpinnerLoading />}>
-					<ApprovalPage />
-				</React.Suspense>
-			}
-		/>
-		<Route
-			path='/approval/:id'
-			element={
-				<React.Suspense fallback={<SpinnerLoading />}>
-					<ApprovalDetailPage />
-				</React.Suspense>
-			}
-		/>
-		{/* survey */}
 		<Route
 			path='/template-check-list'
 			element={
@@ -345,14 +319,6 @@ const MaintenanceRoutes = () => (
 			element={
 				<React.Suspense fallback={<SpinnerLoading />}>
 					<DeviceActionPage />
-				</React.Suspense>
-			}
-		/>
-		<Route
-			path='/devices/update/:id'
-			element={
-				<React.Suspense fallback={<SpinnerLoading />}>
-					<DeviceCreateUpdatePage />
 				</React.Suspense>
 			}
 		/>
