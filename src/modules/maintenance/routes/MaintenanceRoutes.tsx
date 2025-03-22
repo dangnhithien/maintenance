@@ -94,7 +94,7 @@ const PartDetailCreateUpdatePage = React.lazy(
 )
 const CaseListPage = React.lazy(() => import('../pages/case/CaseListPage'))
 const CaseCreateUpdatePage = React.lazy(
-	() => import('../pages/case/CaseCreateUpdatePage'),
+	() => import('../pages/case/CaseAction'),
 )
 const CaseDetailPage = React.lazy(() => import('../pages/case/CaseDetailPage'))
 const TaskCheckCreatePage = React.lazy(

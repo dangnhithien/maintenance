@@ -1,52 +1,26 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
 	Box,
-	Button,
-	Grid2,
-	IconButton,
-	Paper,
 	Stack,
 	Step,
 	StepIconProps,
 	StepLabel,
 	Stepper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	TextField,
-	Typography,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { useNotification } from '../../common/Notistack'
-import CustomerSelect from '../../common/select/CustomerSelect'
 import { useNavigate } from 'react-router-dom'
-import SaveIcon from '@mui/icons-material/Save'
 import ManageSearchIcon from '@mui/icons-material/ManageSearch'
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import useCustomer from '@modules/maintenance/hooks/useCustomer'
-import DeviceTypeSelect from '../../common/select/DeviceTypeSelect'
-import DeviceGroupSelect from '../../common/select/DeviceGroupSelect'
-import DeviceSKUSelect from '../../common/select/DeviceSKUSelect'
-import DeviceModelSelect from '../../common/select/DeviceModel'
-import UsageTypeSelect from '../../common/select/UsageTypeSelect'
 import { IDeviceCreate } from '@modules/maintenance/datas/device/IDeviceCreate'
 import deviceApi from '@modules/maintenance/apis/deviceApi'
-import { DatePicker } from '@mui/x-date-pickers'
 import FrameVMS from '@components/FrameVMS'
 import SpinnerLoading from '@components/SpinerLoading'
-import DeviceGroupItemsModal from './DeviceGroupItemsModal'
-import { Settings } from '@mui/icons-material'
 import attributeDeviceValueApi from '@modules/maintenance/apis/attributeDeviceValueApi'
-import {
-	IAttributeDeviceValue,
-	IAttributeDeviceValueCreate,
-} from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
-import { de } from 'date-fns/locale'
+import { IAttributeDeviceValue } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
 import { unwrapError } from '@datas/comon/ApiResponse'
 import DeviceForm from './DeviceForm'
 import DevicePreview from './DevicePreview'
@@ -222,7 +196,7 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 	return (
 		<Stack
 			direction={'row'}
-			sx={{ width: '100%', mt: 4, margin: 'auto' }}
+			sx={{ width: '100%', margin: 'auto' }}
 			justifyContent={'space-between'}
 			alignItems={'flex-start'}
 			gap={4}
@@ -238,12 +212,11 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 
 			<Box
 				sx={{
-					width: '80%',
-					p: 2,
+					width: '85%',
 				}}
 			>
 				{activeStep === 0 && (
-					<FrameVMS title='Nhập thông tin thết bị' icon={<AssignmentIcon />}>
+					<FrameVMS title='Tạo thết bị' icon={<AssignmentIcon />}>
 						<DeviceForm
 							handleNext={handleNext}
 							control={control}

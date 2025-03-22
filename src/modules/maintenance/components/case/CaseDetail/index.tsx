@@ -2,7 +2,7 @@ import { Grid2, Typography } from '@mui/material'
 import type { ICase } from '@modules/maintenance/datas/case/ICase'
 import { format, parseISO } from 'date-fns'
 import { vi } from 'date-fns/locale'
-import ChipTicketStatus from '../common/chip/ChipTicketStatus'
+import ChipTicketStatus from '../../common/chip/ChipTicketStatus'
 import { EnumStatusTicket } from '@modules/maintenance/datas/enum/EnumStatusTicketCheck'
 
 interface Props {

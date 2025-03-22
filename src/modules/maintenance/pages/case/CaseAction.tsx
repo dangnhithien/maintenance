@@ -1,8 +1,8 @@
-import CaseCreateUpdate from '@modules/maintenance/components/case/CaseCreateUpdate'
+import CaseCreateUpdate from '@modules/maintenance/components/case/CaseAction'
 import Wrapper from '@modules/maintenance/components/common/Wrapper'
 import { Helmet } from 'react-helmet'
 import { useParams } from 'react-router-dom'
-const CaseCreateUpdatePage = () => {
+const CaseActionPage = () => {
 	const { id } = useParams()
 	return (
 		<>
@@ -17,4 +17,4 @@ const CaseCreateUpdatePage = () => {
 	)
 }
 
-export default CaseCreateUpdatePage
+export default CaseActionPage
