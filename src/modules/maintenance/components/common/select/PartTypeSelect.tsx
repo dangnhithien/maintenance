@@ -5,12 +5,15 @@ import { IPartTypeGet } from '@modules/maintenance/datas/partType/IPartTypeGet'
 
 import React, { useEffect, useState } from 'react'
 import { AsyncPaginate } from 'react-select-async-paginate'
+import { customSelectStyle } from './StyleSelect'
 
 interface AsyncPaginateSelectProps {
 	id?: string
 	partCategoryId?: string
 	disabled?: boolean
 	onChange?: (value: IPartType | null) => void
+	onSelect?: (item: { id: string; name: string }) => void
+	error?: boolean
 }
 
 const PartTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
@@ -18,6 +21,8 @@ const PartTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 	partCategoryId,
 	onChange,
 	disabled,
+	onSelect,
+	error,
 }) => {
 	const [internalValue, setInternalValue] = useState<IPartType | null>(null)
 	const [key, setKey] = useState(0)
@@ -25,6 +30,7 @@ const PartTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 	const handleChange = (val: IPartType | null) => {
 		setInternalValue(val)
 		onChange?.(val) // Gọi callback onChange nếu được truyền từ component cha
+		onSelect?.({ id: val?.id || '', name: val?.name || '' })
 	}
 
 	useEffect(() => {
@@ -93,7 +99,17 @@ const PartTypeSelect: React.FC<AsyncPaginateSelectProps> = ({
 			}}
 			debounceTimeout={400}
 			menuPortalTarget={document.body}
-			styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 5 }) }}
+			styles={{
+				menuPortal: (base: any) => ({ ...base, zIndex: 1600 }),
+				...customSelectStyle,
+				control: (base) => ({
+					...base,
+					minHeight: '40px',
+					height: '40px',
+					borderRadius: '4px',
+					borderColor: error ? '#d32f2f' : base.borderColor,
+				}),
+			}}
 			isDisabled={disabled}
 			placeholder='Chọn loại thành phần'
 		/>

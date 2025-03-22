@@ -17,6 +17,8 @@ import SaveIcon from '@mui/icons-material/Save'
 import ManageSearchIcon from '@mui/icons-material/ManageSearch'
 import { IDeviceCreate } from '@modules/maintenance/datas/device/IDeviceCreate'
 import { IAttributeDeviceValue } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
+import { IPartDetailCreate } from '@modules/maintenance/datas/partDetail/IPartDetailCreate'
+import DevicePartDetailTable from './DevicePartDetailTable'
 
 interface DevicePreviewProps {
 	device: IDeviceCreate | null
@@ -25,6 +27,7 @@ interface DevicePreviewProps {
 	handleBack: () => void
 	handleSubmit: () => void
 	selectedGroupItems: IAttributeDeviceValue[]
+	partDetailList: IPartDetailCreate[]
 }
 
 const DevicePreview = ({
@@ -34,6 +37,7 @@ const DevicePreview = ({
 	handleBack,
 	handleSubmit,
 	selectedGroupItems,
+	partDetailList = [],
 }: DevicePreviewProps) => {
 	return (
 		<Box>
@@ -256,6 +260,16 @@ const DevicePreview = ({
 							Không có thông số nào được chọn
 						</Typography>
 					)}
+				</Grid2>
+				<Grid2 size={{ xs: 12 }}>
+					<Typography variant='body1' color='primary' fontWeight={600} mb={2}>
+						Các thành phần được tạo
+					</Typography>
+					<DevicePartDetailTable
+						data={partDetailList}
+						isMode='view'
+						onChange={() => {}}
+					/>
 				</Grid2>
 
 				<Grid2 container justifyContent={'flex-end'} width={'100%'}>

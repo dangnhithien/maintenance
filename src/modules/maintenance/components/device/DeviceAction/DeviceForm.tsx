@@ -20,6 +20,8 @@ import { DatePicker } from '@mui/x-date-pickers'
 import DeviceGroupItemsModal from './DeviceGroupItemsModal'
 import { Settings } from '@mui/icons-material'
 import { IAttributeDeviceValue } from '@modules/maintenance/datas/attributeDeviceValue/IAttributeDeviceValueCreate'
+import DevicePartDetailTable from './DevicePartDetailTable'
+import { IPartDetailCreate } from '@modules/maintenance/datas/partDetail/IPartDetailCreate'
 
 interface DeviceFormProps {
 	control: any
@@ -29,6 +31,8 @@ interface DeviceFormProps {
 	customerId: string | undefined
 	createdDevice: IDeviceCreate | null
 	setSelectedGroupItems: (items: IAttributeDeviceValue[]) => void
+	partDetailList: IPartDetailCreate[]
+	setPartDetailList: (partDetailList: IPartDetailCreate[]) => void
 	deviceTypeId: string | undefined
 	deviceGroupId: string | undefined
 	deviceSKUId: string | undefined
@@ -43,12 +47,19 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 	deviceTypeId,
 	deviceGroupId,
 	deviceSKUId,
+	partDetailList,
+	setPartDetailList,
 }) => {
 	const [modalOpen, setModalOpen] = useState(false)
-
+	const handleAddPart = (newItem: IPartDetailCreate) => {
+		if (partDetailList.some((x) => x.serialNumber === newItem.serialNumber))
+			return
+		const updated = [...partDetailList, newItem]
+		setPartDetailList(updated)
+	}
 	return (
 		<Grid2 container spacing={4}>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='serialNumber'
 					control={control}
@@ -64,7 +75,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					)}
 				/>
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='name'
 					control={control}
@@ -80,7 +91,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					)}
 				/>
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='rfid'
 					control={control}
@@ -96,7 +107,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					)}
 				/>
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='usageTypeId'
 					control={control}
@@ -120,7 +131,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					</Typography>
 				)}
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='deviceTypeId'
 					control={control}
@@ -144,7 +155,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					</Typography>
 				)}
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Stack direction={'row'} alignItems={'center'} gap={1}>
 					<Box sx={{ width: '100%' }}>
 						<Controller
@@ -182,7 +193,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					</IconButton>
 				</Stack>
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='deviceSKUId'
 					control={control}
@@ -208,7 +219,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					</Typography>
 				)}
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='deviceModelId'
 					control={control}
@@ -234,7 +245,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					</Typography>
 				)}
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='customerId'
 					control={control}
@@ -258,7 +269,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					</Typography>
 				)}
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='address'
 					control={control}
@@ -274,7 +285,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					)}
 				/>
 			</Grid2>
-			<Grid2 size={{ xs: 6 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='installationDate'
 					control={control}
@@ -296,7 +307,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					)}
 				/>
 			</Grid2>
-			<Grid2 size={{ xs: 12 }}>
+			<Grid2 size={{ xs: 4 }}>
 				<Controller
 					name='note'
 					control={control}
@@ -304,11 +315,22 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 						<TextField
 							label='Ghi chú'
 							multiline
-							rows={4}
+							rows={2}
 							fullWidth
 							{...field}
 						/>
 					)}
+				/>
+			</Grid2>
+			<Grid2 size={{ xs: 12 }}>
+				<Typography variant='body1' mb={2} fontWeight={600}>
+					Cấu hình thành phần chính
+				</Typography>
+				<DevicePartDetailTable
+					data={partDetailList}
+					isMode='action'
+					onChange={(selected) => setPartDetailList(selected)} // xử lý chọn
+					onAdd={handleAddPart}
 				/>
 			</Grid2>
 			<Grid2 container justifyContent={'flex-end'} width={'100%'}>

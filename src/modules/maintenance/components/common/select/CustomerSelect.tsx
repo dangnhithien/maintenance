@@ -125,7 +125,7 @@ const CustomerSelect: React.FC<AsyncPaginateSelectProps> = ({
 			debounceTimeout={400}
 			menuPortalTarget={document.body}
 			styles={{
-				menuPortal: (base: any) => ({ ...base, zIndex: 5 }),
+				menuPortal: (base: any) => ({ ...base, zIndex: 1600 }),
 				...customStyles,
 				control: (base) => ({
 					...base,

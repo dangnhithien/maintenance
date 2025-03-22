@@ -24,6 +24,25 @@ import { IAttributeDeviceValue } from '@modules/maintenance/datas/attributeDevic
 import { unwrapError } from '@datas/comon/ApiResponse'
 import DeviceForm from './DeviceForm'
 import DevicePreview from './DevicePreview'
+import { IPartDetailCreate } from '@modules/maintenance/datas/partDetail/IPartDetailCreate'
+import partDetailApi from '@modules/maintenance/apis/partDetailApi'
+
+const defaultDevice: IDeviceCreate = {
+	serialNumber: '',
+	name: '',
+	note: '',
+	deviceTypeId: '',
+	deviceGroupId: '',
+	deviceSKUId: '',
+	deviceModelId: '',
+	rfid: '',
+	installationDate: new Date(),
+	address: '',
+	usageTypeId: '',
+	customerId: '',
+	supplier: '',
+	image: '',
+}
 
 const schema = yup.object({
 	name: yup.string().required('Vui lòng nhập đầy đủ thông tin'),
@@ -50,9 +69,11 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 	const [selectedGroupItems, setSelectedGroupItems] = useState<
 		IAttributeDeviceValue[]
 	>([])
+	const [partDetailList, setPartDetailList] = useState<IPartDetailCreate[]>([])
 	const [loading, setLoading] = useState(false)
 	const { notify } = useNotification()
 	const navigate = useNavigate()
+
 	const {
 		control,
 		handleSubmit,
@@ -60,24 +81,10 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 		watch,
 		formState: { errors },
 	} = useForm<IDeviceCreate>({
-		defaultValues: {
-			serialNumber: '',
-			name: '',
-			deviceTypeId: '',
-			deviceGroupId: '',
-			deviceSKUId: '',
-			deviceModelId: '',
-			rfid: '',
-			installationDate: new Date(),
-			note: '',
-			address: '',
-			usageTypeId: '',
-			customerId: '',
-			supplier: '',
-			image: '',
-		},
+		defaultValues: defaultDevice,
 		resolver: yupResolver(schema),
 	})
+
 	const deviceTypeId = watch('deviceTypeId')
 	const deviceGroupId = watch('deviceGroupId')
 	const deviceSKUId = watch('deviceSKUId')
@@ -85,43 +92,45 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 	const { getCustomerById } = useCustomer()
 	const { data: customerData } = getCustomerById(customerId ?? '')
 
-	// useEffect(() => {
-	// 	if (id) {
-	// 		setLoading(true)
-	// 		caseApi
-	// 			.getById(id)
-	// 			.then(unwrapObjectReponse)
-	// 			.then((res) => {
-	// 				reset(res as unknown as ICaseCreate)
-	// 			})
-	// 			.catch((err) => {
-	// 				const { message } = unwrapError(err)
-	// 				notify(message, 'error')
-	// 			})
-	// 			.finally(() => setLoading(false))
-	// 	}
-	// }, [id])
+	useEffect(() => {
+		if (customerData?.address) {
+			reset((prev) => ({ ...prev, address: customerData.address || '' }), {
+				keepDirtyValues: true,
+			})
+		}
+	}, [customerData, reset])
 
 	const updateCreatedDevice = (key: keyof IDeviceCreate, value: string) => {
-		setCreatedDevice((prev) => ({
-			...(prev ?? {
-				serialNumber: '',
-				note: '',
-				name: '',
-				deviceTypeId: '',
-				deviceGroupId: '',
-				deviceSKUId: '',
-				deviceModelId: '',
-				rfid: '',
-				installationDate: new Date(),
-				address: '',
-				usageTypeId: '',
-				customerId: '',
-				supplier: '',
-			}),
-			[key]: value, // Gán giá trị động
-		}))
+		setCreatedDevice((prev) => ({ ...(prev ?? defaultDevice), [key]: value }))
 	}
+
+	const postRelatedData = async (deviceId: string) => {
+		if (selectedGroupItems.length > 0) {
+			const attributeDeviceValueCommands = selectedGroupItems.map((item) => ({
+				deviceId,
+				attributeName: item.attributeName,
+				value: item.value || '-',
+			}))
+			await attributeDeviceValueApi.post({ attributeDeviceValueCommands })
+		}
+
+		if (partDetailList.length > 0) {
+			const partDetailCommands = partDetailList.map((item) => ({
+				deviceId,
+				serialNumber: item.serialNumber,
+				name: item.name,
+				description: item.description,
+				partCategoryId: item.partCategoryId,
+				partTypeId: item.partTypeId,
+				partGroupId: item.partGroupId,
+				partSKUId: item.partSKUId,
+				usageTypeId: item.usageTypeId,
+			}))
+			await partDetailApi.postCommands({ partDetailCommands })
+		}
+	}
+
+	console.log('partDetailList', partDetailList)
 
 	const onSubmit = async (data: IDeviceCreate) => {
 		setLoading(true)
@@ -129,32 +138,19 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 			let deviceId: string
 
 			if (id) {
-				// Update thiết bị đã có
 				const res = await deviceApi.update(id, data)
 				deviceId = id
 				notify(res.message, 'success')
 			} else {
-				// Tạo thiết bị mới
 				const res = await deviceApi.post(data)
 				deviceId = res.result.id
 				if (res.statusCode === 200) {
 					notify('Tạo mới thành công', 'success')
-					if (selectedGroupItems && selectedGroupItems.length > 0) {
-						const attributeDeviceValueCommands = selectedGroupItems.map(
-							(item) => ({
-								deviceId: deviceId, // ID thiết bị cần gắn
-								// attributeDeviceGroupId: item.deviceGroupId,
-								attributeName: item.attributeName,
-								value: item.value || '-',
-							}),
-						)
-
-						// Gọi API POST để lưu attribute device values
-						await attributeDeviceValueApi.post({ attributeDeviceValueCommands })
-					}
-					navigate('/devices')
 				}
 			}
+
+			await postRelatedData(deviceId)
+			navigate('/devices')
 		} catch (err) {
 			console.log(err)
 			const { message } = unwrapError(err)
@@ -164,41 +160,21 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 		}
 	}
 
-	useEffect(() => {
-		if (customerData?.address) {
-			reset(
-				(prev) => ({
-					...prev,
-					address: customerData.address || '',
-				}),
-				{ keepDirtyValues: true },
-			)
-		}
-	}, [customerData, reset])
-
 	const handleNext = handleSubmit(
-		() => {
-			setActiveStep((prev) => prev + 1)
-		},
-		(errors) => {
-			console.log('Lỗi:', errors) // Nếu có lỗi, không cho chuyển bước
-		},
+		() => setActiveStep((prev) => prev + 1),
+		(errors) => console.log('Lỗi:', errors),
 	)
 
-	const handleBack = () => {
-		setActiveStep((prev) => prev - 1)
-	}
+	const handleBack = () => setActiveStep((prev) => prev - 1)
 
-	if (loading) {
-		return <SpinnerLoading />
-	}
+	if (loading) return <SpinnerLoading />
 
 	return (
 		<Stack
-			direction={'row'}
+			direction='row'
 			sx={{ width: '100%', margin: 'auto' }}
-			justifyContent={'space-between'}
-			alignItems={'flex-start'}
+			justifyContent='space-between'
+			alignItems='flex-start'
 			gap={4}
 		>
 			<Stepper activeStep={activeStep} orientation='vertical'>
@@ -209,14 +185,9 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 					<StepLabel slots={{ stepIcon: StepIcon }}>Xem trước</StepLabel>
 				</Step>
 			</Stepper>
-
-			<Box
-				sx={{
-					width: '85%',
-				}}
-			>
+			<Box sx={{ width: '85%' }}>
 				{activeStep === 0 && (
-					<FrameVMS title='Tạo thết bị' icon={<AssignmentIcon />}>
+					<FrameVMS title='Tạo thiết bị' icon={<AssignmentIcon />}>
 						<DeviceForm
 							handleNext={handleNext}
 							control={control}
@@ -228,6 +199,8 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 							deviceTypeId={deviceTypeId}
 							deviceGroupId={deviceGroupId}
 							deviceSKUId={deviceSKUId}
+							partDetailList={partDetailList}
+							setPartDetailList={setPartDetailList}
 						/>
 					</FrameVMS>
 				)}
@@ -239,6 +212,7 @@ const DeviceAction: React.FC<FormProps> = ({ id }) => {
 						handleSubmit={handleSubmit(onSubmit)}
 						loading={loading}
 						selectedGroupItems={selectedGroupItems}
+						partDetailList={partDetailList}
 					/>
 				)}
 			</Box>
@@ -258,8 +232,8 @@ const StepIcon = (props: StepIconProps) => {
 	return (
 		<Box
 			sx={{
-				width: 40, // Độ rộng icon
-				height: 40, // Độ cao icon
+				width: 40,
+				height: 40,
 				display: 'flex',
 				alignItems: 'center',
 				justifyContent: 'center',
