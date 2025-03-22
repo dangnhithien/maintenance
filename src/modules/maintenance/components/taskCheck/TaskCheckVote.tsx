@@ -1,7 +1,7 @@
 import { TaskCheckDto } from '@modules/maintenance/datas/taskCheck/TaskCheckDto'
 import { Box, Grid2, Paper, Typography } from '@mui/material'
 import Wrapper from '../common/Wrapper'
-import RowCheckValue from '../survey/RowCheckValue'
+import RowCheckValue from './RowCheckValue'
 interface Props {
 	data?: TaskCheckDto
 }

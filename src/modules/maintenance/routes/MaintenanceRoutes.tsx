@@ -17,11 +17,6 @@ const CustomerListPage = React.lazy(
 const CustomerDetailPage = React.lazy(
 	() => import('../pages/customer/CustomerDetailPage'),
 )
-const ApprovalPage = React.lazy(() => import('../pages/approval/ApprovalPage'))
-const ApprovalDetailPage = React.lazy(
-	() => import('../pages/approval/ApprovalDetailPage'),
-)
-
 const TaskCheckDetailPage = React.lazy(
 	() => import('../pages/taskCheck/TaskCheckDetailPage'),
 )
@@ -128,24 +123,6 @@ const MaintenanceRoutes = () => (
 				</React.Suspense>
 			}
 		/>
-
-		<Route
-			path='/approval'
-			element={
-				<React.Suspense fallback={<SpinnerLoading />}>
-					<ApprovalPage />
-				</React.Suspense>
-			}
-		/>
-		<Route
-			path='/approval/:id'
-			element={
-				<React.Suspense fallback={<SpinnerLoading />}>
-					<ApprovalDetailPage />
-				</React.Suspense>
-			}
-		/>
-		{/* survey */}
 		<Route
 			path='/template-check-list'
 			element={

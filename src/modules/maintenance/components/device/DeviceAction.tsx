@@ -542,7 +542,7 @@ const DeviceForm: React.FC<DeviceFormProps> = ({
 					render={({ field }) => (
 						<TextField
 							{...field}
-							label='Địa chi'
+							label='Địa chỉ'
 							fullWidth
 							size='small'
 							error={!!errors.rfid}
